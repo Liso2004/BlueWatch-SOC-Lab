@@ -1,0 +1,35 @@
+<group name="banking,">
+  <!-- High query volume alert -->
+  <rule id="100001" level="10">
+    <if_sid>5716</if_sid>
+    <match>DATABASE_QUERY</match>
+    <field name="username">\.+</field>
+    <description>Database query detected from user $(username)</description>
+    <group>database_access,</group>
+  </rule>
+
+  <!-- Multiple queries in short time -->
+  <rule id="100002" level="12" frequency="10" timeframe="120">
+    <if_matched_sid>100001</if_matched_sid>
+    <same_source_ip />
+    <description>Possible data exfiltration: 10+ queries in 2 minutes from $(username) at $(source_ip)</description>
+    <group>data_exfiltration,</group>
+  </rule>
+
+  <!-- DNS exfiltration detection (to be used with Zeek) -->
+  <rule id="100003" level="10">
+    <match>DNS query</match>
+    <field name="query_length">^[5-9][0-9]|[1-9][0-9]{2,}$</field>
+    <description>Suspicious long DNS query detected - possible exfiltration</description>
+    <group>dns_exfiltration,</group>
+  </rule>
+
+  <!-- Correlation: DB query + DNS spike -->
+  <rule id="100004" level="14">
+    <if_sid>100002</if_sid>
+    <if_sid>100003</if_sid>
+    <same_source_ip />
+    <description>CRITICAL: Data exfiltration detected - DB queries + DNS tunneling from $(username)</description>
+    <group>critical,data_exfiltration,</group>
+  </rule>
+</group>

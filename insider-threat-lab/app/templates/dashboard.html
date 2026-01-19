@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SecureBank - Dashboard</title>
+    <style>
+        body { font-family: Arial; max-width: 1200px; margin: 20px auto; }
+        .header { display: flex; justify-content: space-between; padding: 20px; background: #f0f0f0; }
+        .btn { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; margin: 5px; }
+        #customers { margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Welcome, {{ username }}</h2>
+        <a href="/logout" class="btn">Logout</a>
+    </div>
+    
+    <h3>Customer Management</h3>
+    <button class="btn" onclick="loadCustomers()">Load Customers</button>
+    <input type="text" id="search" placeholder="Search customers...">
+    <button class="btn" onclick="searchCustomers()">Search</button>
+    
+    <div id="customers"></div>
+
+    <script>
+        function loadCustomers() {
+            fetch('/api/customers')
+                .then(r => r.json())
+                .then(data => {
+                    let html = '<table><tr><th>Name</th><th>Email</th><th>Account</th><th>Balance</th></tr>';
+                    data.forEach(c => {
+                        html += `<tr><td>${c.name}</td><td>${c.email}</td><td>${c.account_number}</td><td>$${c.balance}</td></tr>`;
+                    });
+                    html += '</table>';
+                    document.getElementById('customers').innerHTML = html;
+                });
+        }
+
+        function searchCustomers() {
+            const query = document.getElementById('search').value;
+            fetch(`/api/search?q=${query}`)
+                .then(r => r.json())
+                .then(data => {
+                    let html = '<table><tr><th>Name</th><th>Email</th><th>Account</th><th>Balance</th></tr>';
+                    data.forEach(c => {
+                        html += `<tr><td>${c.name}</td><td>${c.email}</td><td>${c.account_number}</td><td>$${c.balance}</td></tr>`;
+                    });
+                    html += '</table>';
+                    document.getElementById('customers').innerHTML = html;
+                });
+        }
+    </script>
+</body>
+</html> 
