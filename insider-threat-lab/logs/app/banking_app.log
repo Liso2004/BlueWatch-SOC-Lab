@@ -102,3 +102,18 @@
 2026-01-19 19:22:48,674 - INFO - SEARCH_QUERY: Search: "sam" | Results: 0 | Time: 0.094167s - USER:admin - IP:172.18.0.1
 2026-01-19 19:22:52,430 - INFO - DATABASE_QUERY: Query: SELECT customers | Rows: 50 | Time: 0.002944s - USER:admin - IP:172.18.0.1
 2026-01-19 19:23:07,104 - INFO - SEARCH_QUERY: Search: "fiona" | Results: 294 | Time: 0.005009s - USER:admin - IP:172.18.0.1
+2026-01-21 20:35:45,641 - INFO - LOGIN_SUCCESS: User jdoe logged in - USER:jdoe - IP:172.18.0.1
+2026-01-21 20:35:45,751 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:jdoe - IP:172.18.0.1
+2026-01-21 20:51:54,555 - INFO - DATABASE_QUERY: Query: SELECT customers | Rows: 50 | Time: 0.100486s - USER:jdoe - IP:172.18.0.1
+2026-01-21 20:52:00,167 - INFO - DATABASE_QUERY: Query: SELECT customers | Rows: 50 | Time: 0.003105s - USER:jdoe - IP:172.18.0.1
+2026-01-21 20:52:08,408 - INFO - SEARCH_QUERY: Search: "smith" | Results: 257 | Time: 0.015713s - USER:jdoe - IP:172.18.0.1
+2026-01-21 20:52:14,785 - INFO - DATABASE_QUERY: Query: SELECT customers | Rows: 50 | Time: 0.001054s - USER:jdoe - IP:172.18.0.1
+2026-01-21 21:30:45,583 - INFO - LOGIN_SUCCESS: User jdoe logged in - USER:jdoe - IP:172.18.0.1
+2026-01-21 21:30:45,627 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:jdoe - IP:172.18.0.1
+2026-01-21 21:34:38,264 - INFO - DATABASE_QUERY: Query: SELECT customers | Rows: 50 | Time: 0.142542s - USER:jdoe - IP:172.18.0.1
+2026-01-21 21:44:01,257 - INFO - LOGOUT: User jdoe logged out - USER:jdoe - IP:172.18.0.1
+2026-01-21 21:44:09,850 - INFO - LOGIN_SUCCESS: User admin logged in - USER:admin - IP:172.18.0.1
+2026-01-21 21:44:09,866 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:admin - IP:172.18.0.1
+2026-01-21 21:48:37,574 - INFO - LOGOUT: User admin logged out - USER:admin - IP:172.18.0.1
+2026-01-21 21:48:45,855 - INFO - LOGIN_SUCCESS: User analyst logged in - USER:analyst - IP:172.18.0.1
+2026-01-21 21:48:45,870 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:analyst - IP:172.18.0.1

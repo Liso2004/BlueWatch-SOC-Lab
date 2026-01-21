@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   banking-app:
     build: ./insider-threat-lab/app
@@ -72,8 +74,10 @@ services:
     networks:
       - bank-network
     volumes:
+      # Mount host logs so Logstash can read them
+      - ./insider-threat-lab/logs:/logs
+      # Mount the pipeline config
       - ./detection/elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./logs:/logs
 
   wazuh:
     image: wazuh/wazuh-manager:4.7.0
