@@ -117,3 +117,14 @@
 2026-01-21 21:48:37,574 - INFO - LOGOUT: User admin logged out - USER:admin - IP:172.18.0.1
 2026-01-21 21:48:45,855 - INFO - LOGIN_SUCCESS: User analyst logged in - USER:analyst - IP:172.18.0.1
 2026-01-21 21:48:45,870 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:analyst - IP:172.18.0.1
+2026-01-22 20:05:32,935 - INFO - LOGIN_FAILED: Failed login attempt for admin - USER:anonymous - IP:172.18.0.1
+2026-01-22 20:06:09,685 - INFO - LOGIN_SUCCESS: User admin logged in - USER:admin - IP:172.18.0.1
+2026-01-22 20:06:09,717 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:admin - IP:172.18.0.1
+2026-01-22 20:08:57,462 - INFO - LOGIN_SUCCESS: User admin logged in - USER:admin - IP:172.18.0.1
+2026-01-22 20:08:57,482 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:admin - IP:172.18.0.1
+2026-01-22 20:09:01,273 - INFO - DATABASE_QUERY: Query: SELECT customers | Rows: 50 | Time: 0.064149s - USER:admin - IP:172.18.0.1
+2026-01-22 20:19:57,040 - INFO - LOGIN_SUCCESS: User analyst logged in - USER:analyst - IP:172.18.0.1
+2026-01-22 20:19:57,064 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:analyst - IP:172.18.0.1
+2026-01-22 20:31:57,127 - INFO - LOGIN_FAILED: Failed login attempt for analyst - USER:analyst - IP:172.18.0.1
+2026-01-22 20:32:01,477 - INFO - LOGIN_FAILED: Failed login attempt for analyst - USER:analyst - IP:172.18.0.1
+2026-01-22 21:37:07,924 - INFO - LOGIN_FAILED: Failed login attempt for analyst - USER:analyst - IP:172.18.0.1
