@@ -1,20 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>SecureBank - Login</title>
-    <style>
-        body { font-family: Arial; max-width: 400px; margin: 100px auto; }
-        input { width: 100%; padding: 10px; margin: 10px 0; }
-        button { width: 100%; padding: 15px; background: #007bff; color: white; border: none; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <h2>Employee Login</h2>
-    <form method="POST">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
+{% extends "bank_base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block body %}
+<header class="phone-top">
+    <a href="/" style="color:#d6ebf5;text-decoration:none">← Back</a>
+    <h1 style="margin-top:1rem">Staff sign in</h1>
+    <p>SecureBank employees only</p>
+</header>
+<main class="phone-body">
+    <form method="POST" class="card" autocomplete="off">
+        {% if error %}<p class="notice" role="alert">{{ error }}</p>{% endif %}
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" required autofocus>
+        <label for="password" style="margin-top:.8rem">Password</label>
+        <input id="password" type="password" name="password" required>
+        <button class="btn" type="submit" style="width:100%;justify-content:center;margin-top:1rem">Sign in</button>
     </form>
-    <p><small>Test credentials: jdoe / password123</small></p>
-</body>
-</html>
+    <p class="muted small" style="text-align:center;margin-top:1rem">Lab accounts: <code>analyst</code>,
+        <code>jdoe</code> or <code>admin</code> · password <code>password123</code></p>
+</main>
+{% endblock %}

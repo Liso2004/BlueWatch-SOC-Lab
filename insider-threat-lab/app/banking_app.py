@@ -8,6 +8,7 @@ import os
 
 from mobile_risk import api_v1 as mobile_risk_api_v1
 from mobile_risk import bp as mobile_risk_bp
+from soc import bp as soc_bp
 
 
 app = Flask(__name__)
@@ -18,6 +19,8 @@ app.config['MAX_CONTENT_LENGTH'] = 256 * 1024
 # BlueWatch Mobile: Android app risk triage for SOC analysts (UI) and bank systems (API v1)
 app.register_blueprint(mobile_risk_bp)
 app.register_blueprint(mobile_risk_api_v1)
+# BlueWatch Security Center: SIEM-style overview and incidents
+app.register_blueprint(soc_bp)
 
 
 # Configure logging - CRITICAL for SOC detection
@@ -114,7 +117,7 @@ def login():
                     username
                 )
 
-                return "Invalid credentials", 401
+                return render_template('login.html', error='Wrong username or password. Please try again.'), 401
 
         finally:
             db.close()

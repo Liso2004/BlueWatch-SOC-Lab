@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BlueWatch — {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bluewatch.css') }}">
+</head>
+<body>
+<div class="console">
+    <aside class="side">
+        <div class="brand"><span aria-hidden="true">🛡️</span> BlueWatch</div>
+        <div class="sub">SecureBank Security Center</div>
+        <nav aria-label="Security Center">
+            <div class="group">Monitor</div>
+            <a href="/security" class="{{ 'active' if active == 'overview' }}"><span aria-hidden="true">📊</span> Overview</a>
+            <a href="/security/incidents" class="{{ 'active' if active == 'incidents' }}"><span aria-hidden="true">🚨</span> Incidents <span class="count" id="nav-open" hidden></span></a>
+            <div class="group">Security tools</div>
+            <a href="/mobile-risk" class="{{ 'active' if active == 'apprisk' }}"><span aria-hidden="true">📱</span> Android App Risk</a>
+            <a href="/mobile-risk#vulns"><span aria-hidden="true">🧩</span> Phone vulnerabilities</a>
+            <a href="http://localhost:5601" target="_blank" rel="noopener"><span aria-hidden="true">🔍</span> Raw logs (Kibana) ↗</a>
+            <div class="group">SecureBank</div>
+            <a href="/dashboard"><span aria-hidden="true">🏦</span> Back to staff app</a>
+            <a href="/logout"><span aria-hidden="true">↩</span> Sign out</a>
+        </nav>
+        <p class="sub" style="margin-top:1.5rem">Signed in as <b style="color:#fff">{{ username }}</b></p>
+    </aside>
+    <main class="main">
+        {% block main %}{% endblock %}
+    </main>
+</div>
+<script src="{{ url_for('static', filename='js/bw.js') }}"></script>
+<script>
+    api('/api/soc/overview').then(o => {
+        const n = o.incidents.open, el = document.getElementById('nav-open');
+        if (n) { el.textContent = n; el.hidden = false; el.title = n + ' open incidents'; }
+    }).catch(() => {});
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

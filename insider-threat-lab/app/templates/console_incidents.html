@@ -1,0 +1,141 @@
+{% extends "console_base.html" %}
+{% block title %}Incidents{% endblock %}
+{% block main %}
+<div class="topbar">
+    <div><h1>Incidents</h1><p class="muted">Problems BlueWatch found that a person needs to look at.</p></div>
+    <button class="btn" onclick="syncNow()">↻ Check for new threats</button>
+</div>
+
+<details class="help" open><summary>How to use this page</summary>
+    <ol><li><b>Pick an incident</b> from the list — newest and most serious are at the top.</li>
+        <li><b>Assign it</b> to the person who will handle it, and set it to <b>Investigating</b>.</li>
+        <li><b>Tag it</b> so the team can find similar cases (e.g. <i>credential-attack</i>, <i>insider-threat</i>).</li>
+        <li>Write what you checked in <b>Notes</b>. When done, mark it <b>Resolved</b> — or <b>False alarm</b> if nothing was wrong.</li></ol>
+    <p class="muted small" style="margin:.5rem 0 0">Every change is saved straight away and added to the incident’s timeline.</p>
+</details>
+
+<div class="card" style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end">
+    <div style="min-width:150px"><label for="f-status">Status</label><select id="f-status" onchange="load()">
+        <option value="">All open</option>{% for k, v in statuses.items() %}<option value="{{ k }}">{{ v }}</option>{% endfor %}<option value="all">Everything</option></select></div>
+    <div style="min-width:130px"><label for="f-sev">Severity</label><select id="f-sev" onchange="load()">
+        <option value="">Any</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+    <div style="min-width:150px"><label for="f-who">Assigned to</label><select id="f-who" onchange="load()">
+        <option value="">Anyone</option><option value="unassigned">Nobody yet</option>{% for t in team %}<option>{{ t }}</option>{% endfor %}</select></div>
+    <div style="min-width:170px"><label for="f-tag">Tag</label><select id="f-tag" onchange="load()">
+        <option value="">Any</option>{% for t in tags %}<option>{{ t }}</option>{% endfor %}</select></div>
+    <span class="muted small" id="count" style="margin-left:auto"></span>
+</div>
+
+<div class="card section" style="overflow-x:auto;padding:0">
+    <table><thead><tr><th>Severity</th><th>Incident</th><th>Status</th><th>Assigned to</th><th>Tags</th><th>Last seen</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody></table>
+</div>
+
+<aside class="drawer" id="drawer" aria-label="Incident details" aria-hidden="true">
+    <div class="drawer-head"><div><p class="muted small" id="d-id"></p><h2 id="d-title"></h2></div>
+        <button class="btn ghost sm" onclick="closeDrawer()" aria-label="Close">✕</button></div>
+    <div class="drawer-body" id="d-body"></div>
+</aside>
+{% endblock %}
+{% block scripts %}
+<script>
+    const TEAM = {{ team | tojson }}, TAGS = {{ tags | tojson }}, STATUSES = {{ statuses | tojson }};
+    let current = null;
+
+    const sevChip = s => `<span class="chip sev-${esc(s)}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
+    const stChip = (s, label) => `<span class="chip st-${esc(s)}">${esc(label)}</span>`;
+
+    async function syncNow() {
+        try { const s = await api('/api/soc/sync', {json: {}}); toast(s.new ? `${s.new} new incident(s) found` : 'Up to date — no new incidents'); load(); }
+        catch (e) { toast('Check failed: ' + e.message, true); }
+    }
+
+    async function load() {
+        const p = new URLSearchParams();
+        const st = document.getElementById('f-status').value;
+        if (st && st !== 'all') p.set('status', st);
+        for (const [id, key] of [['f-sev', 'severity'], ['f-who', 'assignee'], ['f-tag', 'tag']]) {
+            const v = document.getElementById(id).value; if (v) p.set(key, v);
+        }
+        try {
+            let list = await api('/api/soc/incidents?' + p);
+            if (!st) list = list.filter(i => i.status === 'new' || i.status === 'investigating');
+            document.getElementById('count').textContent = `${list.length} incident(s)`;
+            document.getElementById('rows').innerHTML = list.map(i => `
+                <tr class="clickable" tabindex="0" onclick="openIncident(${i.id})" onkeydown="if(event.key==='Enter')openIncident(${i.id})">
+                <td>${sevChip(i.severity)}</td>
+                <td><b>${esc(i.title)}</b><br><span class="muted small">#${i.id} · ${i.event_count ? esc(i.event_count) + ' events' : 'opened by hand'}</span></td>
+                <td>${stChip(i.status, i.status_label)}</td>
+                <td>${i.assignee ? esc(i.assignee) : '<span class="muted">Nobody yet</span>'}</td>
+                <td>${i.tags.map(t => `<span class="chip">${esc(t)}</span>`).join(' ')}</td>
+                <td class="small">${esc((i.last_seen || '').slice(0, 16))}</td></tr>`).join('')
+                || '<tr><td colspan="6" class="empty">Nothing here. Try “Everything” in the Status filter.</td></tr>';
+        } catch (e) { toast('Could not load incidents: ' + e.message, true); }
+    }
+
+    async function openIncident(id) {
+        try { render(await api('/api/soc/incidents/' + id)); }
+        catch (e) { toast('Could not open incident: ' + e.message, true); return; }
+        const d = document.getElementById('drawer'); d.classList.add('open'); d.setAttribute('aria-hidden', 'false');
+        history.replaceState(null, '', '#incident-' + id);
+    }
+    function closeDrawer() {
+        const d = document.getElementById('drawer'); d.classList.remove('open'); d.setAttribute('aria-hidden', 'true');
+        history.replaceState(null, '', location.pathname);
+    }
+
+    function render(i) {
+        current = i;
+        document.getElementById('d-id').textContent = `Incident #${i.id} · ${i.source === 'manual' ? 'opened by hand' : 'found automatically'}`;
+        document.getElementById('d-title').textContent = i.title;
+        document.getElementById('d-body').innerHTML = `
+            <p>${sevChip(i.severity)} ${stChip(i.status, i.status_label)}</p>
+            <h3>What happened</h3><p>${esc(i.summary)}</p>
+            ${i.assessment_id ? `<p><a class="btn ghost sm" href="/mobile-risk">Open in Android App Risk →</a></p>` : ''}
+
+            <h3>Who is handling it</h3>
+            <div style="display:flex;gap:.5rem"><select id="d-assignee" aria-label="Assign to">
+                <option value="">Nobody yet</option>${TEAM.map(t => `<option ${t === i.assignee ? 'selected' : ''}>${esc(t)}</option>`).join('')}</select>
+                <button class="btn sm" onclick="assignMe()">Assign to me</button></div>
+
+            <h3 style="margin-top:1rem">Status</h3>
+            <div style="display:flex;gap:.4rem;flex-wrap:wrap">${['new', 'investigating', 'resolved', 'false_positive'].map(k => [k, STATUSES[k]]).map(([k, v]) =>
+                `<button class="btn sm ${k === i.status ? '' : 'ghost'}" aria-pressed="${k === i.status}" onclick="patch({status:'${k}'})">${esc(v)}</button>`).join('')}</div>
+
+            <h3 style="margin-top:1rem">Tags</h3>
+            <div id="d-tags" style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.4rem">${i.tags.map(t =>
+                `<span class="chip">${esc(t)} <button aria-label="Remove tag ${esc(t)}" onclick="patch({remove_tag:'${esc(t)}'})">×</button></span>`).join('') || '<span class="muted small">No tags yet</span>'}</div>
+            <div style="display:flex;gap:.5rem"><input id="d-newtag" list="tag-list" placeholder="Add a tag, e.g. escalate" onkeydown="if(event.key==='Enter')addTag()">
+                <datalist id="tag-list">${TAGS.map(t => `<option value="${esc(t)}">`).join('')}</datalist>
+                <button class="btn sm" onclick="addTag()">Add</button></div>
+
+            <h3 style="margin-top:1rem">Notes and timeline</h3>
+            <div style="display:flex;gap:.5rem;margin-bottom:.8rem"><input id="d-note" placeholder="What did you check or decide?" onkeydown="if(event.key==='Enter')addNote()">
+                <button class="btn sm" onclick="addNote()">Save note</button></div>
+            <div class="timeline">${i.notes.slice().reverse().map(n => `<div class="ev"><b>${esc(n.author)}</b> <span class="muted small">${esc(timeAgo(n.at))}</span><br>${esc(n.text)}</div>`).join('')}</div>
+
+            ${i.evidence.length ? `<h3 style="margin-top:1rem">Evidence (${i.event_count} events, first ${i.evidence.length} shown)</h3>
+                <p class="muted small">From ${esc(i.first_seen)} to ${esc(i.last_seen)}. Raw lines from the SecureBank security log:</p>
+                <pre style="background:#f6f8fa;padding:.6rem;border-radius:8px;font-size:.75rem;white-space:pre-wrap">${i.evidence.map(esc).join('\n')}</pre>` : ''}`;
+        document.getElementById('d-assignee').onchange = e => patch({assignee: e.target.value});
+    }
+
+    async function patch(body) {
+        try {
+            const r = await api('/api/soc/incidents/' + current.id, {method: 'PATCH', json: body});
+            render(r.incident); load();
+            toast(r.changes.length ? r.changes.join(' ') : 'No change');
+        } catch (e) { toast('Could not save: ' + e.message, true); }
+    }
+    function assignMe() { patch({assignee: {{ username | tojson }}, status: current.status === 'new' ? 'investigating' : undefined}); }
+    function addTag() { const v = document.getElementById('d-newtag').value.trim(); if (v) patch({add_tag: v}); }
+    async function addNote() {
+        const v = document.getElementById('d-note').value.trim(); if (!v) return;
+        try { render(await api(`/api/soc/incidents/${current.id}/notes`, {json: {text: v}})); toast('Note saved'); }
+        catch (e) { toast('Could not save note: ' + e.message, true); }
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+    load().then(() => { const m = location.hash.match(/incident-(\d+)/); if (m) openIncident(+m[1]); });
+</script>
+{% endblock %}

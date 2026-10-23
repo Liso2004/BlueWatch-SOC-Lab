@@ -1,0 +1,132 @@
+{% extends "console_base.html" %}
+{% block title %}Overview{% endblock %}
+{% block main %}
+<div class="topbar">
+    <div><h1>Security overview</h1><p class="muted" id="range">Loading events…</p></div>
+    <button class="btn" onclick="refresh(true)">↻ Check for new threats</button>
+</div>
+
+<section class="problem" aria-label="The problem we are solving">
+    <h2>The problem we watch for</h2>
+    <p>Criminals steal from bank customers in three ways this centre tracks: <b>guessing staff passwords</b>,
+        <b>insiders copying customer data</b>, and <b>Android banking malware</b> on customers’ phones — fake screens,
+        stolen SMS codes, apps that tap for the user. Three in four South African smartphones run Android, and
+        Kaspersky counted 162,275 new mobile banking trojan packages in the first three months of 2026 alone.
+        BlueWatch turns raw security events into clear incidents a person can act on.</p>
+</section>
+
+<section class="section">
+    <div class="section-head"><h2>Key numbers</h2></div>
+    <details class="help"><summary>How to read these numbers</summary>
+        <ul><li><b>Red</b> numbers need attention. <b>Green</b> numbers are good.</li>
+            <li>The first row comes from SecureBank’s security log. Press <b>Check for new threats</b> to update it.</li>
+            <li>The second row is how well the Android malware checker performed in testing on apps it had never seen.</li></ul>
+    </details>
+    <div class="grid k4" id="kpis-live"></div>
+    <h3 style="margin-top:1.2rem">How good is the Android malware checker?</h3>
+    <div class="grid k4" id="kpis-model"></div>
+</section>
+
+<section class="section grid k2">
+    <div class="card">
+        <h2>Activity by day</h2>
+        <details class="help"><summary>How to use this</summary>
+            <p>Each bar is one day. Red is attack activity (failed sign-ins, rejected API keys), orange is customer data
+                being viewed, blue is normal sign-ins, purple is Android app checks. A tall red or orange bar is a day to investigate.</p>
+        </details>
+        <div id="per-day"></div>
+    </div>
+    <div class="card">
+        <h2>Open incidents</h2>
+        <details class="help"><summary>How to use this</summary>
+            <p>Incidents are problems BlueWatch found that someone must look at. Open the <a href="/security/incidents">Incidents</a>
+                page to assign one to a person, tag it, and close it when done.</p>
+        </details>
+        <div id="inc-summary"></div>
+    </div>
+</section>
+
+<section class="section grid k2">
+    <div class="card">
+        <h2>Who viewed the most customer records</h2>
+        <details class="help"><summary>How to use this</summary>
+            <p>Staff normally look up a few customers at a time. One person viewing hundreds or thousands of records can mean
+                an insider copying data. Check the top names against their job.</p>
+        </details>
+        <div id="records"></div>
+    </div>
+    <div class="card">
+        <h2>Accounts with failed sign-ins</h2>
+        <details class="help"><summary>How to use this</summary>
+            <p>Many failed sign-ins on one account usually means someone is guessing the password. Lock or reset the account
+                and check where the attempts came from.</p>
+        </details>
+        <div id="failed"></div>
+    </div>
+</section>
+
+<section class="section card">
+    <div class="section-head"><h2>Latest activity</h2><a class="btn ghost sm" href="http://localhost:5601" target="_blank" rel="noopener">Open full logs in Kibana ↗</a></div>
+    <details class="help"><summary>How to use this</summary>
+        <p>The most recent 25 events in plain words. For searching and older events, use Kibana: <b>Discover → banking-logs-*</b>.</p>
+    </details>
+    <div style="overflow-x:auto"><table><thead><tr><th>When</th><th>What happened</th><th>Who</th><th>From</th></tr></thead><tbody id="recent"></tbody></table></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+    const COLORS = {attack: '#b3261e', data: '#d08a00', access: '#0b6e99', mobile: '#6b4fbb', soc: '#64748b', other: '#94a3b8'};
+    const NAMES = {attack: 'Attacks', data: 'Customer data viewed', access: 'Sign-ins', mobile: 'Android app checks', soc: 'Incident work'};
+
+    function kpi(value, label, explain, cls = '') {
+        return `<div class="card kpi ${cls}"><div class="value">${value}</div><div class="label">${esc(label)}</div><div class="explain">${esc(explain)}</div></div>`;
+    }
+
+    async function refresh(sync) {
+        try {
+            if (sync) {
+                const s = await api('/api/soc/sync', {json: {}});
+                toast(s.new ? `${s.new} new incident(s) found — see Incidents` : 'Up to date — no new incidents');
+            }
+            const o = await api('/api/soc/overview');
+            const t = o.totals, m = o.model, inc = o.incidents;
+            document.getElementById('range').textContent = o.range
+                ? `Showing ${fmt(t.events)} security events from ${o.range[0].slice(0, 10)} to ${o.range[1].slice(0, 10)}`
+                : 'No security events recorded yet.';
+
+            document.getElementById('kpis-live').innerHTML =
+                kpi(fmt(inc.open), 'Open incidents', `${inc.unassigned_open} not yet assigned to anyone`, inc.open ? 'bad' : 'ok') +
+                kpi(fmt(t.failed_signins), 'Failed sign-ins', 'Wrong password attempts. Many on one account = password guessing.', t.failed_signins ? 'bad' : 'ok') +
+                kpi(fmt(t.records_viewed), 'Customer records viewed', `By ${t.people} staff accounts. Big totals can mean data being copied.`, 'warn') +
+                kpi(`${fmt(t.apps_flagged)} / ${fmt(t.apps_checked)}`, 'Android apps needing a look', 'Apps flagged by the malware checker, out of all apps checked.', t.apps_flagged ? 'warn' : 'ok');
+
+            document.getElementById('kpis-model').innerHTML =
+                kpi(pct(m.alarm_accuracy), 'Alarms that are real', `When it says “needs a look”, it is real malware this often (tested on ${fmt(m.test_apps)} apps).`, 'ok') +
+                kpi(pct(m.malware_caught), 'Malware caught', 'Share of malware apps it flags.', 'ok') +
+                kpi(pct(m.new_families_caught), 'New malware types caught', 'Malware families it had never seen before.', 'ok') +
+                kpi(pct(m.newer_app_false_alarms), 'False alarms on newer apps', 'Known weakness: newer safe apps are often wrongly flagged. A person must always check.', 'bad');
+
+            const days = o.per_day, max = Math.max(1, ...days.map(d => Object.keys(COLORS).reduce((s, k) => s + (d[k] || 0), 0)));
+            document.getElementById('per-day').innerHTML = days.length ? `<div class="cols" role="img" aria-label="Security events per day">${days.map(d => {
+                const segs = Object.keys(COLORS).filter(k => d[k]).map(k => `<div class="seg" title="${esc(NAMES[k] || k)}: ${d[k]}" style="height:${(d[k] / max * 120).toFixed(0)}px;background:${COLORS[k]}"></div>`).join('');
+                return `<div class="col"><div class="stack">${segs}</div><span class="lbl">${esc(d.day.slice(5))}</span></div>`;
+            }).join('')}</div><div class="legend">${Object.entries(NAMES).map(([k, v]) => `<span><i style="background:${COLORS[k]}"></i>${v}</span>`).join('')}</div>`
+                : '<p class="empty">No events yet.</p>';
+
+            const sev = inc.open_by_severity, st = inc.by_status;
+            document.getElementById('inc-summary').innerHTML = `
+                ${barList([{label: 'High', value: sev.high, cls: 'bad'}, {label: 'Medium', value: sev.medium, cls: 'warn'}, {label: 'Low', value: sev.low}])}
+                <p class="muted small" style="margin-top:.6rem">All incidents: ${st.new} new · ${st.investigating} being investigated · ${st.resolved} resolved · ${st.false_positive} false alarms</p>
+                <a class="btn" href="/security/incidents">Go to incidents →</a>`;
+
+            document.getElementById('records').innerHTML = barList(o.records_by_person.map(([u, n]) => ({label: u, value: n, cls: 'warn'})));
+            document.getElementById('failed').innerHTML = barList(o.failed_by_account.map(([u, n]) => ({label: u, value: n, cls: 'bad'})));
+            document.getElementById('recent').innerHTML = o.recent.map(e => `
+                <tr><td class="small" title="${esc(e.time)}">${esc(e.time.slice(0, 16))}</td>
+                <td><span class="chip" style="border-color:${COLORS[e.category]};color:${COLORS[e.category]}">${esc(e.name)}</span></td>
+                <td>${esc(e.user)}</td><td class="small">${esc(e.ip)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">No events.</td></tr>';
+        } catch (e) { toast('Could not load the overview: ' + e.message, true); }
+    }
+    refresh(true);
+</script>
+{% endblock %}

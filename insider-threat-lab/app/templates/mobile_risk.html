@@ -1,325 +1,281 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>SecureBank - BlueWatch Mobile</title>
-    <style>
-        body { font-family: Arial; max-width: 1200px; margin: 20px auto; padding: 0 16px; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #f0f0f0; }
-        .btn { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; margin: 5px; text-decoration: none; display: inline-block; }
-        .btn.secondary { background: #6c757d; }
-        .notice { padding: 12px 16px; margin: 16px 0; background: #fff3cd; border-left: 4px solid #e0a800; }
-        .warn { padding: 12px 16px; margin: 12px 0; background: #f8d7da; border-left: 4px solid #c82333; }
-        .error { padding: 12px 16px; margin: 12px 0; background: #f8d7da; color: #721c24; }
-        .panel { border: 1px solid #ddd; padding: 16px; margin: 16px 0; }
-        .grid { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
-        @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 8px 10px; border: 1px solid #ddd; text-align: left; font-size: 14px; }
-        th { background: #007bff; color: white; }
-        .sample { display: block; width: 100%; text-align: left; padding: 10px; margin: 6px 0; border: 1px solid #ccc; background: #fff; cursor: pointer; }
-        .sample:hover, .sample.active { border-color: #007bff; background: #eef5ff; }
-        .muted { color: #666; font-size: 13px; }
-        .verdict { font-size: 22px; font-weight: bold; padding: 10px 14px; display: inline-block; }
-        .flag_for_review { background: #c82333; color: white; }
-        .not_flagged { background: #28a745; color: white; }
-        .bar { height: 14px; background: #e9ecef; position: relative; margin: 8px 0 4px; }
-        .bar > span { display: block; height: 100%; background: #c82333; }
-        .bar > i { position: absolute; top: -4px; bottom: -4px; width: 2px; background: #000; }
-        .match { font-weight: bold; }
-        pre { background: #f6f8fa; padding: 10px; overflow-x: auto; font-size: 12px; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h2>BlueWatch Mobile — Android App Risk Triage</h2>
-        <div>
-            <a href="/dashboard" class="btn secondary">Dashboard</a>
-            <a href="/logout" class="btn">Logout</a>
+{% extends "console_base.html" %}
+{% block title %}Android App Risk{% endblock %}
+{% block main %}
+<div class="topbar">
+    <div><h1>Android App Risk</h1><p class="muted">Check whether an Android app behaves like banking malware.</p></div>
+</div>
+
+<p class="notice"><b>Prototype — decision support only.</b> A result means “a person should look at this app”, not
+    “this is definitely malware”. Never block a customer or their phone on this result alone.</p>
+
+<details class="help section" open><summary>How to use this tool</summary>
+    <ol><li><b>Pick an app</b> on the left (real apps from a research dataset that the checker never saw while learning),
+            or paste an app’s details in the box below it.</li>
+        <li>Read the <b>result</b>: “Needs a look” or “No alert”, the risk score, and <b>why</b>.</li>
+        <li>Press <b>Write AI case brief</b> for a plain-English summary you can paste into a ticket.</li>
+        <li>After checking, record <b>your decision</b>. If it needs follow-up, press <b>Open an incident</b>.</li></ol>
+</details>
+
+<div class="grid section" style="grid-template-columns:minmax(260px,1fr) 2fr;align-items:start">
+    <div>
+        <div class="card">
+            <h2>Test apps</h2>
+            <p class="muted small">3 known malware and 3 safe apps. The label shows the right answer, so you can check BlueWatch.</p>
+            <div id="samples">Loading…</div>
         </div>
-    </div>
-
-    <div class="notice">
-        <strong>Prototype — decision support only.</strong>
-        Scores prioritise apps for analyst review; they are not proof of malware and must not be used
-        to block customer accounts or devices on their own. Signed in as <strong>{{ username }}</strong>.
-    </div>
-
-    <div id="error"></div>
-
-    <div class="grid">
-        <div>
-            <div class="panel">
-                <h3>Labelled test samples</h3>
-                <p class="muted">Held-out KronoDroid rows never used in training. Expected label is shown so results can be checked.</p>
-                <div id="samples">Loading…</div>
-            </div>
-            <div class="panel">
-                <h3>Assess an app's features</h3>
-                <p class="muted">Paste a JSON object of feature name → count (KronoDroid schema, Android only). Missing features count as 0.</p>
-                <input id="adhoc-id" placeholder="App reference (optional)" maxlength="100" style="width:100%;padding:8px;margin-bottom:6px">
-                <textarea id="adhoc-features" rows="6" style="width:100%;font-family:monospace;font-size:12px" placeholder='{"SEND_SMS": 1, "RECEIVE_SMS": 1, "READ_PHONE_STATE": 1}'></textarea>
-                <button class="btn" onclick="assessAdhoc()">Score these features</button>
-                <button class="btn secondary" onclick="copyActiveSample()">Copy selected sample's features</button>
+        <div class="card">
+            <h3>Check another app</h3>
+            <p class="muted small">Paste the app’s measured details as JSON (name → count). Anything left out counts as 0.</p>
+            <label for="adhoc-id">App name or reference (optional)</label>
+            <input id="adhoc-id" maxlength="100">
+            <label for="adhoc-features" style="margin-top:.5rem">App details (JSON)</label>
+            <textarea id="adhoc-features" rows="5" style="font-family:monospace;font-size:.8rem" placeholder='{"SEND_SMS": 1, "RECEIVE_SMS": 1, "SYSTEM_ALERT_WINDOW": 1}'></textarea>
+            <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem">
+                <button class="btn sm" onclick="assessAdhoc()">Check this app</button>
+                <button class="btn ghost sm" onclick="copyActiveSample()">Copy selected test app</button>
             </div>
         </div>
-        <div>
-            <div class="panel" id="result"><p class="muted">Select a sample to run it through the model.</p></div>
-        </div>
     </div>
+    <div class="card" id="result" aria-live="polite"><p class="empty">Pick an app on the left to see the result here.</p></div>
+</div>
 
-    <div class="panel">
-        <h3>Device platform vulnerability context (NVD)</h3>
-        <p class="notice" style="margin-top:0">Separate from the malware verdict above. Lists published CVEs that NVD marks as
-            affecting an Android OS version. A CVE is not evidence that an app is malicious, and no CVE does not lower malware risk.</p>
-        <label>Android version
-            <select id="android-version"></select>
-        </label>
-        <button class="btn" onclick="loadVulns()">Look up in NVD</button>
-        <div id="vulns"></div>
+<section class="section card" id="vulns">
+    <h2>Phone vulnerabilities (Android version check)</h2>
+    <details class="help"><summary>How to use this</summary>
+        <p>Pick the Android version on a customer’s phone to see known security flaws for it, from the US government’s
+            National Vulnerability Database. This tells you how <b>exposed the phone</b> is. It does <b>not</b> change an app’s
+            risk result, and “no flaws found” does not mean an app is safe.</p>
+    </details>
+    <div style="display:flex;gap:.5rem;align-items:flex-end;max-width:420px">
+        <div style="flex:1"><label for="android-version">Android version</label><select id="android-version"></select></div>
+        <button class="btn" onclick="loadVulns()">Look up</button>
     </div>
+    <div id="vulns-out" style="margin-top:.8rem"></div>
+</section>
 
-    <div class="panel">
-        <h3>Analyst activity and feedback</h3>
-        <p class="muted">Every assessment is stored with its model version for audit. Analyst feedback becomes labelled data for the next training run.</p>
-        <div id="activity">Loading…</div>
-    </div>
+<section class="section card">
+    <h2>Decisions so far</h2>
+    <details class="help"><summary>How to use this</summary>
+        <p>Every check is saved with who ran it. When analysts record decisions, BlueWatch learns how often its alarms
+            are real here. <b>Download labelled cases</b> gives the data for the next improvement of the checker.</p>
+    </details>
+    <div id="activity">Loading…</div>
+</section>
 
-    <div class="panel">
-        <h3>Model and evaluation</h3>
-        <div id="model">Loading…</div>
-    </div>
+<section class="section card">
+    <h2>How the checker was tested</h2>
+    <div id="model">Loading…</div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+    const FEEDBACK = {{ feedback_labels | tojson }};
+    const PLAIN_FEEDBACK = {confirmed_malicious: 'Yes, it is malware', false_positive: 'No, it is safe (false alarm)',
+                            confirmed_benign: 'Agreed, it is safe', missed_malware: 'It IS malware (missed)'};
+    let activeSample = null, lastResult = null;
 
-    <script>
-        const esc = v => String(v ?? '—').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-        const pct = v => (v * 100).toFixed(1) + '%';
+    // Plain names for the measurements that most often explain a score.
+    const PLAIN_FEATURE = {
+        dangerous: 'Dangerous permissions requested', normal: 'Normal permissions requested',
+        signature: 'System-level permissions requested', total_perm: 'Total permissions requested',
+        nr_permissions: 'Permissions declared', nr_custom: 'Custom permissions', custom_yes: 'Has custom permissions',
+        NrIntReceiversActions: 'Background events it listens for', NrIntReceivers: 'Background listeners',
+        NrServices: 'Background services', NrIntServices: 'Services others can start', NrIntServicesActions: 'Service triggers',
+        Activities: 'Screens in the app', NrIntActivities: 'Screens other apps can open', TotalIntentFilters: 'Ways other apps can start it',
+        FilesInsideAPK: 'Files inside the app package', CFileSize: 'App download size', UFileSize: 'App installed size',
+        NrContactedIps: 'Internet addresses contacted', READ_PHONE_STATE: 'Reads phone identity and calls',
+        SEND_SMS: 'Sends SMS', RECEIVE_SMS: 'Receives SMS', READ_SMS: 'Reads SMS', SYSTEM_ALERT_WINDOW: 'Draws over other apps',
+        BIND_ACCESSIBILITY_SERVICE: 'Accessibility service', RECEIVE_BOOT_COMPLETED: 'Starts when the phone starts',
+        BIND_DEVICE_ADMIN: 'Device administrator', WRITE_EXTERNAL_STORAGE: 'Writes to phone storage',
+        ACCESS_WIFI_STATE: 'Reads Wi-Fi details', INTERNET: 'Uses the internet'};
+    function plainFeature(n) {
+        if (PLAIN_FEATURE[n]) return `${PLAIN_FEATURE[n]} <span class="muted small">(${esc(n)})</span>`;
+        if (/^[A-Z0-9_]+$/.test(n)) return `Permission: ${esc(n.replaceAll('_', ' ').toLowerCase())} <span class="muted small">(${esc(n)})</span>`;
+        return `Low-level action “${esc(n)}” <span class="muted small">(system call)</span>`;
+    }
 
-        function showError(msg) {
-            document.getElementById('error').innerHTML = msg ? `<div class="error">${esc(msg)}</div>` : '';
-        }
+    async function loadSamples() {
+        try {
+            const samples = await api('/api/mobile/samples');
+            document.getElementById('samples').innerHTML = samples.map(s => `
+                <button class="sample-btn" data-id="${esc(s.sample_id)}">
+                    <b>${esc(s.sample_id)}</b> <span class="chip ${s.expected_label === 'malware' ? 'sev-high' : 'st-resolved'}">${s.expected_label === 'malware' ? 'Malware' : 'Safe'}</span><br>
+                    <span class="muted small">${s.family ? esc(s.family) + ' · ' : ''}${esc(s.date)}</span></button>`).join('');
+            document.querySelectorAll('.sample-btn').forEach(b => b.onclick = () => {
+                document.querySelectorAll('.sample-btn').forEach(x => x.classList.remove('active'));
+                b.classList.add('active'); activeSample = b.dataset.id; run({sample_id: b.dataset.id});
+            });
+        } catch (e) { toast('Could not load test apps: ' + e.message, true); }
+    }
 
-        async function api(url, opts) {
-            const r = await fetch(url, opts);
-            let body = null;
-            try { body = await r.json(); } catch (e) {}
-            if (!r.ok) throw new Error((body && body.error) || `${r.status} ${r.statusText}`);
-            return body;
-        }
+    function assessAdhoc() {
+        let features;
+        try { features = JSON.parse(document.getElementById('adhoc-features').value); }
+        catch (e) { toast('The app details must be valid JSON', true); return; }
+        const ref = document.getElementById('adhoc-id').value.trim();
+        document.querySelectorAll('.sample-btn').forEach(x => x.classList.remove('active'));
+        run(ref ? {sample_id: ref, features} : {features});
+    }
 
-        async function loadSamples() {
-            try {
-                const samples = await api('/api/mobile/samples');
-                document.getElementById('samples').innerHTML = samples.map(s => `
-                    <button class="sample" data-id="${esc(s.sample_id)}">
-                        <strong>${esc(s.sample_id)}</strong><br>
-                        <span class="muted">Expected: ${esc(s.expected_label)}${s.family ? ' · ' + esc(s.family) : ''} · ${esc(s.date)}</span>
-                    </button>`).join('');
-                document.querySelectorAll('.sample').forEach(b => b.onclick = () => assess(b));
-            } catch (e) {
-                document.getElementById('samples').textContent = '';
-                showError('Could not load samples: ' + e.message);
-            }
-        }
+    async function copyActiveSample() {
+        if (!activeSample) { toast('Pick a test app first', true); return; }
+        try {
+            document.getElementById('adhoc-features').value = JSON.stringify(await api(`/api/mobile/samples/${encodeURIComponent(activeSample)}/features`), null, 1);
+            document.getElementById('adhoc-id').value = activeSample + '-edited';
+            toast('Copied — edit the numbers and press “Check this app”');
+        } catch (e) { toast(e.message, true); }
+    }
 
-        const FEEDBACK = {{ feedback_labels | tojson }};
-        let activeSample = null;
+    async function run(payload) {
+        const out = document.getElementById('result');
+        out.innerHTML = '<p class="empty">Checking…</p>';
+        try {
+            const r = await api('/api/mobile/assess', {json: payload});
+            lastResult = r; render(r); loadActivity();
+        } catch (e) { out.innerHTML = ''; toast('Check failed: ' + e.message, true); }
+    }
 
-        function assess(button) {
-            document.querySelectorAll('.sample').forEach(b => b.classList.remove('active'));
-            button.classList.add('active');
-            activeSample = button.dataset.id;
-            runAssessment({sample_id: button.dataset.id});
-        }
+    function render(r) {
+        const flagged = r.verdict === 'flag_for_review';
+        const predicted = flagged ? 'malware' : 'benign';
+        const options = flagged ? ['confirmed_malicious', 'false_positive'] : ['confirmed_benign', 'missed_malware'];
+        const present = r.behaviour_profile.filter(c => c.status === 'present');
+        document.getElementById('result').innerHTML = `
+            <div class="section-head"><div><p class="muted small">Check ${esc(r.assessment_id.slice(0, 8))} · ${esc(r.sample_id || 'pasted app')}</p>
+                <span class="verdict ${flagged ? 'bad' : 'ok'}">${flagged ? '⚠ Needs a look' : '✓ No alert'}</span></div>
+                ${flagged ? `<button class="btn bad" onclick="openIncident()">Open an incident</button>` : ''}</div>
+            <p><b>Risk score ${esc(r.risk_score)}</b> out of 1. The alert level is ${esc(r.threshold)} — above it, a person should check the app.</p>
+            <div class="meter" role="img" aria-label="Risk score ${esc(r.risk_score)} against alert level ${esc(r.threshold)}"><span style="width:${pct(r.risk_score, 1)}"></span><i style="left:${pct(r.threshold, 1)}"></i></div>
+            ${r.expected_label ? `<p class="small">${predicted === r.expected_label ? '✓ Matches the known answer for this test app' : '✗ Does NOT match the known answer — a real mistake, keep it as evidence'} (${r.expected_label === 'malware' ? 'malware' : 'safe'}).</p>` : ''}
 
-        function assessAdhoc() {
-            let features;
-            try { features = JSON.parse(document.getElementById('adhoc-features').value); }
-            catch (e) { showError('Features must be valid JSON: ' + e.message); return; }
-            const ref = document.getElementById('adhoc-id').value.trim();
-            document.querySelectorAll('.sample').forEach(b => b.classList.remove('active'));
-            runAssessment(ref ? {sample_id: ref, features} : {features});
-        }
+            <h3 style="margin-top:1rem">What the app can do, and what it did</h3>
+            <p class="muted small">Banking malware tricks, grouped. “Asks for” = a permission the app requests. “Did” = activity measured while it ran, shown in bold when higher than 9 in 10 safe apps.</p>
+            <table><thead><tr><th>Trick</th><th>Found?</th><th>Signals</th></tr></thead><tbody>
+            ${r.behaviour_profile.map(c => `<tr><td><b>${esc(c.category)}</b><br><span class="muted small">${esc(c.why)}</span></td>
+                <td>${c.status === 'present' ? '<span class="chip sev-high">Yes</span>' : c.status === 'not available' ? '<span class="chip">Can’t tell</span>' : '<span class="chip st-resolved">No</span>'}</td>
+                <td class="small">${c.note ? esc(c.note) : c.signals.map(s => `${s.flag ? '<b>' : ''}${plainFeature(s.feature)}${s.flag ? '</b>' : ''} — ${s.kind === 'declared permission' ? (s.value ? 'asks for it' : 'does not ask') : 'did it ' + esc(s.value) + ' times'}`).join('<br>')}</td></tr>`).join('')}
+            </tbody></table>
 
-        async function copyActiveSample() {
-            if (!activeSample) { showError('Select a sample first.'); return; }
-            try {
-                const f = await api(`/api/mobile/samples/${encodeURIComponent(activeSample)}/features`);
-                document.getElementById('adhoc-features').value = JSON.stringify(f, null, 1);
-                document.getElementById('adhoc-id').value = activeSample + '-edited';
-                showError('');
-            } catch (e) { showError('Could not load sample features: ' + e.message); }
-        }
+            <h3 style="margin-top:1rem">Why it scored this way</h3>
+            <p class="muted small">The measurements where this app differs most from a typical safe app. This helps explain the score; it is not proof.</p>
+            <table><thead><tr><th>Measurement</th><th>This app</th><th>Typical safe app</th><th>Typical malware</th></tr></thead><tbody>
+            ${r.evidence.map(e => `<tr><td>${plainFeature(e.feature)}</td><td><b>${esc(e.value)}</b></td><td>${esc(e.benign_median)}</td><td>${esc(e.malware_median)}</td></tr>`).join('')}
+            </tbody></table>
 
-        function feedbackButtons(r) {
-            const flagged = r.verdict === 'flag_for_review';
-            const options = flagged ? ['confirmed_malicious', 'false_positive'] : ['confirmed_benign', 'missed_malware'];
-            return `<h4>Analyst decision</h4>
-                <p class="muted">Record what your investigation found. This does not change the score; it labels the case for audit and retraining.</p>
-                ${options.map(l => `<button class="btn ${l === 'false_positive' || l === 'missed_malware' ? 'secondary' : ''}" data-label="${esc(l)}" data-id="${esc(r.assessment_id)}" onclick="sendFeedback(this)">${esc(FEEDBACK[l])}</button>`).join('')}
-                <span id="feedback-status" class="muted"></span>`;
-        }
+            <h3 style="margin-top:1rem">AI case brief</h3>
+            <button class="btn ghost" onclick="loadBrief()">✍ Write AI case brief</button>
+            <div id="brief" style="margin-top:.5rem"></div>
 
-        async function sendFeedback(button) {
-            try {
-                await api('/api/mobile/feedback', {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({assessment_id: button.dataset.id, label: button.dataset.label})
-                });
-                document.getElementById('feedback-status').textContent = 'Saved: ' + FEEDBACK[button.dataset.label];
-                loadActivity();
-            } catch (e) { showError('Feedback failed: ' + e.message); }
-        }
+            <h3 style="margin-top:1rem">Your decision</h3>
+            <p class="muted small">After checking the app, record what you found. It does not change the score — it teaches BlueWatch.</p>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap">${options.map(l => `<button class="btn ${l === 'confirmed_malicious' || l === 'missed_malware' ? 'bad' : 'ok'}" onclick="sendFeedback('${l}')">${esc(PLAIN_FEEDBACK[l])}</button>`).join('')}</div>
+            <p id="feedback-status" class="muted small"></p>
+            <p class="muted small" style="margin-top:1rem">Checker ${esc(r.model_version)} · ${esc(r.features_provided)} measurements supplied · ${esc(r.inference_ms)} ms · ${esc(r.disclaimer)}</p>`;
+    }
 
-        async function loadBrief(button) {
-            const out = document.getElementById('brief');
-            out.innerHTML = '<p class="muted">Writing brief…</p>';
-            try {
-                const b = await api('/api/mobile/brief', {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({assessment_id: button.dataset.id})
-                });
-                const source = b.generated_by === 'ai'
-                    ? `Written by ${b.provider === 'ollama' ? 'a local AI model running on this machine' : 'Claude'} (${esc(b.model)}) · grounding check passed: every number matches the assessment`
-                    : `Template summary — ${esc(b.reason)}`;
-                out.innerHTML = `<div class="notice" style="background:#eef5ff;border-left-color:#007bff">
-                    <p>${esc(b.summary)}</p>
-                    <p class="muted">${source}. ${esc(b.notice)}</p></div>`;
-            } catch (e) {
-                out.innerHTML = '';
-                showError('Case brief failed: ' + e.message);
-            }
-        }
+    async function loadBrief() {
+        const out = document.getElementById('brief');
+        out.innerHTML = '<p class="muted">Writing… (can take up to half a minute)</p>';
+        try {
+            const b = await api('/api/mobile/brief', {json: {assessment_id: lastResult.assessment_id}});
+            const src = b.generated_by === 'ai'
+                ? `Written by ${b.provider === 'ollama' ? 'a local AI model' : 'Claude'} (${esc(b.model)}). Every number was checked against the evidence.`
+                : `Standard summary — ${esc(b.reason)}`;
+            out.innerHTML = `<div class="help" style="margin:0"><p>${esc(b.summary)}</p><p class="muted small" style="margin:0">${src} The brief never changes the result.</p></div>`;
+        } catch (e) { out.innerHTML = ''; toast('Brief failed: ' + e.message, true); }
+    }
 
-        async function runAssessment(payload) {
-            const out = document.getElementById('result');
-            out.innerHTML = '<p class="muted">Scoring…</p>';
-            showError('');
-            try {
-                const r = await api('/api/mobile/assess', {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
-                loadActivity();
-                const predicted = r.verdict === 'flag_for_review' ? 'malware' : 'benign';
-                const agrees = r.expected_label ? (predicted === r.expected_label) : null;
-                out.innerHTML = `
-                    <h3>${esc(r.sample_id || 'Ad-hoc app')}</h3>
-                    <p class="muted">Assessment ${esc(r.assessment_id)}</p>
-                    <span class="verdict ${esc(r.verdict)}">${r.verdict === 'flag_for_review' ? 'FLAG FOR REVIEW' : 'NOT FLAGGED'}</span>
-                    <p>Risk score <strong>${esc(r.risk_score)}</strong> (threshold ${esc(r.threshold)})</p>
-                    <div class="bar"><span style="width:${pct(r.risk_score)}"></span><i style="left:${pct(r.threshold)}"></i></div>
-                    <p class="muted">${esc(r.score_semantics)}</p>
-                    ${r.expected_label ? `<p>Dataset label: <strong>${esc(r.expected_label)}</strong> —
-                       <span class="match">${agrees ? 'model agrees' : 'MODEL DISAGREES (error case — keep in evidence)'}</span></p>` : ''}
-                    ${feedbackButtons(r)}
+    async function sendFeedback(label) {
+        try {
+            await api('/api/mobile/feedback', {json: {assessment_id: lastResult.assessment_id, label}});
+            document.getElementById('feedback-status').textContent = 'Saved: ' + PLAIN_FEEDBACK[label];
+            toast('Decision saved'); loadActivity();
+        } catch (e) { toast('Could not save: ' + e.message, true); }
+    }
 
-                    <h4>Evidence: largest departures from typical benign apps</h4>
-                    <table><tr><th>Feature</th><th>This app</th><th>Benign median</th><th>Malware median</th><th>Direction</th></tr>
-                    ${r.evidence.map(e => `<tr><td>${esc(e.feature)}</td><td>${esc(e.value)}</td><td>${esc(e.benign_median)}</td><td>${esc(e.malware_median)}</td><td>${esc(e.direction)}</td></tr>`).join('')}
-                    </table>
-                    <p class="muted">Weighted by global model importance. Supporting context, not a causal explanation.</p>
+    async function openIncident() {
+        const r = lastResult, app = r.sample_id || 'pasted app';
+        const present = r.behaviour_profile.filter(c => c.status === 'present').map(c => c.category.toLowerCase());
+        try {
+            const i = await api('/api/soc/incidents', {json: {
+                title: `Risky Android app: ${app}`, severity: r.risk_score >= 0.9 ? 'high' : 'medium',
+                summary: `BlueWatch Mobile scored the Android app “${app}” ${r.risk_score} out of 1 (alert level ${r.threshold}).` +
+                    (present.length ? ` Banking-malware tricks found: ${present.join(', ')}.` : '') +
+                    ' Check which customers have this app and where it came from.',
+                tags: ['mobile-malware'], assessment_id: r.assessment_id, entity: app}});
+            toast(`Incident #${i.id} opened`);
+            setTimeout(() => location.href = '/security/incidents#incident-' + i.id, 700);
+        } catch (e) { toast('Could not open incident: ' + e.message, true); }
+    }
 
-                    <h4>Behaviour profile (banking-malware techniques)</h4>
-                    <table><tr><th>Behaviour</th><th>Status</th><th>Signals</th></tr>
-                    ${r.behaviour_profile.map(c => `<tr>
-                        <td><strong>${esc(c.category)}</strong><br><span class="muted">${esc(c.why)}</span></td>
-                        <td>${c.status === 'present' ? '<strong>Present</strong>' : c.status === 'not available' ? '<span class="muted">Not available</span>' : 'Not seen'}</td>
-                        <td>${c.note ? `<span class="muted">${esc(c.note)}</span>` : c.signals.map(s => `${s.flag ? '<strong>' : ''}${esc(s.feature)}${s.flag ? '</strong>' : ''} <span class="muted">(${esc(s.kind)}: ${esc(s.value)}${s.benign_p90 !== undefined ? ', benign 90th pct ' + esc(s.benign_p90) : ''})</span>`).join('<br>')}</td></tr>`).join('')}
-                    </table>
-                    <p class="muted">Declared = permission the app requests. Observed = runtime count, shown in bold when above 90% of benign apps. Context only; each signal has legitimate uses.</p>
+    async function loadVersions() {
+        try {
+            const versions = await api('/api/mobile/vulnerabilities/versions');
+            document.getElementById('android-version').innerHTML = versions.map(v => `<option ${v === '13.0' ? 'selected' : ''}>${esc(v)}</option>`).join('');
+        } catch (e) {}
+    }
 
-                    <h4>AI case brief</h4>
-                    <button class="btn secondary" data-id="${esc(r.assessment_id)}" onclick="loadBrief(this)">Write AI case brief</button>
-                    <div id="brief"></div>
+    async function loadVulns() {
+        const v = document.getElementById('android-version').value, out = document.getElementById('vulns-out');
+        out.innerHTML = '<p class="muted">Looking up… the first lookup for a version can take a few minutes; after that it is instant.</p>';
+        try {
+            const r = await api('/api/mobile/vulnerabilities?android_version=' + encodeURIComponent(v));
+            const sev = r.severity_counts_exact_or_range;
+            out.innerHTML = `
+                <div class="grid k4">
+                    <div class="card kpi bad"><div class="value">${fmt(r.match_counts.exact + r.match_counts.range)}</div><div class="label">Known flaws in Android ${esc(r.android_version)}</div></div>
+                    <div class="card kpi bad"><div class="value">${fmt(sev.CRITICAL || 0)}</div><div class="label">Critical</div><div class="explain">The most serious kind</div></div>
+                    <div class="card kpi warn"><div class="value">${fmt(sev.HIGH || 0)}</div><div class="label">High</div></div>
+                    <div class="card kpi"><div class="value">${fmt((sev.MEDIUM || 0) + (sev.LOW || 0))}</div><div class="label">Medium or low</div></div>
+                </div>
+                <h3 style="margin-top:1rem">Most serious ones</h3>
+                <table><thead><tr><th>Flaw</th><th>Severity</th><th>What it is</th></tr></thead><tbody>
+                ${r.top_cves.map(c => `<tr><td><a href="${esc(c.nvd_url)}" target="_blank" rel="noopener">${esc(c.cve_id)}</a></td>
+                    <td>${c.cvss ? `<span class="chip sev-high">${esc(c.cvss.base_score)} ${esc(c.cvss.severity)}</span>` : '—'}</td>
+                    <td class="small">${esc(c.description.length > 180 ? c.description.slice(0, 180) + '…' : c.description)}</td></tr>`).join('')}
+                </tbody></table>
+                <p class="muted small">Source: NIST NVD, retrieved ${esc(r.retrieved_at)}. ${esc(r.notice)}</p>`;
+        } catch (e) { out.innerHTML = ''; toast('Lookup failed: ' + e.message, true); }
+    }
 
-                    <p class="muted">Model ${esc(r.model_version)} · features ${esc(r.features_version)} · ${esc(r.features_provided)} non-zero features supplied · inference ${esc(r.inference_ms)} ms</p>
-                    <details><summary>Raw API response</summary><pre>${esc(JSON.stringify(r, null, 2))}</pre></details>`;
-            } catch (e) {
-                out.innerHTML = '';
-                showError('Assessment failed: ' + e.message);
-            }
-        }
+    async function loadActivity() {
+        try {
+            const a = await api('/api/mobile/activity'), s = a.summary;
+            document.getElementById('activity').innerHTML = `
+                <div class="grid k4">
+                    <div class="card kpi"><div class="value">${fmt(s.assessments)}</div><div class="label">Apps checked</div></div>
+                    <div class="card kpi warn"><div class="value">${fmt(s.flagged)}</div><div class="label">Needed a look</div></div>
+                    <div class="card kpi"><div class="value">${fmt(Object.values(s.feedback).reduce((x, y) => x + y, 0))}</div><div class="label">Decisions recorded</div></div>
+                    <div class="card kpi ok"><div class="value">${s.analyst_precision === null ? '—' : pct(s.analyst_precision)}</div><div class="label">Alarms confirmed real</div><div class="explain">Of the alarms analysts reviewed here</div></div>
+                </div>
+                <table style="margin-top:.8rem"><thead><tr><th>When</th><th>App</th><th>Result</th><th>Decision</th><th>Who</th></tr></thead><tbody>
+                ${a.recent.slice(0, 8).map(x => `<tr><td class="small">${esc(x.created_at.slice(0, 16).replace('T', ' '))}</td><td>${esc(x.sample_id || 'pasted app')}</td>
+                    <td>${x.verdict === 'flag_for_review' ? '<span class="chip sev-high">Needs a look</span>' : '<span class="chip st-resolved">No alert</span>'}</td>
+                    <td>${x.feedback ? esc(PLAIN_FEEDBACK[x.feedback]) : '<span class="muted">Not yet</span>'}</td><td class="small">${esc(x.actor)} <span class="muted">(${esc(x.channel)})</span></td></tr>`).join('')}
+                </tbody></table>
+                <p style="margin-top:.6rem"><a href="/api/mobile/feedback/export" class="btn ghost sm">Download labelled cases</a></p>`;
+        } catch (e) { toast('Could not load decisions: ' + e.message, true); }
+    }
 
-        async function loadActivity() {
-            try {
-                const a = await api('/api/mobile/activity');
-                const s = a.summary;
-                document.getElementById('activity').innerHTML = `
-                    <p><strong>${esc(s.assessments)}</strong> assessments · <strong>${esc(s.flagged)}</strong> flagged ·
-                       feedback: ${Object.entries(s.feedback).map(([k, n]) => `${esc(FEEDBACK[k])}: <strong>${esc(n)}</strong>`).join(' · ')}</p>
-                    <p>Analyst-confirmed precision on reviewed flags: <strong>${s.analyst_precision === null ? 'no reviews yet' : esc(pct(s.analyst_precision))}</strong>
-                       <span class="muted">(${esc(s.note)})</span></p>
-                    <table><tr><th>When (UTC)</th><th>Who / channel</th><th>App</th><th>Verdict</th><th>Score</th><th>Analyst decision</th></tr>
-                    ${a.recent.map(r => `<tr><td>${esc(r.created_at)}</td><td>${esc(r.actor)}<br><span class="muted">${esc(r.channel)}</span></td>
-                        <td>${esc(r.sample_id || 'ad-hoc')}</td><td>${esc(r.verdict)}</td><td>${esc(r.risk_score)}</td>
-                        <td>${r.feedback ? esc(FEEDBACK[r.feedback]) + '<br><span class="muted">' + esc(r.reviewed_by) + '</span>' : '<span class="muted">pending</span>'}</td></tr>`).join('')}
-                    </table>
-                    <p><a href="/api/mobile/feedback/export" class="btn secondary">Export labelled cases (JSONL)</a></p>`;
-            } catch (e) {
-                document.getElementById('activity').textContent = '';
-                showError('Could not load activity: ' + e.message);
-            }
-        }
+    async function loadModel() {
+        try {
+            const m = await api('/api/mobile/model');
+            const E = m.evaluation, names = {
+                A_random_stratified: 'Apps from the same years it learned from',
+                B_per_class_temporal: 'Newer apps than it learned from',
+                C_unseen_malware_families: 'Brand-new malware families',
+                D_runtime_behaviour_only: 'Using only what apps did (no permissions)'};
+            document.getElementById('model').innerHTML = `
+                <p>Tested on apps it had never seen, from ${esc(m.dataset.name)} (research data, cited: ${esc(m.dataset.citation)}).</p>
+                <table><thead><tr><th>Test</th><th>Alarms that were real</th><th>Malware caught</th><th>Safe apps wrongly flagged</th></tr></thead><tbody>
+                ${Object.entries(E).map(([k, s]) => `<tr><td><b>${esc(names[k] || k)}</b><br><span class="muted small">${fmt(s.test_size)} apps</span></td>
+                    <td>${pct(s.precision)}</td><td>${pct(s.recall)}</td>
+                    <td>${k === 'B_per_class_temporal' ? `<b style="color:var(--bad)">${pct(s.false_positive_rate, 1)}</b> — known weakness` : pct(s.false_positive_rate, 1)}</td></tr>`).join('')}
+                </tbody></table>
+                <p class="muted small">Checker ${esc(m.model_version)} · ${esc(m.n_features)} measurements per app · alert level ${esc(m.threshold)}.</p>`;
+        } catch (e) { toast('Could not load test results: ' + e.message, true); }
+    }
 
-        async function loadModel() {
-            try {
-                const m = await api('/api/mobile/model');
-                const rows = Object.entries(m.evaluation).map(([k, s]) => `
-                    <tr><td><strong>${esc(k)}</strong><br><span class="muted">${esc(s.description)}</span></td>
-                    <td>${esc(s.test_size)}</td><td>${esc(s.precision)}</td><td>${esc(s.recall)}</td>
-                    <td>${esc(s.f1)}</td><td>${esc(pct(s.false_positive_rate))}</td><td>${esc(s.pr_auc)}</td>
-                    <td>TP ${esc(s.confusion_matrix.tp)} · FP ${esc(s.confusion_matrix.fp)}<br>FN ${esc(s.confusion_matrix.fn)} · TN ${esc(s.confusion_matrix.tn)}</td></tr>`).join('');
-                const drift = m.evaluation.B_per_class_temporal;
-                document.getElementById('model').innerHTML = `
-                    <p><strong>${esc(m.model_version)}</strong> · ${esc(m.algorithm)} · ${esc(m.n_features)} features · trained ${esc(m.trained_at_utc)} on ${esc(m.trained_on)}</p>
-                    <p class="muted">Dataset: <a href="${esc(m.dataset.url)}" target="_blank" rel="noopener">${esc(m.dataset.name)}</a> — ${esc(m.dataset.citation)}. Used for research/evaluation under the dataset's citation terms.</p>
-                    ${drift ? `<div class="warn"><strong>Drift warning:</strong> on newer apps (temporal split) the false-positive rate rises to ${esc(pct(drift.false_positive_rate))}.
-                      Results on the random split do not show real-world performance on today's apps.</div>` : ''}
-                    <table><tr><th>Split</th><th>Test n</th><th>Precision</th><th>Recall</th><th>F1</th><th>FPR</th><th>PR-AUC</th><th>Confusion (thr ${esc(m.threshold)})</th></tr>${rows}</table>`;
-            } catch (e) {
-                document.getElementById('model').textContent = '';
-                showError('Could not load model info: ' + e.message);
-            }
-        }
-
-        async function loadVersions() {
-            try {
-                const versions = await api('/api/mobile/vulnerabilities/versions');
-                document.getElementById('android-version').innerHTML =
-                    versions.map(v => `<option ${v === '13.0' ? 'selected' : ''}>${esc(v)}</option>`).join('');
-            } catch (e) { showError('Could not load Android versions: ' + e.message); }
-        }
-
-        async function loadVulns() {
-            const v = document.getElementById('android-version').value;
-            const out = document.getElementById('vulns');
-            out.innerHTML = '<p class="muted">Querying NVD… the first lookup for a version can take several minutes; results are then cached for 24 hours.</p>';
-            try {
-                const r = await api(`/api/mobile/vulnerabilities?android_version=${encodeURIComponent(v)}`);
-                const sev = Object.entries(r.severity_counts_exact_or_range).map(([k, n]) => `${esc(k)}: ${esc(n)}`).join(' · ');
-                out.innerHTML = `
-                    <p><strong>Android ${esc(r.android_version)}</strong> (<code>${esc(r.cpe)}</code>) —
-                       ${esc(r.match_counts.exact)} exact-version and ${esc(r.match_counts.range)} version-range matches
-                       (${esc(r.match_counts.unspecified)} more list "any version" and are not shown).
-                       NVD returned ${esc(r.nvd_candidates)} candidates; the rest only name Android as the platform a vulnerable product runs on.</p>
-                    <p class="muted">Severity (exact + range): ${sev || 'none'} · Retrieved from NVD ${esc(r.retrieved_at)}${r.from_cache ? ' (cached)' : ''}</p>
-                    <table><tr><th>CVE</th><th>CVSS</th><th>Match</th><th>Published</th><th>Description</th></tr>
-                    ${r.top_cves.map(c => `<tr>
-                        <td><a href="${esc(c.nvd_url)}" target="_blank" rel="noopener">${esc(c.cve_id)}</a><br><span class="muted">${esc(c.cwe.join(', '))}</span></td>
-                        <td>${c.cvss ? esc(c.cvss.base_score) + ' ' + esc(c.cvss.severity) + '<br><span class="muted">v' + esc(c.cvss.version) + '</span>' : '—'}</td>
-                        <td>${esc(c.match_confidence)}</td><td>${esc((c.published || '').slice(0, 10))}</td>
-                        <td>${esc(c.description.length > 220 ? c.description.slice(0, 220) + '…' : c.description)}</td></tr>`).join('')}
-                    </table>
-                    <p class="muted">${esc(r.notice)}</p>`;
-            } catch (e) {
-                out.innerHTML = '';
-                showError('Vulnerability lookup failed: ' + e.message);
-            }
-        }
-
-        loadSamples();
-        loadModel();
-        loadVersions();
-        loadActivity();
-    </script>
-</body>
-</html>
+    loadSamples(); loadVersions(); loadActivity(); loadModel();
+</script>
+{% endblock %}

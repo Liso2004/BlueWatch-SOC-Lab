@@ -268,7 +268,7 @@ def require_login():
 
 @bp.route("/mobile-risk")
 def page():
-    return render_template("mobile_risk.html", username=session["username"],
+    return render_template("mobile_risk.html", username=session["username"], active="apprisk",
                            feedback_labels=store.FEEDBACK_LABELS)
 
 

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SecureBank — {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bluewatch.css') }}">
+</head>
+<body>
+<div class="phone">
+    {% block body %}{% endblock %}
+    {% if tabs %}
+    <nav class="tabbar" aria-label="SecureBank">
+        <a href="/dashboard" class="{{ 'active' if tab == 'home' }}"><span class="ico" aria-hidden="true">🏠</span>Home</a>
+        <a href="/dashboard#customers" class="{{ 'active' if tab == 'customers' }}"><span class="ico" aria-hidden="true">👥</span>Customers</a>
+        <a href="/security"><span class="ico" aria-hidden="true">🛡️</span>Security</a>
+        <a href="/logout"><span class="ico" aria-hidden="true">↩</span>Sign out</a>
+    </nav>
+    {% endif %}
+</div>
+<script src="{{ url_for('static', filename='js/bw.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
