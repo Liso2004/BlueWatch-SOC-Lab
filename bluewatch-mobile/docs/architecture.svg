@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" font-family="Segoe UI, Arial, sans-serif" role="img" aria-label="BlueWatch Mobile current system architecture, 23 October 2026">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <marker id="arrT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0B7A70"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B45309"/>
+    </marker>
+  </defs>
+  <style>
+    .t { font-size: 16px; font-weight: 600; fill: #0F172A; }
+    .s { font-size: 13px; fill: #475569; }
+    .h { font-size: 15px; font-weight: 700; fill: #0F172A; letter-spacing: 0.5px; }
+    .tag { font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+    .lbl { font-size: 12px; fill: #334155; }
+    .built { fill: #FFFFFF; stroke: #0B7A70; stroke-width: 2; }
+    .core { fill: #E6F6F4; stroke: #0B7A70; stroke-width: 2; }
+    .prior { fill: #EEF1F5; stroke: #94A3B8; stroke-width: 1.5; }
+    .ext { fill: #FFF7ED; stroke: #B45309; stroke-width: 1.5; }
+    .plan { fill: #FAFAFA; stroke: #94A3B8; stroke-width: 1.5; stroke-dasharray: 6 5; }
+    .warn { fill: #FEF2F2; stroke: #B91C1C; stroke-width: 1.5; stroke-dasharray: 6 5; }
+    .flow { stroke: #334155; stroke-width: 2; fill: none; }
+    .flowT { stroke: #0B7A70; stroke-width: 2.5; fill: none; }
+    .flowO { stroke: #B45309; stroke-width: 2; fill: none; stroke-dasharray: 7 5; }
+    .flowD { stroke: #64748B; stroke-width: 1.8; fill: none; stroke-dasharray: 6 5; }
+  </style>
+
+  <rect width="1600" height="1000" fill="#F7F8FA"/>
+  <text x="30" y="42" font-size="26" font-weight="700" fill="#0F172A">BlueWatch Mobile — current architecture</text>
+  <text x="30" y="66" class="s">As built on 23 Oct 2026 · Android only · solid = built and tested · dashed = planned or not connected</text>
+
+  <!-- ===== Callers ===== -->
+  <text x="30" y="108" class="h">WHO CALLS IT</text>
+  <rect x="30" y="122" width="270" height="86" rx="10" class="built"/>
+  <text x="46" y="152" class="t">SOC / fraud analyst</text>
+  <text x="46" y="174" class="s">Web browser, lab login</text>
+  <text x="46" y="193" class="s">(session cookie)</text>
+
+  <rect x="30" y="232" width="270" height="104" rx="10" class="built"/>
+  <text x="46" y="262" class="t">Bank system</text>
+  <text x="46" y="284" class="s">SIEM · SOAR · fraud engine</text>
+  <text x="46" y="303" class="s">X-API-Key header</text>
+  <text x="46" y="322" class="s">(only key hashes stored)</text>
+
+  <rect x="30" y="362" width="270" height="96" rx="10" class="plan"/>
+  <text x="46" y="384" class="tag" fill="#64748B">PLANNED</text>
+  <text x="46" y="408" class="t">Android collector / SDK</text>
+  <text x="46" y="430" class="s">Non-root signals: feasibility</text>
+  <text x="46" y="448" class="s">not yet proven</text>
+
+  <!-- ===== App container ===== -->
+  <rect x="330" y="88" width="760" height="560" rx="14" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+  <text x="350" y="116" class="h">DOCKER: banking-app (Flask · Python 3.14) — localhost:5000</text>
+
+  <rect x="350" y="132" width="320" height="64" rx="8" class="prior"/>
+  <text x="366" y="158" class="t" fill="#475569">SecureBank lab app</text>
+  <text x="366" y="180" class="s">Pre-existing SOC Lab (Jan 2026): login, customers</text>
+
+  <rect x="350" y="222" width="320" height="76" rx="8" class="built"/>
+  <text x="366" y="250" class="t">Analyst UI</text>
+  <text x="366" y="272" class="s">/mobile-risk page · /api/mobile/*</text>
+  <text x="366" y="289" class="s">samples · paste features · feedback</text>
+
+  <rect x="350" y="318" width="320" height="64" rx="8" class="built"/>
+  <text x="366" y="346" class="t">API v1 for bank systems</text>
+  <text x="366" y="368" class="s">/api/v1/mobile/ assess · feedback · model</text>
+
+  <rect x="720" y="222" width="350" height="76" rx="8" class="core"/>
+  <text x="736" y="250" class="t">Assessment handler</text>
+  <text x="736" y="272" class="s">Validates 475 features (missing = 0)</text>
+  <text x="736" y="289" class="s">assigns assessment_id</text>
+
+  <rect x="720" y="318" width="350" height="94" rx="8" class="core"/>
+  <text x="736" y="346" class="t">AI model  bwm-rf-0.1.0</text>
+  <text x="736" y="368" class="s">Random Forest → risk score vs threshold</text>
+  <text x="736" y="387" class="s">+ evidence features + banking capabilities</text>
+  <text x="736" y="404" class="s">(overlay, accessibility, SMS…)</text>
+
+  <rect x="350" y="410" width="320" height="64" rx="8" class="built"/>
+  <text x="366" y="438" class="t">Analyst decision</text>
+  <text x="366" y="460" class="s">confirm · false positive · missed malware</text>
+
+  <rect x="720" y="436" width="170" height="96" rx="8" class="built"/>
+  <text x="734" y="464" class="t">Audit store</text>
+  <text x="734" y="486" class="s">SQLite: every</text>
+  <text x="734" y="503" class="s">assessment +</text>
+  <text x="734" y="520" class="s">feedback label</text>
+
+  <rect x="904" y="436" width="166" height="96" rx="8" class="built"/>
+  <text x="918" y="464" class="t">CVE context</text>
+  <text x="918" y="486" class="s">UI/API lookup</text>
+  <text x="918" y="503" class="s">CPE match, 24 h</text>
+  <text x="918" y="520" class="s">cache · separate</text>
+
+  <rect x="350" y="500" width="320" height="64" rx="8" class="built"/>
+  <text x="366" y="528" class="t">SOC event log</text>
+  <text x="366" y="550" class="s">MOBILE_RISK_* · VULN_CONTEXT · API_AUTH</text>
+
+  <rect x="350" y="584" width="430" height="54" rx="8" fill="#F1F5F9" stroke="#CBD5E1"/>
+  <text x="366" y="606" class="s">Response: verdict · risk score · threshold · evidence ·</text>
+  <text x="366" y="624" class="s">versions · “decision support only — human review”</text>
+
+  <!-- ===== Right column: external + SIEM ===== -->
+  <rect x="1130" y="96" width="440" height="72" rx="10" class="prior"/>
+  <text x="1146" y="124" class="t" fill="#475569">MySQL 8 (Docker)</text>
+  <text x="1146" y="146" class="s">Lab users and customers — used by login only</text>
+
+  <rect x="1130" y="190" width="440" height="88" rx="10" class="ext"/>
+  <text x="1146" y="212" class="tag" fill="#B45309">EXTERNAL · INTERNET</text>
+  <text x="1146" y="236" class="t">NVD CVE API 2.0 (NIST)</text>
+  <text x="1146" y="258" class="s">Android OS vulnerabilities · context only, never the score</text>
+
+  <rect x="1130" y="300" width="440" height="250" rx="12" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.5"/>
+  <text x="1146" y="326" class="h">DOCKER: SIEM PIPELINE (pre-existing)</text>
+  <rect x="1146" y="342" width="124" height="70" rx="8" class="built"/>
+  <text x="1158" y="372" class="t">Logstash</text>
+  <text x="1158" y="394" class="s">reads app log</text>
+  <rect x="1288" y="342" width="130" height="70" rx="8" class="built"/>
+  <text x="1300" y="372" class="t">Elastic-</text>
+  <text x="1300" y="392" class="t">search</text>
+  <rect x="1436" y="342" width="118" height="70" rx="8" class="built"/>
+  <text x="1448" y="372" class="t">Kibana</text>
+  <text x="1448" y="394" class="s">:5601 search</text>
+  <rect x="1146" y="438" width="408" height="96" rx="8" class="warn"/>
+  <text x="1162" y="462" class="tag" fill="#B91C1C">NOT CONNECTED (issue #30)</text>
+  <text x="1162" y="486" class="t">Wazuh manager</text>
+  <text x="1162" y="508" class="s">Alerts not reaching Elasticsearch; API refuses TLS.</text>
+  <text x="1162" y="525" class="s">Not part of the BlueWatch Mobile demo.</text>
+
+  <rect x="1130" y="572" width="440" height="76" rx="10" class="plan"/>
+  <text x="1146" y="596" class="tag" fill="#64748B">PLANNED — NOT IN HACKATHON SCOPE</text>
+  <text x="1146" y="620" class="s">Model registry + staged retraining · KEV/EPSS/MISP feeds</text>
+  <text x="1146" y="639" class="s">CEF/ECS SIEM formats · rate limiting · OpenAPI · iOS</text>
+
+  <!-- ===== Offline training ===== -->
+  <rect x="330" y="690" width="760" height="150" rx="14" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.5" stroke-dasharray="2 0"/>
+  <text x="350" y="718" class="h">OFFLINE TRAINING (developer machine, ~1 minute, reproducible)</text>
+  <rect x="350" y="734" width="166" height="88" rx="8" class="ext"/>
+  <text x="362" y="760" class="t">KronoDroid</text>
+  <text x="362" y="780" class="s">76,708 Android apps</text>
+  <text x="362" y="798" class="s">research licence ⚠</text>
+  <text x="362" y="814" class="s">(commercial: #33)</text>
+  <rect x="540" y="734" width="150" height="88" rx="8" class="built"/>
+  <text x="552" y="764" class="t">prepare.py</text>
+  <text x="552" y="786" class="s">clean, dedupe,</text>
+  <text x="552" y="804" class="s">drop leaky fields</text>
+  <rect x="714" y="734" width="150" height="88" rx="8" class="built"/>
+  <text x="726" y="764" class="t">train.py</text>
+  <text x="726" y="786" class="s">3 held-out tests</text>
+  <text x="726" y="804" class="s">(incl. drift)</text>
+  <rect x="888" y="734" width="182" height="88" rx="8" class="core"/>
+  <text x="900" y="764" class="t">Model artifacts</text>
+  <text x="900" y="786" class="s">model.joblib · metrics</text>
+  <text x="900" y="804" class="s">demo samples (6)</text>
+
+  <!-- ===== Results strip ===== -->
+  <rect x="30" y="690" width="270" height="150" rx="10" fill="#0F172A"/>
+  <text x="46" y="716" class="tag" fill="#5EEAD4">MEASURED (HELD-OUT)</text>
+  <text x="46" y="744" font-size="14" fill="#F1F5F9">Random split: precision 0.98</text>
+  <text x="46" y="766" font-size="14" fill="#F1F5F9">Unseen families: recall 0.93</text>
+  <text x="46" y="788" font-size="14" fill="#FDBA74">Newer apps: 49% false alarms</text>
+  <text x="46" y="816" font-size="12" fill="#94A3B8">Score = decision support,</text>
+  <text x="46" y="832" font-size="12" fill="#94A3B8">never an automatic block</text>
+
+  <!-- ===== Flows ===== -->
+  <path class="flowT" d="M300 165 H330 V260 H350" marker-end="url(#arrT)"/>
+  <path class="flowT" d="M300 284 H318 V350 H350" marker-end="url(#arrT)"/>
+  <path class="flowD" d="M165 458 V478 H340 V360" marker-end="url(#arr)"/>
+  <text x="178" y="474" class="lbl">future input</text>
+  <path class="flowT" d="M670 260 H720" marker-end="url(#arrT)"/>
+  <path class="flowT" d="M670 350 H695 V280 H720" marker-end="url(#arrT)"/>
+  <path class="flowT" d="M895 298 V318" marker-end="url(#arrT)"/>
+  <path class="flow" d="M805 412 V436" marker-end="url(#arr)"/>
+  <text x="812" y="428" class="lbl">record</text>
+  <path class="flow" d="M670 442 H700 V484 H720" marker-end="url(#arr)"/>
+  <path class="flowO" d="M1070 470 H1110 V234 H1130" marker-end="url(#arrO)"/>
+  <path class="flow" d="M720 400 H690 V524 H670" marker-end="url(#arr)"/>
+  <text x="680" y="560" class="lbl"></text>
+  <path class="flow" d="M670 548 H700 V570 H1100 V377 H1146" marker-end="url(#arr)"/>
+  <text x="940" y="566" class="lbl"></text>
+  <path class="flow" d="M1270 377 H1288" marker-end="url(#arr)"/>
+  <path class="flow" d="M1418 377 H1436" marker-end="url(#arr)"/>
+  <path class="flow" d="M670 164 H1100 V132 H1130" marker-end="url(#arr)"/>
+  <path class="flow" d="M516 778 H540" marker-end="url(#arr)"/>
+  <path class="flow" d="M690 778 H714" marker-end="url(#arr)"/>
+  <path class="flow" d="M864 778 H888" marker-end="url(#arr)"/>
+  <path class="flowT" d="M1000 734 V660 H1080 V365 H1070" marker-end="url(#arrT)"/>
+  <text x="1006" y="680" class="lbl">loaded at start</text>
+  <path class="flowD" d="M805 532 V734" marker-end="url(#arr)"/>
+  <text x="812" y="660" class="lbl">labelled export</text>
+  <text x="812" y="676" class="lbl">(manual, reviewed)</text>
+
+  <!-- ===== Legend ===== -->
+  <g transform="translate(30,872)">
+    <rect width="1540" height="100" rx="10" fill="#FFFFFF" stroke="#CBD5E1"/>
+    <rect x="18" y="20" width="34" height="20" rx="4" class="core"/><text x="60" y="35" class="s">BlueWatch Mobile core (new, built)</text>
+    <rect x="300" y="20" width="34" height="20" rx="4" class="built"/><text x="342" y="35" class="s">Built and tested</text>
+    <rect x="490" y="20" width="34" height="20" rx="4" class="prior"/><text x="532" y="35" class="s">Pre-existing SOC Lab</text>
+    <rect x="700" y="20" width="34" height="20" rx="4" class="ext"/><text x="742" y="35" class="s">External data source</text>
+    <rect x="920" y="20" width="34" height="20" rx="4" class="plan"/><text x="962" y="35" class="s">Planned</text>
+    <rect x="1070" y="20" width="34" height="20" rx="4" class="warn"/><text x="1112" y="35" class="s">Running but not connected</text>
+    <line x1="18" y1="70" x2="58" y2="70" class="flowT"/><text x="66" y="75" class="s">Assessment path</text>
+    <line x1="230" y1="70" x2="270" y2="70" class="flow"/><text x="278" y="75" class="s">Data / logging</text>
+    <line x1="430" y1="70" x2="470" y2="70" class="flowO"/><text x="478" y="75" class="s">Internet call (NVD)</text>
+    <line x1="660" y1="70" x2="700" y2="70" class="flowD"/><text x="708" y="75" class="s">Planned / manual step</text>
+    <text x="930" y="75" class="s">Tests: 42 passing · verified in Docker 23 Oct 2026 · repo: Liso2004/BlueWatch-SOC-Lab</text>
+  </g>
+</svg>

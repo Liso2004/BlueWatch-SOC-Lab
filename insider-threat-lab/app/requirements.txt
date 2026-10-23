@@ -13,3 +13,6 @@ scikit-learn==1.9.1
 numpy==2.5.4
 scipy==1.18.1
 joblib==1.6.0
+
+# Generative AI case brief (mobile_risk/genai.py)
+anthropic==2.2.0

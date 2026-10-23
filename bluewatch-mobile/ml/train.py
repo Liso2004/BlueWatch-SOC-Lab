@@ -60,13 +60,25 @@ def evaluate(model, X, y):
         "precision": round(float(precision_score(y, pred, zero_division=0)), 4),
         "recall": round(float(recall_score(y, pred, zero_division=0)), 4),
         "f1": round(float(f1_score(y, pred, zero_division=0)), 4),
-        "false_positive_rate": round(float(fp / (fp + tn)) if (fp + tn) else float("nan"), 4),
+        "false_positive_rate": round(float(fp / (fp + tn)) if (fp + tn) else float("nan"), 6),
         "batch_inference_ms_per_sample": round(1000 * elapsed / len(y), 4),
     }
     if len(set(y)) == 2:
         out["pr_auc"] = round(float(average_precision_score(y, score)), 4)
         out["roc_auc"] = round(float(roc_auc_score(y, score)), 4)
     return out
+
+
+MANIFEST_COUNTS = {"nr_permissions", "normal", "dangerous", "signature", "custom_yes", "nr_custom",
+                   "total_perm", "CFileSize", "UFileSize", "FilesInsideAPK", "Activities",
+                   "NrIntServices", "NrIntServicesActions", "NrIntActivities",
+                   "NrIntActivitiesActions", "NrIntReceivers", "NrIntReceiversActions",
+                   "TotalIntentFilters", "NrServices"}
+
+
+def is_runtime_feature(name):
+    """KronoDroid: permissions are UPPER_CASE, system calls are lower-case names."""
+    return name == "NrContactedIps" or (not name.isupper() and name not in MANIFEST_COUNTS)
 
 
 def date_range(ds):
@@ -129,6 +141,16 @@ def main():
         "description": "Malware families in test never appear in training "
                        f"({len(set(groups[mte]))} held-out families); benign split randomly.",
         **evaluate(m, X[cte], y[cte])}
+
+    # D: runtime behaviour only (system calls + contacted IPs), same random split as A.
+    # Answers "how much of the signal is behaviour rather than declared permissions?"
+    behaviour_cols = [i for i, n in enumerate(names) if is_runtime_feature(n)]
+    m = make_model().fit(X[tr][:, behaviour_cols], y[tr])
+    splits["D_runtime_behaviour_only"] = {
+        "description": f"Same split as A, trained only on {len(behaviour_cols)} runtime features "
+                       "(system-call counts and contacted IPs; no permissions or manifest data). "
+                       "Comparison only; not deployed.",
+        **evaluate(m, X[te][:, behaviour_cols], y[te])}
 
     # Evidence statistics from the deployed model's training split only
     Xb = X[tr][y[tr] == 0]

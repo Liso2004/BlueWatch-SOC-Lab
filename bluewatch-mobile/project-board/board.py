@@ -5,23 +5,26 @@ milestones and Projects v2 fields.
 
     python board.py export            # write issues.csv + ISSUES.md (no network)
     python board.py apply --dry-run   # print every gh call without running it
-    python board.py apply             # create labels, milestones, issues, project
+    python board.py apply             # create labels, milestones, issues; sync project 3
 
 `apply` needs the GitHub CLI authenticated with the `project` scope:
     gh auth login && gh auth refresh -s project
-It is idempotent on issue titles and label/milestone names. Not yet run against
-GitHub - review the dry run first.
+It targets the existing project https://github.com/users/Liso2004/projects/3 and is
+idempotent: existing issues (by title) are reused, and every item's fields are re-set.
 """
 
 import csv
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 REPO = "Liso2004/BlueWatch-SOC-Lab"
 OWNER = "Liso2004"
 PROJECT_TITLE = "BlueWatch Mobile — YES AI Hackathon & Product Roadmap"
+PROJECT_NUMBER = "3"
+GH = r"C:\Program Files\GitHub CLI\gh.exe"
 HERE = Path(__file__).parent
 
 STATUS = ["Backlog", "Ready", "In Progress", "Blocked", "Review / Testing", "Done"]
@@ -217,7 +220,7 @@ ISSUES = [
     dict(id=18, pri="P1", phase="30–90 days", ws=["Threat Intelligence", "ML", "Security/Privacy"], owner="DEVSEC",
          title="[P1] Threat-intel staging and model release governance",
          problem="Live feeds must not silently change model behaviour.",
-         impl="Model registry with versions, staging -> evaluation -> approval -> release, rollback. TI sources (NVD https://nvd.nist.gov/, MISP https://www.misp-project.org/) staged with provenance and licence; used as context, not as a malware verdict. Mark unbuilt parts Planned.",
+         impl="Implemented at hackathon: NVD CVE API 2.0 Android platform context (mobile_risk/nvd.py) with CPE-based matching, 24h cache, retrieval timestamps, separate UI panel. Remaining (Planned): incremental sync via lastModStartDate instead of full refetch; app/component version matching once collector supplies versions; MISP or other malware-intel feeds with provenance and licence review; model registry with staging -> evaluation -> approval -> release and tested rollback. TI never changes the ML verdict automatically.",
          deps="#15", ac=["Documented release checklist", "Tested rollback to previous model", "TI source register with terms"],
          source="Master prompt §6–7.", safety="A CVE alone does not prove an app is malicious."),
 
@@ -262,6 +265,70 @@ ISSUES = [
          impl="Metric set: paid deployments, ARR, retention/expansion, pipeline, deployment time, unit economics, independent technical evidence, governance maturity — with current value (zero where zero) and targets.",
          deps="#23", ac=["Metrics doc with baselines and targets", "Reviewed quarterly"],
          source="Master prompt §2.", safety="Do not claim readiness until met."),
+
+    # Added 2026-10-23 from build findings
+    dict(id=25, pri="P0", phase="Hackathon", ws=["Threat Intelligence", "Backend/API"], owner="TL",
+         title="[P0] Android platform CVE context from NVD API 2.0",
+         problem="Analysts need vulnerability context for the device platform, kept separate from the malware verdict.",
+         impl="Built: insider-threat-lab/app/mobile_risk/nvd.py: virtualMatchString on cpe:2.3:o:google:android:<version>, keeps CVEs where NVD marks Android vulnerable (exact/range), paging, rate-limit pauses, retries, 24h cache mounted into Docker, separate UI panel, VULN_CONTEXT_LOOKUP log event. Live: Android 13 gives 1,673 matches.",
+         deps="#6", ac=["11 offline tests pass", "Live lookup verified in Docker", "UI states CVE is not malware and never alters the score", "NVD attribution shown"],
+         source="Team request 2026-10-23; NVD API docs https://nvd.nist.gov/developers/vulnerabilities", safety="Exposure context only; no CVE never lowers risk."),
+
+    dict(id=26, pri="P0", phase="Hackathon", ws=["ML", "Testing"], owner="DATA",
+         title="[P0] Concept drift: 49% false-positive rate on newer benign apps",
+         problem="On the per-class temporal split the baseline flags 49.1% of newer benign apps (precision 0.691). 65% of benign apps in the dataset are from 2011; threshold tuning on a temporal validation slice did not help (validation FPR 3.7%).",
+         impl="Hackathon: present all three splits together and state the limitation. Post-event: add recent benign apps per Android version, re-run temporal evaluation, set a release gate on recent-benign FPR.",
+         deps="#5", ac=["Drift result shown in UI, README and pitch", "Plan for recent benign data written", "FPR on newer apps re-measured after the data fix"],
+         source="metrics.json split B", safety="Do not quote split A results alone."),
+
+    dict(id=27, pri="P0", phase="Hackathon", ws=["Security/Privacy"], owner="DEVSEC",
+         title="[P0] Disable Flask debug mode and fix session secret in container",
+         problem="banking_app.py runs app.run(debug=True) inside Docker on 0.0.0.0:5000; the Werkzeug debugger allows code execution if reachable. The session secret is random per start, so every restart logs everyone out.",
+         impl="Read the debug flag from env (default off); load SECRET_KEY from .env; keep placeholders in .env.example.",
+         deps="None", ac=["Debug off by default in Docker", "SECRET_KEY from environment", "Sessions survive container restart"],
+         source="Repository inspection 2026-10-23", safety="Do not expose port 5000 beyond localhost during the event."),
+
+    dict(id=28, pri="P1", phase="Hackathon", ws=["Backend/API"], owner="DEVSEC",
+         title="[P1] Fix log formatter errors on werkzeug/library log lines",
+         problem="Root log format requires %(user)s and %(ip)s; werkzeug and library records lack them, producing 'Formatting field not found' errors in the container log.",
+         impl="Add a logging.Filter that sets default user/ip on every record, or a dedicated handler for app security events.",
+         deps="None", ac=["No logging errors on container start", "SOC log format unchanged for Logstash"],
+         source="docker logs banking-app, 2026-10-23", safety="None."),
+
+    dict(id=29, pri="P1", phase="Hackathon", ws=["Security/Privacy", "Documentation"], owner="TL",
+         title="[P1] Stop tracking the application log file in git",
+         problem="insider-threat-lab/logs/app/banking_app.log is tracked (included in commit 55b1123) and contains lab usernames and IPs.",
+         impl="git rm --cached the log; .gitignore already covers *.log.",
+         deps="None", ac=["Log no longer tracked", "Clean git status after running the app"],
+         source="Repository inspection", safety="Logs can contain personal data in real deployments."),
+
+    dict(id=30, pri="P1", phase="Hackathon", ws=["Security/Privacy", "Threat Intelligence"], owner="DEVSEC",
+         title="[P1] Wazuh alerts not reaching Elasticsearch; Wazuh API refusing TLS",
+         problem="wazuh-manager filebeat targets host wazuh.indexer, which is not in docker-compose.yml, so Wazuh alerts never reach Elasticsearch/Kibana. https://localhost:55000 fails the TLS handshake.",
+         impl="Point filebeat at the compose elasticsearch service (or add a Wazuh indexer), check the API certificate, document. Decide whether Wazuh is in demo scope.",
+         deps="SEC (regenerate the tracked Wazuh key first)", ac=["Wazuh alerts visible in Kibana", "API reachable or explicitly marked out of scope"],
+         source="docker logs wazuh-manager, 2026-10-23", safety="Use regenerated keys, never the committed one."),
+
+    dict(id=31, pri="P0", phase="Hackathon", ws=["Pitch", "Testing"], owner="FS",
+         title="[P0] Demo readiness: warm NVD cache and rehearse the click path",
+         problem="The first NVD lookup per Android version takes about 6 minutes without an API key; Docker Desktop has already stopped the stack once.",
+         impl="Warm the cache for versions shown (NVD_CACHE_DIR=../nvd_cache python -m mobile_risk.nvd 13.0 14.0); request an NVD API key; raise Docker memory; rehearse: login, BlueWatch Mobile, 6 samples, NVD panel, Kibana Discover for MOBILE_RISK_ASSESSMENT.",
+         deps="#7, #25", ac=["Full click path runs in under 90 s", "Fallback screen recording saved"],
+         source="Build notes 2026-10-23", safety="Lab credentials only on screen."),
+
+    dict(id=32, pri="P1", phase="0–30 days", ws=["Commercial", "Product"], owner="BIZ",
+         title="[P1] Business, integration and licensing model write-up",
+         problem="Judges and buyers will ask how banks with existing SOCs integrate and pay.",
+         impl="Draft: bluewatch-mobile/docs/BUSINESS_AND_INTEGRATION.md covering buyer value, integration paths (API, SIEM forwarding, SOAR webhook, self-hosted, SDK), training lifecycle, licence tiers, CVE-component uses. Validate with interviews (#19).",
+         deps="#19", ac=["Each claim tagged Built / Planned / Assumption", "Pricing validated with at least 3 buyer conversations"],
+         source="Team request 2026-10-23", safety="No compliance or efficacy claims beyond measured evidence."),
+
+    dict(id=33, pri="P0", phase="0–30 days", ws=["Data", "Commercial"], owner="TL",
+         title="[P0] Secure commercial rights to training data",
+         problem="KronoDroid is released for research purposes; selling a model trained on it needs the author's permission or replacement data.",
+         impl="Email the dataset author about commercial terms; in parallel, scope own benign/malware collection in an isolated lab and partner threat-intel licences.",
+         deps="#2", ac=["Written permission or a replacement dataset plan", "Data register updated with commercial terms"],
+         source="KronoDroid README (research purpose, citation required)", safety="No malware handling outside an isolated environment."),
 ]
 
 
@@ -275,7 +342,24 @@ def milestone_for(i):
     return i.get("milestone") or PHASE_MILESTONE[i["phase"]]
 
 
+# Current state, 2026-10-23 evening. Anything not listed: Ready (hackathon) or Backlog.
+STATUS_NOW = {
+    1: "In Progress", 2: "In Progress", 3: "Done", 4: "Done", 5: "Done", 6: "Done",
+    7: "Review / Testing", 8: "Done", 10: "In Progress", 12: "Blocked", 13: "In Progress",
+    18: "In Progress", 25: "Done", 26: "In Progress", 27: "Done", 28: "Done", 31: "In Progress",
+    32: "In Progress",
+    "SEC": "Blocked",
+}
+
+
+BOARD_STATUS = {"Backlog": "Backlog", "Ready": "Ready", "In Progress": "In progress",
+                "Review / Testing": "In review", "Blocked": "Blocked", "Done": "Done"}
+HACKATHON_TARGET = "2026-10-24"
+
+
 def status_for(i):
+    if i["id"] in STATUS_NOW:
+        return STATUS_NOW[i["id"]]
     return "Ready" if i["phase"] == "Hackathon" else "Backlog"
 
 
@@ -325,19 +409,52 @@ def export():
 
 
 def gh(args, dry, capture=True):
-    print("$ gh " + " ".join(args))
+    print("$ gh " + " ".join(a if len(a) < 80 else a[:77] + "..." for a in args))
     if dry:
         return ""
-    r = subprocess.run(["gh", *args], capture_output=capture, text=True)
-    if r.returncode != 0:
-        raise RuntimeError(r.stderr.strip())
-    return r.stdout.strip()
+    for attempt in range(4):
+        r = subprocess.run([GH, *args], capture_output=capture, text=True, encoding="utf-8")
+        if r.returncode == 0:
+            return r.stdout.strip()
+        transient = any(t in r.stderr for t in ("timeout", "TLS handshake", "connection reset",
+                                                 "EOF", "502", "503", "rate limit"))
+        if not transient:
+            break
+        time.sleep(5 * (attempt + 1))
+    raise RuntimeError(r.stderr.strip())
+
+
+def graphql(query, dry, **variables):
+    args = ["api", "graphql", "-f", f"query={query}"]
+    for k, v in variables.items():
+        args += ["-F" if isinstance(v, (int, bool)) else "-f", f"{k}={v}"]
+    out = gh(args, dry)
+    return json.loads(out) if out else {}
+
+
+def ensure_status_options(project_id, fields, dry):
+    """Add 'Blocked' to board 3's Status field, keeping its existing options."""
+    status = fields["Status"]
+    names = [o["name"] for o in status["options"]]
+    if "Blocked" in names:
+        return
+    colors = {"Backlog": "GRAY", "Ready": "BLUE", "In progress": "YELLOW", "Blocked": "RED",
+              "In review": "PURPLE", "Done": "GREEN"}
+    wanted = ["Backlog", "Ready", "In progress", "Blocked", "In review", "Done"]
+    wanted += [n for n in names if n not in wanted]
+    opts = ",".join(f'{{name:"{n}",color:{colors.get(n, "GRAY")},description:""}}' for n in wanted)
+    graphql(f"""mutation {{ updateProjectV2Field(input: {{fieldId: "{status['id']}",
+            singleSelectOptions: [{opts}]}}) {{ projectV2Field {{ ... on ProjectV2SingleSelectField {{ id }} }} }} }}""",
+            dry)
 
 
 def apply(dry):
     # Labels and milestones
+    existing_labels = [] if dry else [l["name"] for l in json.loads(
+        gh(["label", "list", "--repo", REPO, "--limit", "200", "--json", "name"], dry))]
     for name, color in LABELS.items():
-        gh(["label", "create", name, "--repo", REPO, "--color", color, "--force"], dry)
+        if name not in existing_labels:
+            gh(["label", "create", name, "--repo", REPO, "--color", color], dry)
     existing_ms = [] if dry else [m["title"] for m in json.loads(
         gh(["api", f"repos/{REPO}/milestones?state=all&per_page=100"], dry))]
     for title, due, desc in MILESTONES:
@@ -348,51 +465,47 @@ def apply(dry):
             args += ["-f", f"due_on={due}"]
         gh(args, dry)
 
-    # Project and custom fields
-    if dry:
-        project_num = "<N>"
-    else:
-        projects = json.loads(gh(["project", "list", "--owner", OWNER, "--format", "json"], dry))["projects"]
-        match = [p for p in projects if p["title"] == PROJECT_TITLE]
-        project_num = str(match[0]["number"]) if match else \
-            str(json.loads(gh(["project", "create", "--owner", OWNER, "--title", PROJECT_TITLE,
-                               "--format", "json"], dry))["number"])
-        gh(["project", "link", project_num, "--owner", OWNER, "--repo", REPO], dry)
-    for name, opts in [("Priority", list(PRIORITY.values())), ("Phase", PHASES),
-                       ("Workstream", WORKSTREAMS), ("Board Status", STATUS)]:
-        try:
-            gh(["project", "field-create", project_num, "--owner", OWNER, "--name", name,
-                "--data-type", "SINGLE_SELECT", "--single-select-options", ",".join(opts)], dry)
-        except RuntimeError as e:
-            print(f"  (field {name}: {e})")
-
-    # Issues
-    existing = [] if dry else [x["title"] for x in json.loads(
-        gh(["issue", "list", "--repo", REPO, "--state", "all", "--limit", "500", "--json", "title"], dry))]
-    created = []
+    # Issues (reuse by title)
+    existing = {} if dry else {x["title"]: x["url"] for x in json.loads(
+        gh(["issue", "list", "--repo", REPO, "--state", "all", "--limit", "500",
+            "--json", "title,url"], dry))}
+    issues = []
     for i in ISSUES:
         if i.get("private"):
             print(f"  skip (track privately): {i['title']}")
             continue
-        if i["title"] in existing:
-            print(f"  exists: {i['title']}")
-            continue
-        url = gh(["issue", "create", "--repo", REPO, "--title", i["title"], "--body", body(i),
-                  "--milestone", milestone_for(i), *sum([["--label", l] for l in labels_for(i)], [])], dry)
-        created.append((i, url))
-
-    # Add to project and set fields
+        url = existing.get(i["title"])
+        if not url:
+            url = gh(["issue", "create", "--repo", REPO, "--title", i["title"], "--body", body(i),
+                      "--milestone", milestone_for(i),
+                      *sum([["--label", l] for l in labels_for(i)], [])], dry)
+        issues.append((i, url))
     if dry:
-        for i, _ in created:
-            print(f"$ gh project item-add {project_num} ... + item-edit Priority/Phase/Workstream/Board Status")
+        print(f"... then link repo, add {len(issues)} items to project {PROJECT_NUMBER} and set fields")
         return
-    proj = json.loads(gh(["project", "view", project_num, "--owner", OWNER, "--format", "json"], dry))
-    fields = json.loads(gh(["project", "field-list", project_num, "--owner", OWNER,
-                            "--format", "json"], dry))["fields"]
-    fmap = {f["name"]: f for f in fields}
 
-    def set_field(item_id, name, value):
-        f = fmap.get(name)
+    # Project 3: link repo, add fields, add items, set fields
+    gh(["project", "link", PROJECT_NUMBER, "--owner", OWNER, "--repo", REPO], dry)
+    proj = json.loads(gh(["project", "view", PROJECT_NUMBER, "--owner", OWNER, "--format", "json"], dry))
+
+    def load_fields():
+        return {f["name"]: f for f in json.loads(gh(["project", "field-list", PROJECT_NUMBER, "--owner",
+                                                     OWNER, "--format", "json"], dry))["fields"]}
+    fields = load_fields()
+    for name, opts in [("Phase", PHASES), ("Workstream", WORKSTREAMS)]:
+        if name not in fields:
+            gh(["project", "field-create", PROJECT_NUMBER, "--owner", OWNER, "--name", name,
+                "--data-type", "SINGLE_SELECT", "--single-select-options", ",".join(opts)], dry)
+    fields = load_fields()
+    ensure_status_options(proj["id"], fields, dry)
+    fields = load_fields()
+
+    items = {it["content"]["url"]: it["id"] for it in json.loads(
+        gh(["project", "item-list", PROJECT_NUMBER, "--owner", OWNER, "--format", "json",
+            "--limit", "500"], dry))["items"] if it.get("content", {}).get("url")}
+
+    def set_select(item_id, name, value):
+        f = fields.get(name)
         opt = next((o for o in (f or {}).get("options", []) if o["name"] == value), None)
         if not opt:
             print(f"  (no option {name}={value})")
@@ -400,14 +513,17 @@ def apply(dry):
         gh(["project", "item-edit", "--id", item_id, "--project-id", proj["id"],
             "--field-id", f["id"], "--single-select-option-id", opt["id"]], dry)
 
-    for i, url in created:
-        item = json.loads(gh(["project", "item-add", project_num, "--owner", OWNER,
-                              "--url", url, "--format", "json"], dry))
-        set_field(item["id"], "Priority", PRIORITY[i["pri"]])
-        set_field(item["id"], "Phase", i["phase"])
-        set_field(item["id"], "Workstream", i["ws"][0])
-        set_field(item["id"], "Board Status", status_for(i))
-        print(f"  {url}")
+    for i, url in issues:
+        item_id = items.get(url) or json.loads(gh(["project", "item-add", PROJECT_NUMBER, "--owner", OWNER,
+                                                   "--url", url, "--format", "json"], dry))["id"]
+        set_select(item_id, "Status", BOARD_STATUS[status_for(i)])
+        set_select(item_id, "Priority", i["pri"])
+        set_select(item_id, "Phase", i["phase"])
+        set_select(item_id, "Workstream", i["ws"][0])
+        if i["phase"] == "Hackathon" and "Target date" in fields:
+            gh(["project", "item-edit", "--id", item_id, "--project-id", proj["id"],
+                "--field-id", fields["Target date"]["id"], "--date", HACKATHON_TARGET], dry)
+        print(f"  {status_for(i):<16} {url}")
     print(f"project: {proj.get('url')}")
 
 

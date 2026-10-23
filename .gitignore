@@ -22,3 +22,9 @@ dist/
 
 # BlueWatch Mobile datasets (KronoDroid is redistributed by its author; keep local copies out of git)
 bluewatch-mobile/data/
+
+# NVD response cache (regenerable; see mobile_risk/nvd.py)
+insider-threat-lab/nvd_cache/
+
+# BlueWatch Mobile runtime data (audit DB, local demo keys)
+insider-threat-lab/bluewatch_data/

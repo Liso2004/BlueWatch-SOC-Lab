@@ -53,10 +53,35 @@
                 <p class="muted">Held-out KronoDroid rows never used in training. Expected label is shown so results can be checked.</p>
                 <div id="samples">Loading…</div>
             </div>
+            <div class="panel">
+                <h3>Assess an app's features</h3>
+                <p class="muted">Paste a JSON object of feature name → count (KronoDroid schema, Android only). Missing features count as 0.</p>
+                <input id="adhoc-id" placeholder="App reference (optional)" maxlength="100" style="width:100%;padding:8px;margin-bottom:6px">
+                <textarea id="adhoc-features" rows="6" style="width:100%;font-family:monospace;font-size:12px" placeholder='{"SEND_SMS": 1, "RECEIVE_SMS": 1, "READ_PHONE_STATE": 1}'></textarea>
+                <button class="btn" onclick="assessAdhoc()">Score these features</button>
+                <button class="btn secondary" onclick="copyActiveSample()">Copy selected sample's features</button>
+            </div>
         </div>
         <div>
             <div class="panel" id="result"><p class="muted">Select a sample to run it through the model.</p></div>
         </div>
+    </div>
+
+    <div class="panel">
+        <h3>Device platform vulnerability context (NVD)</h3>
+        <p class="notice" style="margin-top:0">Separate from the malware verdict above. Lists published CVEs that NVD marks as
+            affecting an Android OS version. A CVE is not evidence that an app is malicious, and no CVE does not lower malware risk.</p>
+        <label>Android version
+            <select id="android-version"></select>
+        </label>
+        <button class="btn" onclick="loadVulns()">Look up in NVD</button>
+        <div id="vulns"></div>
+    </div>
+
+    <div class="panel">
+        <h3>Analyst activity and feedback</h3>
+        <p class="muted">Every assessment is stored with its model version for audit. Analyst feedback becomes labelled data for the next training run.</p>
+        <div id="activity">Loading…</div>
     </div>
 
     <div class="panel">
@@ -95,27 +120,97 @@
             }
         }
 
-        async function assess(button) {
+        const FEEDBACK = {{ feedback_labels | tojson }};
+        let activeSample = null;
+
+        function assess(button) {
             document.querySelectorAll('.sample').forEach(b => b.classList.remove('active'));
             button.classList.add('active');
+            activeSample = button.dataset.id;
+            runAssessment({sample_id: button.dataset.id});
+        }
+
+        function assessAdhoc() {
+            let features;
+            try { features = JSON.parse(document.getElementById('adhoc-features').value); }
+            catch (e) { showError('Features must be valid JSON: ' + e.message); return; }
+            const ref = document.getElementById('adhoc-id').value.trim();
+            document.querySelectorAll('.sample').forEach(b => b.classList.remove('active'));
+            runAssessment(ref ? {sample_id: ref, features} : {features});
+        }
+
+        async function copyActiveSample() {
+            if (!activeSample) { showError('Select a sample first.'); return; }
+            try {
+                const f = await api(`/api/mobile/samples/${encodeURIComponent(activeSample)}/features`);
+                document.getElementById('adhoc-features').value = JSON.stringify(f, null, 1);
+                document.getElementById('adhoc-id').value = activeSample + '-edited';
+                showError('');
+            } catch (e) { showError('Could not load sample features: ' + e.message); }
+        }
+
+        function feedbackButtons(r) {
+            const flagged = r.verdict === 'flag_for_review';
+            const options = flagged ? ['confirmed_malicious', 'false_positive'] : ['confirmed_benign', 'missed_malware'];
+            return `<h4>Analyst decision</h4>
+                <p class="muted">Record what your investigation found. This does not change the score; it labels the case for audit and retraining.</p>
+                ${options.map(l => `<button class="btn ${l === 'false_positive' || l === 'missed_malware' ? 'secondary' : ''}" data-label="${esc(l)}" data-id="${esc(r.assessment_id)}" onclick="sendFeedback(this)">${esc(FEEDBACK[l])}</button>`).join('')}
+                <span id="feedback-status" class="muted"></span>`;
+        }
+
+        async function sendFeedback(button) {
+            try {
+                await api('/api/mobile/feedback', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({assessment_id: button.dataset.id, label: button.dataset.label})
+                });
+                document.getElementById('feedback-status').textContent = 'Saved: ' + FEEDBACK[button.dataset.label];
+                loadActivity();
+            } catch (e) { showError('Feedback failed: ' + e.message); }
+        }
+
+        async function loadBrief(button) {
+            const out = document.getElementById('brief');
+            out.innerHTML = '<p class="muted">Writing brief…</p>';
+            try {
+                const b = await api('/api/mobile/brief', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({assessment_id: button.dataset.id})
+                });
+                const source = b.generated_by === 'ai'
+                    ? `Written by ${b.provider === 'ollama' ? 'a local AI model running on this machine' : 'Claude'} (${esc(b.model)}) · grounding check passed: every number matches the assessment`
+                    : `Template summary — ${esc(b.reason)}`;
+                out.innerHTML = `<div class="notice" style="background:#eef5ff;border-left-color:#007bff">
+                    <p>${esc(b.summary)}</p>
+                    <p class="muted">${source}. ${esc(b.notice)}</p></div>`;
+            } catch (e) {
+                out.innerHTML = '';
+                showError('Case brief failed: ' + e.message);
+            }
+        }
+
+        async function runAssessment(payload) {
             const out = document.getElementById('result');
             out.innerHTML = '<p class="muted">Scoring…</p>';
             showError('');
             try {
                 const r = await api('/api/mobile/assess', {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({sample_id: button.dataset.id})
+                    body: JSON.stringify(payload)
                 });
+                loadActivity();
                 const predicted = r.verdict === 'flag_for_review' ? 'malware' : 'benign';
                 const agrees = r.expected_label ? (predicted === r.expected_label) : null;
                 out.innerHTML = `
-                    <h3>${esc(r.sample_id)}</h3>
+                    <h3>${esc(r.sample_id || 'Ad-hoc app')}</h3>
+                    <p class="muted">Assessment ${esc(r.assessment_id)}</p>
                     <span class="verdict ${esc(r.verdict)}">${r.verdict === 'flag_for_review' ? 'FLAG FOR REVIEW' : 'NOT FLAGGED'}</span>
                     <p>Risk score <strong>${esc(r.risk_score)}</strong> (threshold ${esc(r.threshold)})</p>
                     <div class="bar"><span style="width:${pct(r.risk_score)}"></span><i style="left:${pct(r.threshold)}"></i></div>
                     <p class="muted">${esc(r.score_semantics)}</p>
-                    <p>Dataset label: <strong>${esc(r.expected_label)}</strong> —
-                       <span class="match">${agrees === null ? '' : agrees ? 'model agrees' : 'MODEL DISAGREES (error case — keep in evidence)'}</span></p>
+                    ${r.expected_label ? `<p>Dataset label: <strong>${esc(r.expected_label)}</strong> —
+                       <span class="match">${agrees ? 'model agrees' : 'MODEL DISAGREES (error case — keep in evidence)'}</span></p>` : ''}
+                    ${feedbackButtons(r)}
 
                     <h4>Evidence: largest departures from typical benign apps</h4>
                     <table><tr><th>Feature</th><th>This app</th><th>Benign median</th><th>Malware median</th><th>Direction</th></tr>
@@ -123,17 +218,45 @@
                     </table>
                     <p class="muted">Weighted by global model importance. Supporting context, not a causal explanation.</p>
 
-                    <h4>Banking-malware related capabilities present</h4>
-                    ${r.banking_indicators_present.length
-                        ? '<ul>' + r.banking_indicators_present.map(i => `<li><code>${esc(i.feature)}</code> — ${esc(i.meaning)}</li>`).join('') + '</ul>'
-                        : '<p class="muted">None of the tracked capabilities declared.</p>'}
-                    <p class="muted">Each has legitimate uses; presence alone is not evidence of malware.</p>
+                    <h4>Behaviour profile (banking-malware techniques)</h4>
+                    <table><tr><th>Behaviour</th><th>Status</th><th>Signals</th></tr>
+                    ${r.behaviour_profile.map(c => `<tr>
+                        <td><strong>${esc(c.category)}</strong><br><span class="muted">${esc(c.why)}</span></td>
+                        <td>${c.status === 'present' ? '<strong>Present</strong>' : c.status === 'not available' ? '<span class="muted">Not available</span>' : 'Not seen'}</td>
+                        <td>${c.note ? `<span class="muted">${esc(c.note)}</span>` : c.signals.map(s => `${s.flag ? '<strong>' : ''}${esc(s.feature)}${s.flag ? '</strong>' : ''} <span class="muted">(${esc(s.kind)}: ${esc(s.value)}${s.benign_p90 !== undefined ? ', benign 90th pct ' + esc(s.benign_p90) : ''})</span>`).join('<br>')}</td></tr>`).join('')}
+                    </table>
+                    <p class="muted">Declared = permission the app requests. Observed = runtime count, shown in bold when above 90% of benign apps. Context only; each signal has legitimate uses.</p>
+
+                    <h4>AI case brief</h4>
+                    <button class="btn secondary" data-id="${esc(r.assessment_id)}" onclick="loadBrief(this)">Write AI case brief</button>
+                    <div id="brief"></div>
 
                     <p class="muted">Model ${esc(r.model_version)} · features ${esc(r.features_version)} · ${esc(r.features_provided)} non-zero features supplied · inference ${esc(r.inference_ms)} ms</p>
                     <details><summary>Raw API response</summary><pre>${esc(JSON.stringify(r, null, 2))}</pre></details>`;
             } catch (e) {
                 out.innerHTML = '';
                 showError('Assessment failed: ' + e.message);
+            }
+        }
+
+        async function loadActivity() {
+            try {
+                const a = await api('/api/mobile/activity');
+                const s = a.summary;
+                document.getElementById('activity').innerHTML = `
+                    <p><strong>${esc(s.assessments)}</strong> assessments · <strong>${esc(s.flagged)}</strong> flagged ·
+                       feedback: ${Object.entries(s.feedback).map(([k, n]) => `${esc(FEEDBACK[k])}: <strong>${esc(n)}</strong>`).join(' · ')}</p>
+                    <p>Analyst-confirmed precision on reviewed flags: <strong>${s.analyst_precision === null ? 'no reviews yet' : esc(pct(s.analyst_precision))}</strong>
+                       <span class="muted">(${esc(s.note)})</span></p>
+                    <table><tr><th>When (UTC)</th><th>Who / channel</th><th>App</th><th>Verdict</th><th>Score</th><th>Analyst decision</th></tr>
+                    ${a.recent.map(r => `<tr><td>${esc(r.created_at)}</td><td>${esc(r.actor)}<br><span class="muted">${esc(r.channel)}</span></td>
+                        <td>${esc(r.sample_id || 'ad-hoc')}</td><td>${esc(r.verdict)}</td><td>${esc(r.risk_score)}</td>
+                        <td>${r.feedback ? esc(FEEDBACK[r.feedback]) + '<br><span class="muted">' + esc(r.reviewed_by) + '</span>' : '<span class="muted">pending</span>'}</td></tr>`).join('')}
+                    </table>
+                    <p><a href="/api/mobile/feedback/export" class="btn secondary">Export labelled cases (JSONL)</a></p>`;
+            } catch (e) {
+                document.getElementById('activity').textContent = '';
+                showError('Could not load activity: ' + e.message);
             }
         }
 
@@ -158,8 +281,45 @@
             }
         }
 
+        async function loadVersions() {
+            try {
+                const versions = await api('/api/mobile/vulnerabilities/versions');
+                document.getElementById('android-version').innerHTML =
+                    versions.map(v => `<option ${v === '13.0' ? 'selected' : ''}>${esc(v)}</option>`).join('');
+            } catch (e) { showError('Could not load Android versions: ' + e.message); }
+        }
+
+        async function loadVulns() {
+            const v = document.getElementById('android-version').value;
+            const out = document.getElementById('vulns');
+            out.innerHTML = '<p class="muted">Querying NVD… the first lookup for a version can take several minutes; results are then cached for 24 hours.</p>';
+            try {
+                const r = await api(`/api/mobile/vulnerabilities?android_version=${encodeURIComponent(v)}`);
+                const sev = Object.entries(r.severity_counts_exact_or_range).map(([k, n]) => `${esc(k)}: ${esc(n)}`).join(' · ');
+                out.innerHTML = `
+                    <p><strong>Android ${esc(r.android_version)}</strong> (<code>${esc(r.cpe)}</code>) —
+                       ${esc(r.match_counts.exact)} exact-version and ${esc(r.match_counts.range)} version-range matches
+                       (${esc(r.match_counts.unspecified)} more list "any version" and are not shown).
+                       NVD returned ${esc(r.nvd_candidates)} candidates; the rest only name Android as the platform a vulnerable product runs on.</p>
+                    <p class="muted">Severity (exact + range): ${sev || 'none'} · Retrieved from NVD ${esc(r.retrieved_at)}${r.from_cache ? ' (cached)' : ''}</p>
+                    <table><tr><th>CVE</th><th>CVSS</th><th>Match</th><th>Published</th><th>Description</th></tr>
+                    ${r.top_cves.map(c => `<tr>
+                        <td><a href="${esc(c.nvd_url)}" target="_blank" rel="noopener">${esc(c.cve_id)}</a><br><span class="muted">${esc(c.cwe.join(', '))}</span></td>
+                        <td>${c.cvss ? esc(c.cvss.base_score) + ' ' + esc(c.cvss.severity) + '<br><span class="muted">v' + esc(c.cvss.version) + '</span>' : '—'}</td>
+                        <td>${esc(c.match_confidence)}</td><td>${esc((c.published || '').slice(0, 10))}</td>
+                        <td>${esc(c.description.length > 220 ? c.description.slice(0, 220) + '…' : c.description)}</td></tr>`).join('')}
+                    </table>
+                    <p class="muted">${esc(r.notice)}</p>`;
+            } catch (e) {
+                out.innerHTML = '';
+                showError('Vulnerability lookup failed: ' + e.message);
+            }
+        }
+
         loadSamples();
         loadModel();
+        loadVersions();
+        loadActivity();
     </script>
 </body>
 </html>

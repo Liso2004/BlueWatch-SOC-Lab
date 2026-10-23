@@ -13,11 +13,27 @@ services:
       - bank-network
     volumes:
       - ./insider-threat-lab/logs/app:/var/log/app
+      # NVD responses cached for 24 h; warm from the host with: python -m mobile_risk.nvd 13.0
+      - ./insider-threat-lab/nvd_cache:/var/cache/bluewatch-nvd
+      # BlueWatch Mobile audit trail and analyst feedback (SQLite)
+      - ./insider-threat-lab/bluewatch_data:/var/lib/bluewatch
     environment:
+      FLASK_SECRET_KEY: ${FLASK_SECRET_KEY:-}
+      FLASK_DEBUG: ${FLASK_DEBUG:-0}
+      MOBILE_RISK_DB: /var/lib/bluewatch/bluewatch_mobile.db
+      MOBILE_RISK_THRESHOLD: ${MOBILE_RISK_THRESHOLD:-}
+      BLUEWATCH_API_KEYS: ${BLUEWATCH_API_KEYS:-}
+      AI_PROVIDER: ${AI_PROVIDER:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-}
+      # Free local model on the host machine (AI_PROVIDER=ollama)
+      OLLAMA_URL: ${OLLAMA_URL:-http://host.docker.internal:11434}
       DB_HOST: ${DB_HOST:-mysql}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME:-banking}
+      NVD_API_KEY: ${NVD_API_KEY:-}
+      NVD_CACHE_DIR: /var/cache/bluewatch-nvd
 
   mysql:
     image: mysql:8.0

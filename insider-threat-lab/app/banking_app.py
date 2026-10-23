@@ -6,14 +6,18 @@ import logging
 from datetime import datetime
 import os
 
+from mobile_risk import api_v1 as mobile_risk_api_v1
 from mobile_risk import bp as mobile_risk_bp
 
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
+# A fixed key from .env keeps sessions valid across restarts; fall back to a random one.
+app.secret_key = os.getenv('FLASK_SECRET_KEY') or secrets.token_hex(32)
+app.config['MAX_CONTENT_LENGTH'] = 256 * 1024
 
-# BlueWatch Mobile: Android app risk triage for SOC analysts
+# BlueWatch Mobile: Android app risk triage for SOC analysts (UI) and bank systems (API v1)
 app.register_blueprint(mobile_risk_bp)
+app.register_blueprint(mobile_risk_api_v1)
 
 
 # Configure logging - CRITICAL for SOC detection
@@ -22,6 +26,20 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s - USER:%(user)s - IP:%(ip)s'
 )
+
+
+class SocLogDefaults(logging.Filter):
+    """Library log records (werkzeug etc.) have no user/ip; give them defaults so the
+    SOC log format above does not raise on them."""
+
+    def filter(self, record):
+        record.user = getattr(record, 'user', '-')
+        record.ip = getattr(record, 'ip', '-')
+        return True
+
+
+for handler in logging.getLogger().handlers:
+    handler.addFilter(SocLogDefaults())
 
 
 # Database connection
@@ -265,5 +283,6 @@ if __name__ == '__main__':
     app.run(
         host='0.0.0.0',
         port=5000,
-        debug=True
+        # The Werkzeug debugger allows code execution; only enable it explicitly.
+        debug=os.getenv('FLASK_DEBUG', '0') == '1'
     )

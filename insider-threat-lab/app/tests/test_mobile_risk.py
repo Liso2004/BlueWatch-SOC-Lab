@@ -51,7 +51,7 @@ def test_model_info_reports_all_splits(client):
     m = client.get("/api/mobile/model").get_json()
     assert m["model_version"]
     assert set(m["evaluation"]) == {"A_random_stratified", "B_per_class_temporal",
-                                    "C_unseen_malware_families"}
+                                    "C_unseen_malware_families", "D_runtime_behaviour_only"}
 
 
 def test_assess_each_sample(client):

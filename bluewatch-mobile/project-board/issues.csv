@@ -1,5 +1,5 @@
 Title,Priority,Phase,Workstream,Status,Milestone,Labels,Owner role,Acceptance criteria,Body,Private
-[P0] Rotate exposed credentials and remove tracked private key,P0 Critical,Hackathon,Security/Privacy,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:security-privacy,security",Tech Lead (Liso Wycliff Seth Hlatshwayo),All previously committed secrets rotated and old values no longer valid | No private keys or real passwords in the current tree (`git grep` clean) | .env.example contains placeholders only | History-rewrite decision recorded,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Security/Privacy
+[P0] Rotate exposed credentials and remove tracked private key,P0 Critical,Hackathon,Security/Privacy,Blocked,Hackathon: video submission,"p0,bluewatch-mobile,ws:security-privacy,security",Tech Lead (Liso Wycliff Seth Hlatshwayo),All previously committed secrets rotated and old values no longer valid | No private keys or real passwords in the current tree (`git grep` clean) | .env.example contains placeholders only | History-rewrite decision recorded,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Security/Privacy
 **Suggested owner (role):** Tech Lead (Liso Wycliff Seth Hlatshwayo)
 
 ### Problem / context
@@ -23,7 +23,7 @@ Master prompt §6 security check; repository inspection.
 ### Safety / data / licensing
 Track privately (GitHub security advisory or private channel), not a public issue with details. Never paste secret values into issues, PRs or chat.
 ",True
-[P0] Freeze MVP scope and define minimum end-to-end demo,P0 Critical,Hackathon,Product,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:product",Tech Lead (Liso Wycliff Seth Hlatshwayo),"One-paragraph scope committed to bluewatch-mobile/README.md | Owners by role recorded | Branch/PR rule and definition of done agreed | Explicit out-of-scope list (Android collector, live threat feeds, cloud deploy)","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Product
+[P0] Freeze MVP scope and define minimum end-to-end demo,P0 Critical,Hackathon,Product,In Progress,Hackathon: video submission,"p0,bluewatch-mobile,ws:product",Tech Lead (Liso Wycliff Seth Hlatshwayo),"One-paragraph scope committed to bluewatch-mobile/README.md | Owners by role recorded | Branch/PR rule and definition of done agreed | Explicit out-of-scope list (Android collector, live threat feeds, cloud deploy)","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Product
 **Suggested owner (role):** Tech Lead (Liso Wycliff Seth Hlatshwayo)
 
 ### Problem / context
@@ -47,7 +47,7 @@ Organiser requirement as relayed in the team master prompt §4; organiser docume
 ### Safety / data / licensing
 Do not present SOC Lab results as BlueWatch Mobile results.
 ",False
-"[P0] Confirm dataset, licence/terms, label provenance and split",P0 Critical,Hackathon,Data,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:data",Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed),"DATA_REGISTER.md with source URL, version/date, SHA-256, terms link/quote, citation, label provenance, class counts | Decision on split strategy recorded | Data files gitignored unless redistribution is permitted","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Data
+"[P0] Confirm dataset, licence/terms, label provenance and split",P0 Critical,Hackathon,Data,In Progress,Hackathon: video submission,"p0,bluewatch-mobile,ws:data",Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed),"DATA_REGISTER.md with source URL, version/date, SHA-256, terms link/quote, citation, label provenance, class counts | Decision on split strategy recorded | Data files gitignored unless redistribution is permitted","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Data
 **Suggested owner (role):** Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed)
 
 ### Problem / context
@@ -70,7 +70,7 @@ Organiser requirement as relayed in the team master prompt §4; organiser docume
 ### Safety / data / licensing
 No malware binaries on event laptops; no personal data. Check commercial-use terms before any pilot.
 ",False
-[P0] Define versioned feature schema and label mapping,P0 Critical,Hackathon,Data; Backend/API; Frontend,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:data,ws:backend-api,ws:frontend",Tech Lead (Liso Wycliff Seth Hlatshwayo),Schema file with version string | Data dictionary readable by non-ML teammates | Sample requests validate against API model,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Data, Backend/API, Frontend
+[P0] Define versioned feature schema and label mapping,P0 Critical,Hackathon,Data; Backend/API; Frontend,Done,Hackathon: video submission,"p0,bluewatch-mobile,ws:data,ws:backend-api,ws:frontend",Tech Lead (Liso Wycliff Seth Hlatshwayo),Schema file with version string | Data dictionary readable by non-ML teammates | Sample requests validate against API model,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Data, Backend/API, Frontend
 **Suggested owner (role):** Tech Lead (Liso Wycliff Seth Hlatshwayo)
 
 ### Problem / context
@@ -93,7 +93,7 @@ Board import (BlueWatch_Mobile_Project_Board.csv).
 ### Safety / data / licensing
 Exclude any field that could hold credentials, OTPs or message content.
 ",False
-[P0] Reproducible preprocessing with leakage and imbalance checks,P0 Critical,Hackathon,Data; ML,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:data,ws:ml",Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed),"One command recreates the matrix from raw data | Fixed random seed | Report records duplicates, missing values, class counts, train/test overlap = 0","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Data, ML
+[P0] Reproducible preprocessing with leakage and imbalance checks,P0 Critical,Hackathon,Data; ML,Done,Hackathon: video submission,"p0,bluewatch-mobile,ws:data,ws:ml",Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed),"One command recreates the matrix from raw data | Fixed random seed | Report records duplicates, missing values, class counts, train/test overlap = 0","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Data, ML
 **Suggested owner (role):** Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed)
 
 ### Problem / context
@@ -116,7 +116,7 @@ Master prompt §7.6.
 ### Safety / data / licensing
 —
 ",False
-[P0] Train baseline classifier and record metrics on held-out split,P0 Critical,Hackathon,ML,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:ml",Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed),Model artefact with version metadata | metrics.json from held-out split only | Split method documented (random vs time/family-aware) | No metric quoted anywhere that is not in metrics.json,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** ML
+[P0] Train baseline classifier and record metrics on held-out split,P0 Critical,Hackathon,ML,Done,Hackathon: video submission,"p0,bluewatch-mobile,ws:ml",Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed),Model artefact with version metadata | metrics.json from held-out split only | Split method documented (random vs time/family-aware) | No metric quoted anywhere that is not in metrics.json,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** ML
 **Suggested owner (role):** Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed)
 
 ### Problem / context
@@ -140,7 +140,7 @@ Master prompt §7.5.
 ### Safety / data / licensing
 Score is not a calibrated probability unless calibration is tested — label it 'risk score'.
 ",False
-[P0] Inference API contract with validation and tests,P0 Critical,Hackathon,Backend/API; Testing,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:backend-api,ws:testing",Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed),"pytest passes for valid, invalid and missing-field requests | Response comes from the loaded model (no hard-coded verdicts) | Model/version fields populated | Runs with one documented command","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Backend/API, Testing
+[P0] Inference API contract with validation and tests,P0 Critical,Hackathon,Backend/API; Testing,Done,Hackathon: video submission,"p0,bluewatch-mobile,ws:backend-api,ws:testing",Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed),"pytest passes for valid, invalid and missing-field requests | Response comes from the loaded model (no hard-coded verdicts) | Model/version fields populated | Runs with one documented command","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Backend/API, Testing
 **Suggested owner (role):** Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed)
 
 ### Problem / context
@@ -164,7 +164,7 @@ Board import.
 ### Safety / data / licensing
 Bind to localhost for the demo; add API key before any non-local exposure.
 ",False
-[P0] Connect analyst dashboard to real API results,P0 Critical,Hackathon,Frontend,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:frontend",Full Stack / Prototype Engineer (Stacey-Lee Pietersen),At least one sample round-trips UI -> API -> UI | Error shown on API failure | No hard-coded verdicts in UI code | Expected label shown next to prediction for demo samples,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Frontend
+[P0] Connect analyst dashboard to real API results,P0 Critical,Hackathon,Frontend,Review / Testing,Hackathon: video submission,"p0,bluewatch-mobile,ws:frontend",Full Stack / Prototype Engineer (Stacey-Lee Pietersen),At least one sample round-trips UI -> API -> UI | Error shown on API failure | No hard-coded verdicts in UI code | Expected label shown next to prediction for demo samples,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Frontend
 **Suggested owner (role):** Full Stack / Prototype Engineer (Stacey-Lee Pietersen)
 
 ### Problem / context
@@ -188,7 +188,7 @@ Organiser requirement as relayed in the team master prompt §4; organiser docume
 ### Safety / data / licensing
 —
 ",False
-[P0] Run 3 malicious + 3 benign labelled samples end to end,P0 Critical,Hackathon,Testing,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:testing",Whole team,"Six cases recorded with actual outputs | Any misclassification kept and explained, not hidden | States that six cases demonstrate workflow, not efficacy","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Testing
+[P0] Run 3 malicious + 3 benign labelled samples end to end,P0 Critical,Hackathon,Testing,Done,Hackathon: video submission,"p0,bluewatch-mobile,ws:testing",Whole team,"Six cases recorded with actual outputs | Any misclassification kept and explained, not hidden | States that six cases demonstrate workflow, not efficacy","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Testing
 **Suggested owner (role):** Whole team
 
 ### Problem / context
@@ -235,7 +235,7 @@ Organiser requirement as relayed in the team master prompt §4; organiser docume
 ### Safety / data / licensing
 No credentials, personal data or real customer info on screen.
 ",False
-[P0] Complete AI/data/API/third-party/pre-existing-work README disclosure,P0 Critical,Hackathon,Documentation,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:documentation",Tech Lead (Liso Wycliff Seth Hlatshwayo),No TODOs | Every dependency in requirements/package.json listed with licence | Pre-existing vs event work separated with commit refs | All AI tools used are disclosed,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Documentation
+[P0] Complete AI/data/API/third-party/pre-existing-work README disclosure,P0 Critical,Hackathon,Documentation,In Progress,Hackathon: video submission,"p0,bluewatch-mobile,ws:documentation",Tech Lead (Liso Wycliff Seth Hlatshwayo),No TODOs | Every dependency in requirements/package.json listed with licence | Pre-existing vs event work separated with commit refs | All AI tools used are disclosed,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Documentation
 **Suggested owner (role):** Tech Lead (Liso Wycliff Seth Hlatshwayo)
 
 ### Problem / context
@@ -284,7 +284,7 @@ Organiser requirement as relayed in the team master prompt §4; organiser docume
 ### Safety / data / licensing
 Market figures (TAM R151.2m etc.) labelled as unverified planning assumptions.
 ",False
-[P0] Security and privacy preflight before demo,P0 Critical,Hackathon,Security/Privacy,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:security-privacy,security",Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed),Secret scan clean on submission branch | Demo data reviewed | Human-in-the-loop statement visible in UI and README,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Security/Privacy
+[P0] Security and privacy preflight before demo,P0 Critical,Hackathon,Security/Privacy,Blocked,Hackathon: video submission,"p0,bluewatch-mobile,ws:security-privacy,security",Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed),Secret scan clean on submission branch | Demo data reviewed | Human-in-the-loop statement visible in UI and README,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Security/Privacy
 **Suggested owner (role):** Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed)
 
 ### Problem / context
@@ -307,7 +307,7 @@ Master prompt §7.
 ### Safety / data / licensing
 —
 ",False
-[P0] Capture reproducibility evidence pack,P0 Critical,Hackathon,Testing; Documentation,Ready,Hackathon: video submission,"p0,bluewatch-mobile,ws:testing,ws:documentation",Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed),Every number in video/pitch traceable to this file | Limitations section present | Status tags on every component,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Testing, Documentation
+[P0] Capture reproducibility evidence pack,P0 Critical,Hackathon,Testing; Documentation,In Progress,Hackathon: video submission,"p0,bluewatch-mobile,ws:testing,ws:documentation",Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed),Every number in video/pitch traceable to this file | Limitations section present | Status tags on every component,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Testing, Documentation
 **Suggested owner (role):** Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed)
 
 ### Problem / context
@@ -421,14 +421,14 @@ Master prompt §6.
 ### Safety / data / licensing
 Data minimisation: no message bodies, OTPs or screen content.
 ",False
-[P1] Threat-intel staging and model release governance,P1 High,30–90 days,Threat Intelligence; ML; Security/Privacy,Backlog,Post-event: 30–90 days,"p1,bluewatch-mobile,ws:threat-intelligence,ws:ml,ws:security-privacy,security",Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed),Documented release checklist | Tested rollback to previous model | TI source register with terms,"**Priority:** P1 High · **Phase:** 30–90 days · **Workstream:** Threat Intelligence, ML, Security/Privacy
+[P1] Threat-intel staging and model release governance,P1 High,30–90 days,Threat Intelligence; ML; Security/Privacy,In Progress,Post-event: 30–90 days,"p1,bluewatch-mobile,ws:threat-intelligence,ws:ml,ws:security-privacy,security",Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed),Documented release checklist | Tested rollback to previous model | TI source register with terms,"**Priority:** P1 High · **Phase:** 30–90 days · **Workstream:** Threat Intelligence, ML, Security/Privacy
 **Suggested owner (role):** Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed)
 
 ### Problem / context
 Live feeds must not silently change model behaviour.
 
 ### Proposed implementation
-Model registry with versions, staging -> evaluation -> approval -> release, rollback. TI sources (NVD https://nvd.nist.gov/, MISP https://www.misp-project.org/) staged with provenance and licence; used as context, not as a malware verdict. Mark unbuilt parts Planned.
+Implemented at hackathon: NVD CVE API 2.0 Android platform context (mobile_risk/nvd.py) with CPE-based matching, 24h cache, retrieval timestamps, separate UI panel. Remaining (Planned): incremental sync via lastModStartDate instead of full refetch; app/component version matching once collector supplies versions; MISP or other malware-intel feeds with provenance and licence review; model registry with staging -> evaluation -> approval -> release and tested rollback. TI never changes the ML verdict automatically.
 
 ### Dependencies
 #15
@@ -578,4 +578,206 @@ Master prompt §2.
 
 ### Safety / data / licensing
 Do not claim readiness until met.
+",False
+[P0] Android platform CVE context from NVD API 2.0,P0 Critical,Hackathon,Threat Intelligence; Backend/API,Done,Hackathon: video submission,"p0,bluewatch-mobile,ws:threat-intelligence,ws:backend-api",Tech Lead (Liso Wycliff Seth Hlatshwayo),11 offline tests pass | Live lookup verified in Docker | UI states CVE is not malware and never alters the score | NVD attribution shown,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Threat Intelligence, Backend/API
+**Suggested owner (role):** Tech Lead (Liso Wycliff Seth Hlatshwayo)
+
+### Problem / context
+Analysts need vulnerability context for the device platform, kept separate from the malware verdict.
+
+### Proposed implementation
+Built: insider-threat-lab/app/mobile_risk/nvd.py: virtualMatchString on cpe:2.3:o:google:android:<version>, keeps CVEs where NVD marks Android vulnerable (exact/range), paging, rate-limit pauses, retries, 24h cache mounted into Docker, separate UI panel, VULN_CONTEXT_LOOKUP log event. Live: Android 13 gives 1,673 matches.
+
+### Dependencies
+#6
+
+### Acceptance criteria
+- [ ] 11 offline tests pass
+- [ ] Live lookup verified in Docker
+- [ ] UI states CVE is not malware and never alters the score
+- [ ] NVD attribution shown
+
+### Source / requirement
+Team request 2026-10-23; NVD API docs https://nvd.nist.gov/developers/vulnerabilities
+
+### Safety / data / licensing
+Exposure context only; no CVE never lowers risk.
+",False
+[P0] Concept drift: 49% false-positive rate on newer benign apps,P0 Critical,Hackathon,ML; Testing,In Progress,Hackathon: video submission,"p0,bluewatch-mobile,ws:ml,ws:testing",Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed),"Drift result shown in UI, README and pitch | Plan for recent benign data written | FPR on newer apps re-measured after the data fix","**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** ML, Testing
+**Suggested owner (role):** Data & MLOps Engineer (YES-sponsored role — onboarding unconfirmed)
+
+### Problem / context
+On the per-class temporal split the baseline flags 49.1% of newer benign apps (precision 0.691). 65% of benign apps in the dataset are from 2011; threshold tuning on a temporal validation slice did not help (validation FPR 3.7%).
+
+### Proposed implementation
+Hackathon: present all three splits together and state the limitation. Post-event: add recent benign apps per Android version, re-run temporal evaluation, set a release gate on recent-benign FPR.
+
+### Dependencies
+#5
+
+### Acceptance criteria
+- [ ] Drift result shown in UI, README and pitch
+- [ ] Plan for recent benign data written
+- [ ] FPR on newer apps re-measured after the data fix
+
+### Source / requirement
+metrics.json split B
+
+### Safety / data / licensing
+Do not quote split A results alone.
+",False
+[P0] Disable Flask debug mode and fix session secret in container,P0 Critical,Hackathon,Security/Privacy,Done,Hackathon: video submission,"p0,bluewatch-mobile,ws:security-privacy,security",Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed),Debug off by default in Docker | SECRET_KEY from environment | Sessions survive container restart,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Security/Privacy
+**Suggested owner (role):** Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed)
+
+### Problem / context
+banking_app.py runs app.run(debug=True) inside Docker on 0.0.0.0:5000; the Werkzeug debugger allows code execution if reachable. The session secret is random per start, so every restart logs everyone out.
+
+### Proposed implementation
+Read the debug flag from env (default off); load SECRET_KEY from .env; keep placeholders in .env.example.
+
+### Dependencies
+None
+
+### Acceptance criteria
+- [ ] Debug off by default in Docker
+- [ ] SECRET_KEY from environment
+- [ ] Sessions survive container restart
+
+### Source / requirement
+Repository inspection 2026-10-23
+
+### Safety / data / licensing
+Do not expose port 5000 beyond localhost during the event.
+",False
+[P1] Fix log formatter errors on werkzeug/library log lines,P1 High,Hackathon,Backend/API,Done,Hackathon: video submission,"p1,bluewatch-mobile,ws:backend-api",Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed),No logging errors on container start | SOC log format unchanged for Logstash,"**Priority:** P1 High · **Phase:** Hackathon · **Workstream:** Backend/API
+**Suggested owner (role):** Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed)
+
+### Problem / context
+Root log format requires %(user)s and %(ip)s; werkzeug and library records lack them, producing 'Formatting field not found' errors in the container log.
+
+### Proposed implementation
+Add a logging.Filter that sets default user/ip on every record, or a dedicated handler for app security events.
+
+### Dependencies
+None
+
+### Acceptance criteria
+- [ ] No logging errors on container start
+- [ ] SOC log format unchanged for Logstash
+
+### Source / requirement
+docker logs banking-app, 2026-10-23
+
+### Safety / data / licensing
+None.
+",False
+[P1] Stop tracking the application log file in git,P1 High,Hackathon,Security/Privacy; Documentation,Ready,Hackathon: video submission,"p1,bluewatch-mobile,ws:security-privacy,ws:documentation,security",Tech Lead (Liso Wycliff Seth Hlatshwayo),Log no longer tracked | Clean git status after running the app,"**Priority:** P1 High · **Phase:** Hackathon · **Workstream:** Security/Privacy, Documentation
+**Suggested owner (role):** Tech Lead (Liso Wycliff Seth Hlatshwayo)
+
+### Problem / context
+insider-threat-lab/logs/app/banking_app.log is tracked (included in commit 55b1123) and contains lab usernames and IPs.
+
+### Proposed implementation
+git rm --cached the log; .gitignore already covers *.log.
+
+### Dependencies
+None
+
+### Acceptance criteria
+- [ ] Log no longer tracked
+- [ ] Clean git status after running the app
+
+### Source / requirement
+Repository inspection
+
+### Safety / data / licensing
+Logs can contain personal data in real deployments.
+",False
+[P1] Wazuh alerts not reaching Elasticsearch; Wazuh API refusing TLS,P1 High,Hackathon,Security/Privacy; Threat Intelligence,Ready,Hackathon: video submission,"p1,bluewatch-mobile,ws:security-privacy,ws:threat-intelligence,security",Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed),Wazuh alerts visible in Kibana | API reachable or explicitly marked out of scope,"**Priority:** P1 High · **Phase:** Hackathon · **Workstream:** Security/Privacy, Threat Intelligence
+**Suggested owner (role):** Cloud & DevSecOps Engineer (YES-sponsored role — onboarding unconfirmed)
+
+### Problem / context
+wazuh-manager filebeat targets host wazuh.indexer, which is not in docker-compose.yml, so Wazuh alerts never reach Elasticsearch/Kibana. https://localhost:55000 fails the TLS handshake.
+
+### Proposed implementation
+Point filebeat at the compose elasticsearch service (or add a Wazuh indexer), check the API certificate, document. Decide whether Wazuh is in demo scope.
+
+### Dependencies
+SEC (regenerate the tracked Wazuh key first)
+
+### Acceptance criteria
+- [ ] Wazuh alerts visible in Kibana
+- [ ] API reachable or explicitly marked out of scope
+
+### Source / requirement
+docker logs wazuh-manager, 2026-10-23
+
+### Safety / data / licensing
+Use regenerated keys, never the committed one.
+",False
+[P0] Demo readiness: warm NVD cache and rehearse the click path,P0 Critical,Hackathon,Pitch; Testing,In Progress,Hackathon: video submission,"p0,bluewatch-mobile,ws:pitch,ws:testing",Full Stack / Prototype Engineer (Stacey-Lee Pietersen),Full click path runs in under 90 s | Fallback screen recording saved,"**Priority:** P0 Critical · **Phase:** Hackathon · **Workstream:** Pitch, Testing
+**Suggested owner (role):** Full Stack / Prototype Engineer (Stacey-Lee Pietersen)
+
+### Problem / context
+The first NVD lookup per Android version takes about 6 minutes without an API key; Docker Desktop has already stopped the stack once.
+
+### Proposed implementation
+Warm the cache for versions shown (NVD_CACHE_DIR=../nvd_cache python -m mobile_risk.nvd 13.0 14.0); request an NVD API key; raise Docker memory; rehearse: login, BlueWatch Mobile, 6 samples, NVD panel, Kibana Discover for MOBILE_RISK_ASSESSMENT.
+
+### Dependencies
+#7, #25
+
+### Acceptance criteria
+- [ ] Full click path runs in under 90 s
+- [ ] Fallback screen recording saved
+
+### Source / requirement
+Build notes 2026-10-23
+
+### Safety / data / licensing
+Lab credentials only on screen.
+",False
+"[P1] Business, integration and licensing model write-up",P1 High,0–30 days,Commercial; Product,In Progress,Post-event: 0–30 days,"p1,bluewatch-mobile,ws:commercial,ws:product",Founder / Business Lead (Liso Wycliff Seth Hlatshwayo),Each claim tagged Built / Planned / Assumption | Pricing validated with at least 3 buyer conversations,"**Priority:** P1 High · **Phase:** 0–30 days · **Workstream:** Commercial, Product
+**Suggested owner (role):** Founder / Business Lead (Liso Wycliff Seth Hlatshwayo)
+
+### Problem / context
+Judges and buyers will ask how banks with existing SOCs integrate and pay.
+
+### Proposed implementation
+Draft: bluewatch-mobile/docs/BUSINESS_AND_INTEGRATION.md covering buyer value, integration paths (API, SIEM forwarding, SOAR webhook, self-hosted, SDK), training lifecycle, licence tiers, CVE-component uses. Validate with interviews (#19).
+
+### Dependencies
+#19
+
+### Acceptance criteria
+- [ ] Each claim tagged Built / Planned / Assumption
+- [ ] Pricing validated with at least 3 buyer conversations
+
+### Source / requirement
+Team request 2026-10-23
+
+### Safety / data / licensing
+No compliance or efficacy claims beyond measured evidence.
+",False
+[P0] Secure commercial rights to training data,P0 Critical,0–30 days,Data; Commercial,Backlog,Post-event: 0–30 days,"p0,bluewatch-mobile,ws:data,ws:commercial",Tech Lead (Liso Wycliff Seth Hlatshwayo),Written permission or a replacement dataset plan | Data register updated with commercial terms,"**Priority:** P0 Critical · **Phase:** 0–30 days · **Workstream:** Data, Commercial
+**Suggested owner (role):** Tech Lead (Liso Wycliff Seth Hlatshwayo)
+
+### Problem / context
+KronoDroid is released for research purposes; selling a model trained on it needs the author's permission or replacement data.
+
+### Proposed implementation
+Email the dataset author about commercial terms; in parallel, scope own benign/malware collection in an isolated lab and partner threat-intel licences.
+
+### Dependencies
+#2
+
+### Acceptance criteria
+- [ ] Written permission or a replacement dataset plan
+- [ ] Data register updated with commercial terms
+
+### Source / requirement
+KronoDroid README (research purpose, citation required)
+
+### Safety / data / licensing
+No malware handling outside an isolated environment.
 ",False

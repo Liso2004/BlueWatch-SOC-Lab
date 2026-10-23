@@ -58,8 +58,8 @@
       "precision": 0.9822,
       "recall": 0.9656,
       "f1": 0.9738,
-      "false_positive_rate": 0.02,
-      "batch_inference_ms_per_sample": 0.0157,
+      "false_positive_rate": 0.019983,
+      "batch_inference_ms_per_sample": 0.0151,
       "pr_auc": 0.9969,
       "roc_auc": 0.9957
     },
@@ -100,8 +100,8 @@
       "precision": 0.6914,
       "recall": 0.9626,
       "f1": 0.8048,
-      "false_positive_rate": 0.4915,
-      "batch_inference_ms_per_sample": 0.0142,
+      "false_positive_rate": 0.491476,
+      "batch_inference_ms_per_sample": 0.0115,
       "pr_auc": 0.9763,
       "roc_auc": 0.9637
     },
@@ -122,10 +122,32 @@
       "precision": 0.9892,
       "recall": 0.9299,
       "f1": 0.9586,
-      "false_positive_rate": 0.0196,
-      "batch_inference_ms_per_sample": 0.0169,
+      "false_positive_rate": 0.019564,
+      "batch_inference_ms_per_sample": 0.0196,
       "pr_auc": 0.9956,
       "roc_auc": 0.9909
+    },
+    "D_runtime_behaviour_only": {
+      "description": "Same split as A, trained only on 220 runtime features (system-call counts and contacted IPs; no permissions or manifest data). Comparison only; not deployed.",
+      "test_size": 15342,
+      "test_class_counts": {
+        "benign": 7156,
+        "malware": 8186
+      },
+      "threshold": 0.5,
+      "confusion_matrix": {
+        "tn": 6923,
+        "fp": 233,
+        "fn": 891,
+        "tp": 7295
+      },
+      "precision": 0.969,
+      "recall": 0.8912,
+      "f1": 0.9285,
+      "false_positive_rate": 0.03256,
+      "batch_inference_ms_per_sample": 0.0094,
+      "pr_auc": 0.9836,
+      "roc_auc": 0.9769
     }
   }
 }

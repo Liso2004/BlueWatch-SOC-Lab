@@ -1,0 +1,4778 @@
+{
+ "features_version": "kronodroid-real-v1/features-1",
+ "model_version": "bwm-rf-0.1.0",
+ "source": "KronoDroid real-device v1 (research use, citation required)",
+ "label_mapping": {
+  "0": "benign",
+  "1": "malware"
+ },
+ "excluded_from_training": [
+  "Package",
+  "sha256",
+  "MalFamily",
+  "Detection_Ratio",
+  "Scanners",
+  "TimesSubmitted",
+  "EarliestModDate",
+  "HighestModDate",
+  "Malware (label)"
+ ],
+ "request_contract": "POST /api/v1/mobile/assess {\"sample_id\": str<=100 (optional), \"features\": {name: number>=0}}; unknown names, negatives, booleans or non-numbers -> 422; omitted features = 0",
+ "counts": {
+  "observed_runtime": 220,
+  "declared_permission": 236,
+  "manifest_count": 19
+ },
+ "features": [
+  {
+   "name": "execve",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'execve' Linux system call observed during dynamic analysis",
+   "behaviour_category": "Dynamic code / payload loading",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getuid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getuid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 41.0,
+   "benign_training_p90": 238.0
+  },
+  {
+   "name": "getgid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getgid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "geteuid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'geteuid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 6.0
+  },
+  {
+   "name": "getegid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getegid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getresuid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getresuid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getresgid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getresgid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "readahead",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'readahead' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getgroups32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getgroups32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getpgid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getpgid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getppid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getppid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getsid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getsid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setsid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setsid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setgid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setgid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setuid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setuid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setreuid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setreuid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setresuid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setresuid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setresgid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setresgid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "brk",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'brk' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "kill",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'kill' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "tgkill",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'tgkill' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ptrace",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'ptrace' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getrusage",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getrusage' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getpriority",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getpriority' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setpriority",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setpriority' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ugetrlimit",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'ugetrlimit' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setrlimit",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setrlimit' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "prlimit64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'prlimit64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setgroups32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setgroups32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setpgid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setpgid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setregid32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setregid32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "chroot",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'chroot' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "prctl",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'prctl' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 19.5,
+   "benign_training_p90": 88.0
+  },
+  {
+   "name": "capget",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'capget' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "capset",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'capset' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sigaltstack",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sigaltstack' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "acct",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'acct' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "read",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'read' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 6.0,
+   "benign_training_p90": 22.0
+  },
+  {
+   "name": "write",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'write' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 5.0,
+   "benign_training_p90": 37.0
+  },
+  {
+   "name": "pread64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'pread64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "pwrite64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'pwrite64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "preadv",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'preadv' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "pwritev",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'pwritev' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "close",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'close' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 13.0,
+   "benign_training_p90": 42.0
+  },
+  {
+   "name": "getpid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getpid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "munmap",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'munmap' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 21.0,
+   "benign_training_p90": 73.0
+  },
+  {
+   "name": "mremap",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'mremap' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "msync",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'msync' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "mprotect",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'mprotect' Linux system call observed during dynamic analysis",
+   "behaviour_category": "Dynamic code / payload loading",
+   "benign_training_median": 16.0,
+   "benign_training_p90": 591.0
+  },
+  {
+   "name": "madvise",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'madvise' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 14.0,
+   "benign_training_p90": 46.0
+  },
+  {
+   "name": "mlock",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'mlock' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "munlock",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'munlock' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "mlockall",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'mlockall' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "munlockall",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'munlockall' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "mincore",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'mincore' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ioctl",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'ioctl' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 99.0,
+   "benign_training_p90": 306.0
+  },
+  {
+   "name": "readv",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'readv' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "writev",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'writev' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 9.0,
+   "benign_training_p90": 38.0
+  },
+  {
+   "name": "fcntl64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fcntl64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 1.0,
+   "benign_training_p90": 43.0
+  },
+  {
+   "name": "flock",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'flock' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fchmod",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fchmod' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "dup",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'dup' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 2.0,
+   "benign_training_p90": 7.0
+  },
+  {
+   "name": "pipe2",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'pipe2' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "dup3",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'dup3' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fsync",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fsync' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "fdatasync",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fdatasync' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 4.0
+  },
+  {
+   "name": "fchown32",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fchown32' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sync",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sync' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fsetxattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fsetxattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fgetxattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fgetxattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "flistxattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'flistxattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fremovexattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fremovexattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getdents64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getdents64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 2.0
+  },
+  {
+   "name": "openat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'openat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "faccessat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'faccessat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fchmodat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fchmodat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fchownat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fchownat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fstatat64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fstatat64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "linkat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'linkat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "mkdirat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'mkdirat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "mknodat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'mknodat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "readlinkat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'readlinkat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "renameat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'renameat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "symlinkat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'symlinkat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "unlinkat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'unlinkat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "utimensat",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'utimensat' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "lseek",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'lseek' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 1.0,
+   "benign_training_p90": 2.0
+  },
+  {
+   "name": "_llseek",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the '_llseek' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 6.0
+  },
+  {
+   "name": "ftruncate64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'ftruncate64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sendfile",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sendfile' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sendfile64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sendfile64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "truncate",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'truncate' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "truncate64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'truncate64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "mmap2",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'mmap2' Linux system call observed during dynamic analysis",
+   "behaviour_category": "Dynamic code / payload loading",
+   "benign_training_median": 43.0,
+   "benign_training_p90": 118.0
+  },
+  {
+   "name": "fallocate",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fallocate' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fadvise64_64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fadvise64_64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fstatfs64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fstatfs64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 5.0
+  },
+  {
+   "name": "statfs64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'statfs64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fstat64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fstat64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 19.0,
+   "benign_training_p90": 138.0
+  },
+  {
+   "name": "chdir",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'chdir' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "mount",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'mount' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "umount2",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'umount2' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getcwd",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getcwd' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "fchdir",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'fchdir' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setxattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setxattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "lsetxattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'lsetxattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getxattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getxattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "lgetxattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'lgetxattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "listxattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'listxattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "llistxattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'llistxattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "removexattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'removexattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "lremovexattr",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'lremovexattr' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "swapon",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'swapon' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "swapoff",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'swapoff' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "settimeofday",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'settimeofday' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "times",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'times' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "nanosleep",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'nanosleep' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "clock_settime",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'clock_settime' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "clock_getres",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'clock_getres' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "clock_nanosleep",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'clock_nanosleep' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getitimer",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getitimer' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setitimer",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setitimer' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "timer_create",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'timer_create' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "timer_settime",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'timer_settime' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "timer_gettime",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'timer_gettime' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "timer_getoverrun",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'timer_getoverrun' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "timer_delete",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'timer_delete' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "timerfd_create",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'timerfd_create' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "timerfd_settime",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'timerfd_settime' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "timerfd_gettime",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'timerfd_gettime' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "adjtimex",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'adjtimex' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "clock_adjtime",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'clock_adjtime' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sigaction",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sigaction' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 12.0
+  },
+  {
+   "name": "rt_sigaction",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'rt_sigaction' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "rt_sigpending",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'rt_sigpending' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "rt_sigprocmask",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'rt_sigprocmask' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 10.0,
+   "benign_training_p90": 137.0
+  },
+  {
+   "name": "rt_sigsuspend",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'rt_sigsuspend' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "rt_sigtimedwait",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'rt_sigtimedwait' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "rt_sigqueueinfo",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'rt_sigqueueinfo' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "signalfd4",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'signalfd4' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "socket",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'socket' Linux system call observed during dynamic analysis",
+   "behaviour_category": "Network behaviour",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "bind",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'bind' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "connect",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'connect' Linux system call observed during dynamic analysis",
+   "behaviour_category": "Network behaviour",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "listen",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'listen' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getsockname",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getsockname' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getpeername",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getpeername' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "socketpair",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'socketpair' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sendto",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sendto' Linux system call observed during dynamic analysis",
+   "behaviour_category": "Network behaviour",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "recvfrom",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'recvfrom' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 8.0,
+   "benign_training_p90": 30.0
+  },
+  {
+   "name": "shutdown",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'shutdown' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setsockopt",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setsockopt' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getsockopt",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getsockopt' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 1.0,
+   "benign_training_p90": 3.0
+  },
+  {
+   "name": "sendmsg",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sendmsg' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "recvmsg",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'recvmsg' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "accept4",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'accept4' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "recvmmsg",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'recvmmsg' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sendmmsg",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sendmmsg' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sched_setscheduler",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_setscheduler' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sched_getscheduler",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_getscheduler' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sched_yield",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_yield' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "sched_setparam",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_setparam' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sched_getparam",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_getparam' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sched_get_priority_max",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_get_priority_max' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sched_get_priority_min",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_get_priority_min' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sched_rr_get_interval",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_rr_get_interval' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sched_setaffinity",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_setaffinity' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setns",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setns' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "unshare",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'unshare' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sched_getaffinity",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sched_getaffinity' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getcpu",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getcpu' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "uname",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'uname' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "umask",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'umask' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "reboot",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'reboot' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "init_module",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'init_module' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "delete_module",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'delete_module' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "syslog",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'syslog' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sysinfo",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sysinfo' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "personality",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'personality' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "tee",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'tee' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "splice",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'splice' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "vmsplice",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'vmsplice' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "epoll_create1",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'epoll_create1' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "epoll_ctl",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'epoll_ctl' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 2.0,
+   "benign_training_p90": 4.0
+  },
+  {
+   "name": "epoll_pwait",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'epoll_pwait' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "eventfd2",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'eventfd2' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "exit_group",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'exit_group' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "exit",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'exit' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "inotify_init1",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'inotify_init1' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "inotify_add_watch",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'inotify_add_watch' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "inotify_rm_watch",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'inotify_rm_watch' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "pselect6",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'pselect6' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ppoll",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'ppoll' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "process_vm_readv",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'process_vm_readv' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "set_tid_address",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'set_tid_address' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setfsgid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setfsgid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "setfsuid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'setfsuid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "sethostname",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'sethostname' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "wait4",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'wait4' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "waitid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'waitid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "set_thread_area",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'set_thread_area' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "clock_gettime",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'clock_gettime' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 334.5,
+   "benign_training_p90": 1265.0
+  },
+  {
+   "name": "gettimeofday",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'gettimeofday' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 4.0,
+   "benign_training_p90": 46.0
+  },
+  {
+   "name": "clone",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'clone' Linux system call observed during dynamic analysis",
+   "behaviour_category": "Dynamic code / payload loading",
+   "benign_training_median": 3.0,
+   "benign_training_p90": 13.0
+  },
+  {
+   "name": "futex",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'futex' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 29.0,
+   "benign_training_p90": 116.0
+  },
+  {
+   "name": "vfork",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'vfork' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "rt_sigreturn",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'rt_sigreturn' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "restart_syscall",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'restart_syscall' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "getrandom",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getrandom' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "gettid",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'gettid' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "epoll_wait",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'epoll_wait' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "stat64",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'stat64' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "pipe",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'pipe' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "pread",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'pread' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 22.0,
+   "benign_training_p90": 117.0
+  },
+  {
+   "name": "getrlimit",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'getrlimit' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "pwrite",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'pwrite' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 10.0
+  },
+  {
+   "name": "recv",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'recv' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "open",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'open' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "syscall_983042",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'syscall_983042' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_300",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_300 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_301",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_301 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_302",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_302 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_303",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_303 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_304",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_304 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_305",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_305 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 17.0,
+   "benign_training_p90": 46.0
+  },
+  {
+   "name": "SYS_306",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_306 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 4.0
+  },
+  {
+   "name": "SYS_307",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_307 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_308",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_308 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_309",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_309 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_310",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_310 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 5.0,
+   "benign_training_p90": 124.90000000000146
+  },
+  {
+   "name": "SYS_311",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_311 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 2.0
+  },
+  {
+   "name": "SYS_312",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_312 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_313",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_313 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_314",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_314 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_315",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_315 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 5.0
+  },
+  {
+   "name": "SYS_316",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_316 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 2.0
+  },
+  {
+   "name": "SYS_317",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_317 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 3.0,
+   "benign_training_p90": 13.0
+  },
+  {
+   "name": "SYS_318",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_318 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_319",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_319 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_320",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_320 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_321",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_321 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_322",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_322 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_323",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_323 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_324",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_324 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_325",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_325 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_326",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_326 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_327",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_327 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_328",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_328 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_329",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_329 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 14.0,
+   "benign_training_p90": 251.0
+  },
+  {
+   "name": "SYS_330",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_330 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_331",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_331 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_332",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_332 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_333",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_333 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_334",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_334 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_335",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_335 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_336",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_336 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_337",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_337 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_338",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_338 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_339",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_339 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "SYS_340",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_340 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "SYS_341",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_341 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_342",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_342 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_343",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_343 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_344",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_344 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_345",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_345 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_346",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_346 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_347",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_347 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_348",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_348 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_349",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_349 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_350",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_350 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_351",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_351 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_352",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_352 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_353",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_353 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_354",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_354 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_355",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_355 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_356",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_356 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_357",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_357 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_358",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_358 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_359",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_359 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_360",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_360 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_361",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_361 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_362",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_362 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_363",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_363 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_364",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_364 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_365",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_365 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_366",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_366 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_367",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_367 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_368",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_368 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYS_369",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYS_369 in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "nr_syscalls",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count of the 'nr_syscalls' Linux system call observed during dynamic analysis",
+   "behaviour_category": null,
+   "benign_training_median": 1116.0,
+   "benign_training_p90": 3780.9000000000015
+  },
+  {
+   "name": "ACCEPT_HANDOVER",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCEPT_HANDOVER in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ACCESS_BACKGROUND_LOCATION",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCESS_BACKGROUND_LOCATION in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ACCESS_CHECKIN_PROPERTIES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCESS_CHECKIN_PROPERTIES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ACCESS_COARSE_LOCATION",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCESS_COARSE_LOCATION in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "ACCESS_FINE_LOCATION",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCESS_FINE_LOCATION in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "ACCESS_LOCATION_EXTRA_COMMANDS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCESS_LOCATION_EXTRA_COMMANDS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ACCESS_MEDIA_LOCATION",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCESS_MEDIA_LOCATION in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ACCESS_NETWORK_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCESS_NETWORK_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "ACCESS_NOTIFICATION_POLICY",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCESS_NOTIFICATION_POLICY in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ACCESS_WIFI_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCESS_WIFI_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "ACCOUNT_MANAGER",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACCOUNT_MANAGER in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ACTIVITY_RECOGNITION",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ACTIVITY_RECOGNITION in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ADD_VOICEMAIL",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ADD_VOICEMAIL in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "ANSWER_PHONE_CALLS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.ANSWER_PHONE_CALLS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BATTERY_STATS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BATTERY_STATS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_ACCESSIBILITY_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_ACCESSIBILITY_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": "Accessibility abuse",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_APPWIDGET",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_APPWIDGET in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_AUTOFILL_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_AUTOFILL_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_CALL_REDIRECTION_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_CALL_REDIRECTION_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_CARRIER_MESSAGING_CLIENT_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_CARRIER_MESSAGING_CLIENT_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_CARRIER_MESSAGING_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_CARRIER_MESSAGING_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_CARRIER_SERVICES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_CARRIER_SERVICES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_CHOOSER_TARGET_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_CHOOSER_TARGET_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_CONDITION_PROVIDER_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_CONDITION_PROVIDER_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_CONTROLS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_CONTROLS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_DEVICE_ADMIN",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_DEVICE_ADMIN in its manifest, else 0 (static)",
+   "behaviour_category": "Persistence / device control",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_DREAM_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_DREAM_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_INCALL_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_INCALL_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_INPUT_METHOD",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_INPUT_METHOD in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_MIDI_DEVICE_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_MIDI_DEVICE_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_NFC_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_NFC_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_NOTIFICATION_LISTENER_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_NOTIFICATION_LISTENER_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": "SMS / notification interception",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_PRINT_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_PRINT_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_QUICK_ACCESS_WALLET_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_QUICK_ACCESS_WALLET_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_QUICK_SETTINGS_TILE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_QUICK_SETTINGS_TILE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_REMOTEVIEWS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_REMOTEVIEWS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_SCREENING_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_SCREENING_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_TELECOM_CONNECTION_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_TELECOM_CONNECTION_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_TEXT_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_TEXT_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_TV_INPUT",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_TV_INPUT in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_VISUAL_VOICEMAIL_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_VISUAL_VOICEMAIL_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_VOICE_INTERACTION",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_VOICE_INTERACTION in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_VPN_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_VPN_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_VR_LISTENER_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_VR_LISTENER_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BIND_WALLPAPER",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BIND_WALLPAPER in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BLUETOOTH",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BLUETOOTH in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BLUETOOTH_ADMIN",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BLUETOOTH_ADMIN in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BLUETOOTH_PRIVILEGED",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BLUETOOTH_PRIVILEGED in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BODY_SENSORS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BODY_SENSORS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BROADCAST_PACKAGE_REMOVED",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BROADCAST_PACKAGE_REMOVED in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BROADCAST_SMS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BROADCAST_SMS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BROADCAST_STICKY",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BROADCAST_STICKY in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "BROADCAST_WAP_PUSH",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.BROADCAST_WAP_PUSH in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CALL_COMPANION_APP",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CALL_COMPANION_APP in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CALL_PHONE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CALL_PHONE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CALL_PRIVILEGED",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CALL_PRIVILEGED in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CAMERA",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CAMERA in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CAPTURE_AUDIO_OUTPUT",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CAPTURE_AUDIO_OUTPUT in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CHANGE_COMPONENT_ENABLED_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CHANGE_COMPONENT_ENABLED_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CHANGE_CONFIGURATION",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CHANGE_CONFIGURATION in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CHANGE_NETWORK_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CHANGE_NETWORK_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CHANGE_WIFI_MULTICAST_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CHANGE_WIFI_MULTICAST_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CHANGE_WIFI_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CHANGE_WIFI_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CLEAR_APP_CACHE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CLEAR_APP_CACHE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "CONTROL_LOCATION_UPDATES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.CONTROL_LOCATION_UPDATES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "DELETE_CACHE_FILES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.DELETE_CACHE_FILES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "DELETE_PACKAGES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.DELETE_PACKAGES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "DIAGNOSTIC",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.DIAGNOSTIC in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "DISABLE_KEYGUARD",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.DISABLE_KEYGUARD in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "DUMP",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.DUMP in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "EXPAND_STATUS_BAR",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.EXPAND_STATUS_BAR in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "FACTORY_TEST",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.FACTORY_TEST in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "FOREGROUND_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.FOREGROUND_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "GET_ACCOUNTS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.GET_ACCOUNTS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "GET_ACCOUNTS_PRIVILEGED",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.GET_ACCOUNTS_PRIVILEGED in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "GET_PACKAGE_SIZE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.GET_PACKAGE_SIZE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "GET_TASKS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.GET_TASKS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "GLOBAL_SEARCH",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.GLOBAL_SEARCH in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "INSTALL_LOCATION_PROVIDER",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.INSTALL_LOCATION_PROVIDER in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "INSTALL_PACKAGES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.INSTALL_PACKAGES in its manifest, else 0 (static)",
+   "behaviour_category": "Dynamic code / payload loading",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "INSTALL_SHORTCUT",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.INSTALL_SHORTCUT in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "INSTANT_APP_FOREGROUND_SERVICE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.INSTANT_APP_FOREGROUND_SERVICE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "INTERACT_ACROSS_PROFILES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.INTERACT_ACROSS_PROFILES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "INTERNET",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.INTERNET in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 1.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "KILL_BACKGROUND_PROCESSES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.KILL_BACKGROUND_PROCESSES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "LOADER_USAGE_STATS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.LOADER_USAGE_STATS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "LOCATION_HARDWARE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.LOCATION_HARDWARE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "MANAGE_DOCUMENTS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.MANAGE_DOCUMENTS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "MANAGE_EXTERNAL_STORAGE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.MANAGE_EXTERNAL_STORAGE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "MANAGE_OWN_CALLS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.MANAGE_OWN_CALLS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "MASTER_CLEAR",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.MASTER_CLEAR in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "MEDIA_CONTENT_CONTROL",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.MEDIA_CONTENT_CONTROL in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "MODIFY_AUDIO_SETTINGS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.MODIFY_AUDIO_SETTINGS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "MODIFY_PHONE_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.MODIFY_PHONE_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "MOUNT_FORMAT_FILESYSTEMS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.MOUNT_FORMAT_FILESYSTEMS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "MOUNT_UNMOUNT_FILESYSTEMS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.MOUNT_UNMOUNT_FILESYSTEMS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "NFC",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.NFC in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "NFC_PREFERRED_PAYMENT_INFO",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.NFC_PREFERRED_PAYMENT_INFO in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "NFC_TRANSACTION_EVENT",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.NFC_TRANSACTION_EVENT in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "PACKAGE_USAGE_STATS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.PACKAGE_USAGE_STATS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "PERSISTENT_ACTIVITY",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.PERSISTENT_ACTIVITY in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "PROCESS_OUTGOING_CALLS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.PROCESS_OUTGOING_CALLS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "QUERY_ALL_PACKAGES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.QUERY_ALL_PACKAGES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_CALENDAR",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_CALENDAR in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_CALL_LOG",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_CALL_LOG in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_CONTACTS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_CONTACTS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_EXTERNAL_STORAGE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_EXTERNAL_STORAGE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_INPUT_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_INPUT_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_LOGS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_LOGS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_PHONE_NUMBERS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_PHONE_NUMBERS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_PHONE_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_PHONE_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "READ_PRECISE_PHONE_STATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_PRECISE_PHONE_STATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_SMS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_SMS in its manifest, else 0 (static)",
+   "behaviour_category": "SMS / notification interception",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_SYNC_SETTINGS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_SYNC_SETTINGS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_SYNC_STATS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_SYNC_STATS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "READ_VOICEMAIL",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.READ_VOICEMAIL in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "REBOOT",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.REBOOT in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "RECEIVE_BOOT_COMPLETED",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.RECEIVE_BOOT_COMPLETED in its manifest, else 0 (static)",
+   "behaviour_category": "Persistence / device control",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "RECEIVE_MMS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.RECEIVE_MMS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "RECEIVE_SMS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.RECEIVE_SMS in its manifest, else 0 (static)",
+   "behaviour_category": "SMS / notification interception",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "RECEIVE_WAP_PUSH",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.RECEIVE_WAP_PUSH in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "RECORD_AUDIO",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.RECORD_AUDIO in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "REORDER_TASKS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.REORDER_TASKS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "REQUEST_COMPANION_RUN_IN_BACKGROUND",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.REQUEST_COMPANION_RUN_IN_BACKGROUND in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "REQUEST_COMPANION_USE_DATA_IN_BACKGROUND",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.REQUEST_COMPANION_USE_DATA_IN_BACKGROUND in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "REQUEST_DELETE_PACKAGES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.REQUEST_DELETE_PACKAGES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "REQUEST_INSTALL_PACKAGES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.REQUEST_INSTALL_PACKAGES in its manifest, else 0 (static)",
+   "behaviour_category": "Dynamic code / payload loading",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "REQUEST_PASSWORD_COMPLEXITY",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.REQUEST_PASSWORD_COMPLEXITY in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "RESTART_PACKAGES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.RESTART_PACKAGES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SEND_RESPOND_VIA_MESSAGE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SEND_RESPOND_VIA_MESSAGE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SEND_SMS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SEND_SMS in its manifest, else 0 (static)",
+   "behaviour_category": "SMS / notification interception",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_ALARM",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_ALARM in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_ALWAYS_FINISH",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_ALWAYS_FINISH in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_ANIMATION_SCALE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_ANIMATION_SCALE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_DEBUG_APP",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_DEBUG_APP in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_PREFERRED_APPLICATIONS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_PREFERRED_APPLICATIONS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_PROCESS_LIMIT",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_PROCESS_LIMIT in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_TIME",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_TIME in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_TIME_ZONE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_TIME_ZONE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_WALLPAPER",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_WALLPAPER in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SET_WALLPAPER_HINTS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SET_WALLPAPER_HINTS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SIGNAL_PERSISTENT_PROCESSES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SIGNAL_PERSISTENT_PROCESSES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SMS_FINANCIAL_TRANSACTIONS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SMS_FINANCIAL_TRANSACTIONS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "START_VIEW_PERMISSION_USAGE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.START_VIEW_PERMISSION_USAGE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "STATUS_BAR",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.STATUS_BAR in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "SYSTEM_ALERT_WINDOW",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.SYSTEM_ALERT_WINDOW in its manifest, else 0 (static)",
+   "behaviour_category": "Screen overlay",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "TRANSMIT_IR",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.TRANSMIT_IR in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "UNINSTALL_SHORTCUT",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.UNINSTALL_SHORTCUT in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "UPDATE_DEVICE_STATS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.UPDATE_DEVICE_STATS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "USE_BIOMETRIC",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.USE_BIOMETRIC in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "USE_FINGERPRINT",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.USE_FINGERPRINT in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "USE_FULL_SCREEN_INTENT",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.USE_FULL_SCREEN_INTENT in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "USE_SIP",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.USE_SIP in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "VIBRATE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.VIBRATE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "WAKE_LOCK",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WAKE_LOCK in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "WRITE_APN_SETTINGS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_APN_SETTINGS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "WRITE_CALENDAR",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_CALENDAR in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "WRITE_CALL_LOG",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_CALL_LOG in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "WRITE_CONTACTS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_CONTACTS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "WRITE_EXTERNAL_STORAGE",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_EXTERNAL_STORAGE in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "WRITE_GSERVICES",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_GSERVICES in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "WRITE_SECURE_SETTINGS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_SECURE_SETTINGS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "WRITE_SETTINGS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_SETTINGS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "WRITE_SYNC_SETTINGS",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_SYNC_SETTINGS in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "WRITE_VOICEMAIL",
+   "kind": "declared_permission",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "1 if the app requests android.permission.WRITE_VOICEMAIL in its manifest, else 0 (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "nr_permissions",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 3.0,
+   "benign_training_p90": 8.0
+  },
+  {
+   "name": "normal",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 2.0,
+   "benign_training_p90": 4.0
+  },
+  {
+   "name": "dangerous",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 1.0,
+   "benign_training_p90": 4.0
+  },
+  {
+   "name": "signature",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "custom_yes",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "nr_custom",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 1.0
+  },
+  {
+   "name": "total_perm",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 3.0,
+   "benign_training_p90": 9.0
+  },
+  {
+   "name": "CFileSize",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 728379.0,
+   "benign_training_p90": 4693704.600000004
+  },
+  {
+   "name": "UFileSize",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 1051171.0,
+   "benign_training_p90": 5943612.000000004
+  },
+  {
+   "name": "FilesInsideAPK",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 69.0,
+   "benign_training_p90": 580.0
+  },
+  {
+   "name": "NrContactedIps",
+   "kind": "observed_runtime",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Number of distinct IP addresses the app contacted during dynamic analysis",
+   "behaviour_category": "Network behaviour",
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "Activities",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 4.0,
+   "benign_training_p90": 19.0
+  },
+  {
+   "name": "NrIntServices",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "NrIntServicesActions",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "NrIntActivities",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 1.0,
+   "benign_training_p90": 3.0
+  },
+  {
+   "name": "NrIntActivitiesActions",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 1.0,
+   "benign_training_p90": 4.0
+  },
+  {
+   "name": "NrIntReceivers",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 0.0
+  },
+  {
+   "name": "NrIntReceiversActions",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 3.0
+  },
+  {
+   "name": "TotalIntentFilters",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 1.0,
+   "benign_training_p90": 6.0
+  },
+  {
+   "name": "NrServices",
+   "kind": "manifest_count",
+   "type": "number >= 0",
+   "missing": "treated as 0 (not observed)",
+   "description": "Count or size derived from the APK manifest/package (static)",
+   "behaviour_category": null,
+   "benign_training_median": 0.0,
+   "benign_training_p90": 2.0
+  }
+ ]
+}
