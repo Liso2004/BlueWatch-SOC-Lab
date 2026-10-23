@@ -1,0 +1,24 @@
+# Python environments
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Runtime files
+*.log
+
+# Future frontend
+node_modules/
+dist/
+
+# Private/generated keys
+*.key
+*.pem
+
+# BlueWatch Mobile datasets (KronoDroid is redistributed by its author; keep local copies out of git)
+bluewatch-mobile/data/

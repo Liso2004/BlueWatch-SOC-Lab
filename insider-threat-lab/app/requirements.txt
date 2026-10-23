@@ -7,3 +7,9 @@ python-dotenv==1.0.0
 requests==2.31.0
 dnspython==2.4.2
 cryptography>=41.0.0
+
+# BlueWatch Mobile model runtime (must match versions used by bluewatch-mobile/ml/train.py)
+scikit-learn==1.9.1
+numpy==2.5.4
+scipy==1.18.1
+joblib==1.6.0

@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   banking-app:
@@ -14,26 +14,33 @@ services:
     volumes:
       - ./insider-threat-lab/logs/app:/var/log/app
     environment:
-      DB_HOST: mysql
-      DB_USER: bankapp
-      DB_PASSWORD: BankApp123!
-      DB_NAME: banking
+      DB_HOST: ${DB_HOST:-mysql}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-banking}
 
   mysql:
     image: mysql:8.0
     container_name: banking-db
     environment:
-      MYSQL_ROOT_PASSWORD: Liso1707
-      MYSQL_DATABASE: banking
-      MYSQL_USER: bankapp
-      MYSQL_PASSWORD: BankApp123!
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     networks:
       - bank-network
     volumes:
       - mysql-data:/var/lib/mysql
       - ./insider-threat-lab/app/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-uroot", "-pLiso1707"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-uroot",
+          "-p${MYSQL_ROOT_PASSWORD}"
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -74,9 +81,7 @@ services:
     networks:
       - bank-network
     volumes:
-      # Mount host logs so Logstash can read them
       - ./insider-threat-lab/logs:/logs
-      # Mount the pipeline config
       - ./detection/elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
 
   wazuh:

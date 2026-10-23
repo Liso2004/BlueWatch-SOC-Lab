@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SecureBank - BlueWatch Mobile</title>
+    <style>
+        body { font-family: Arial; max-width: 1200px; margin: 20px auto; padding: 0 16px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #f0f0f0; }
+        .btn { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; margin: 5px; text-decoration: none; display: inline-block; }
+        .btn.secondary { background: #6c757d; }
+        .notice { padding: 12px 16px; margin: 16px 0; background: #fff3cd; border-left: 4px solid #e0a800; }
+        .warn { padding: 12px 16px; margin: 12px 0; background: #f8d7da; border-left: 4px solid #c82333; }
+        .error { padding: 12px 16px; margin: 12px 0; background: #f8d7da; color: #721c24; }
+        .panel { border: 1px solid #ddd; padding: 16px; margin: 16px 0; }
+        .grid { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
+        @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px 10px; border: 1px solid #ddd; text-align: left; font-size: 14px; }
+        th { background: #007bff; color: white; }
+        .sample { display: block; width: 100%; text-align: left; padding: 10px; margin: 6px 0; border: 1px solid #ccc; background: #fff; cursor: pointer; }
+        .sample:hover, .sample.active { border-color: #007bff; background: #eef5ff; }
+        .muted { color: #666; font-size: 13px; }
+        .verdict { font-size: 22px; font-weight: bold; padding: 10px 14px; display: inline-block; }
+        .flag_for_review { background: #c82333; color: white; }
+        .not_flagged { background: #28a745; color: white; }
+        .bar { height: 14px; background: #e9ecef; position: relative; margin: 8px 0 4px; }
+        .bar > span { display: block; height: 100%; background: #c82333; }
+        .bar > i { position: absolute; top: -4px; bottom: -4px; width: 2px; background: #000; }
+        .match { font-weight: bold; }
+        pre { background: #f6f8fa; padding: 10px; overflow-x: auto; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>BlueWatch Mobile — Android App Risk Triage</h2>
+        <div>
+            <a href="/dashboard" class="btn secondary">Dashboard</a>
+            <a href="/logout" class="btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="notice">
+        <strong>Prototype — decision support only.</strong>
+        Scores prioritise apps for analyst review; they are not proof of malware and must not be used
+        to block customer accounts or devices on their own. Signed in as <strong>{{ username }}</strong>.
+    </div>
+
+    <div id="error"></div>
+
+    <div class="grid">
+        <div>
+            <div class="panel">
+                <h3>Labelled test samples</h3>
+                <p class="muted">Held-out KronoDroid rows never used in training. Expected label is shown so results can be checked.</p>
+                <div id="samples">Loading…</div>
+            </div>
+        </div>
+        <div>
+            <div class="panel" id="result"><p class="muted">Select a sample to run it through the model.</p></div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Model and evaluation</h3>
+        <div id="model">Loading…</div>
+    </div>
+
+    <script>
+        const esc = v => String(v ?? '—').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        const pct = v => (v * 100).toFixed(1) + '%';
+
+        function showError(msg) {
+            document.getElementById('error').innerHTML = msg ? `<div class="error">${esc(msg)}</div>` : '';
+        }
+
+        async function api(url, opts) {
+            const r = await fetch(url, opts);
+            let body = null;
+            try { body = await r.json(); } catch (e) {}
+            if (!r.ok) throw new Error((body && body.error) || `${r.status} ${r.statusText}`);
+            return body;
+        }
+
+        async function loadSamples() {
+            try {
+                const samples = await api('/api/mobile/samples');
+                document.getElementById('samples').innerHTML = samples.map(s => `
+                    <button class="sample" data-id="${esc(s.sample_id)}">
+                        <strong>${esc(s.sample_id)}</strong><br>
+                        <span class="muted">Expected: ${esc(s.expected_label)}${s.family ? ' · ' + esc(s.family) : ''} · ${esc(s.date)}</span>
+                    </button>`).join('');
+                document.querySelectorAll('.sample').forEach(b => b.onclick = () => assess(b));
+            } catch (e) {
+                document.getElementById('samples').textContent = '';
+                showError('Could not load samples: ' + e.message);
+            }
+        }
+
+        async function assess(button) {
+            document.querySelectorAll('.sample').forEach(b => b.classList.remove('active'));
+            button.classList.add('active');
+            const out = document.getElementById('result');
+            out.innerHTML = '<p class="muted">Scoring…</p>';
+            showError('');
+            try {
+                const r = await api('/api/mobile/assess', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({sample_id: button.dataset.id})
+                });
+                const predicted = r.verdict === 'flag_for_review' ? 'malware' : 'benign';
+                const agrees = r.expected_label ? (predicted === r.expected_label) : null;
+                out.innerHTML = `
+                    <h3>${esc(r.sample_id)}</h3>
+                    <span class="verdict ${esc(r.verdict)}">${r.verdict === 'flag_for_review' ? 'FLAG FOR REVIEW' : 'NOT FLAGGED'}</span>
+                    <p>Risk score <strong>${esc(r.risk_score)}</strong> (threshold ${esc(r.threshold)})</p>
+                    <div class="bar"><span style="width:${pct(r.risk_score)}"></span><i style="left:${pct(r.threshold)}"></i></div>
+                    <p class="muted">${esc(r.score_semantics)}</p>
+                    <p>Dataset label: <strong>${esc(r.expected_label)}</strong> —
+                       <span class="match">${agrees === null ? '' : agrees ? 'model agrees' : 'MODEL DISAGREES (error case — keep in evidence)'}</span></p>
+
+                    <h4>Evidence: largest departures from typical benign apps</h4>
+                    <table><tr><th>Feature</th><th>This app</th><th>Benign median</th><th>Malware median</th><th>Direction</th></tr>
+                    ${r.evidence.map(e => `<tr><td>${esc(e.feature)}</td><td>${esc(e.value)}</td><td>${esc(e.benign_median)}</td><td>${esc(e.malware_median)}</td><td>${esc(e.direction)}</td></tr>`).join('')}
+                    </table>
+                    <p class="muted">Weighted by global model importance. Supporting context, not a causal explanation.</p>
+
+                    <h4>Banking-malware related capabilities present</h4>
+                    ${r.banking_indicators_present.length
+                        ? '<ul>' + r.banking_indicators_present.map(i => `<li><code>${esc(i.feature)}</code> — ${esc(i.meaning)}</li>`).join('') + '</ul>'
+                        : '<p class="muted">None of the tracked capabilities declared.</p>'}
+                    <p class="muted">Each has legitimate uses; presence alone is not evidence of malware.</p>
+
+                    <p class="muted">Model ${esc(r.model_version)} · features ${esc(r.features_version)} · ${esc(r.features_provided)} non-zero features supplied · inference ${esc(r.inference_ms)} ms</p>
+                    <details><summary>Raw API response</summary><pre>${esc(JSON.stringify(r, null, 2))}</pre></details>`;
+            } catch (e) {
+                out.innerHTML = '';
+                showError('Assessment failed: ' + e.message);
+            }
+        }
+
+        async function loadModel() {
+            try {
+                const m = await api('/api/mobile/model');
+                const rows = Object.entries(m.evaluation).map(([k, s]) => `
+                    <tr><td><strong>${esc(k)}</strong><br><span class="muted">${esc(s.description)}</span></td>
+                    <td>${esc(s.test_size)}</td><td>${esc(s.precision)}</td><td>${esc(s.recall)}</td>
+                    <td>${esc(s.f1)}</td><td>${esc(pct(s.false_positive_rate))}</td><td>${esc(s.pr_auc)}</td>
+                    <td>TP ${esc(s.confusion_matrix.tp)} · FP ${esc(s.confusion_matrix.fp)}<br>FN ${esc(s.confusion_matrix.fn)} · TN ${esc(s.confusion_matrix.tn)}</td></tr>`).join('');
+                const drift = m.evaluation.B_per_class_temporal;
+                document.getElementById('model').innerHTML = `
+                    <p><strong>${esc(m.model_version)}</strong> · ${esc(m.algorithm)} · ${esc(m.n_features)} features · trained ${esc(m.trained_at_utc)} on ${esc(m.trained_on)}</p>
+                    <p class="muted">Dataset: <a href="${esc(m.dataset.url)}" target="_blank" rel="noopener">${esc(m.dataset.name)}</a> — ${esc(m.dataset.citation)}. Used for research/evaluation under the dataset's citation terms.</p>
+                    ${drift ? `<div class="warn"><strong>Drift warning:</strong> on newer apps (temporal split) the false-positive rate rises to ${esc(pct(drift.false_positive_rate))}.
+                      Results on the random split do not show real-world performance on today's apps.</div>` : ''}
+                    <table><tr><th>Split</th><th>Test n</th><th>Precision</th><th>Recall</th><th>F1</th><th>FPR</th><th>PR-AUC</th><th>Confusion (thr ${esc(m.threshold)})</th></tr>${rows}</table>`;
+            } catch (e) {
+                document.getElementById('model').textContent = '';
+                showError('Could not load model info: ' + e.message);
+            }
+        }
+
+        loadSamples();
+        loadModel();
+    </script>
+</body>
+</html>

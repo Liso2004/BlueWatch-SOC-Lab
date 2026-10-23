@@ -200,3 +200,6 @@
 2026-01-25 14:25:37,006 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:jdoe - IP:172.18.0.1
 2026-01-25 14:26:01,343 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:jdoe - IP:172.18.0.1
 2026-01-25 14:26:01,480 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:jdoe - IP:172.18.0.1
+2026-01-25 22:38:47,413 - INFO - LOGIN_SUCCESS: User jdoe logged in - USER:jdoe - IP:172.18.0.1
+2026-01-25 22:38:47,456 - INFO - DASHBOARD_ACCESS: User accessed dashboard - USER:jdoe - IP:172.18.0.1
+2026-01-25 22:38:49,094 - INFO - DATABASE_QUERY: Query: SELECT customers | Rows: 50 | Time: 0.083332s - USER:jdoe - IP:172.18.0.1

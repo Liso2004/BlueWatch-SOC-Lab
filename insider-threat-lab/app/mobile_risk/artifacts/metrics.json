@@ -1,0 +1,131 @@
+{
+  "model_version": "bwm-rf-0.1.0",
+  "prepare_report": {
+    "features_version": "kronodroid-real-v1/features-1",
+    "sources": {
+      "real_legitimate_v1.zip": {
+        "sha256": "21f6d507321856eefa6c40a31f484d3e532b5dea23144e3c2a9470161bd5f782",
+        "rows": 36755
+      },
+      "real_malware_v1.zip": {
+        "sha256": "03aa36a9c3aa3430523fcf87042659562e5af3219688562087107817095cb8cd",
+        "rows": 41382
+      }
+    },
+    "dropped": {
+      "invalid_or_out_of_range_date": 1421,
+      "conflicting_label_sha256": 8
+    },
+    "rows_out": 76708,
+    "class_counts": {
+      "benign": 35778,
+      "malware": 40930
+    },
+    "n_features": 475,
+    "missing_values_filled_with_zero": 5581,
+    "excluded_columns": [
+      "Detection_Ratio",
+      "EarliestModDate",
+      "HighestModDate",
+      "MalFamily",
+      "Malware",
+      "Package",
+      "Scanners",
+      "TimesSubmitted",
+      "sha256"
+    ],
+    "date_range": [
+      "2008-01-02",
+      "2020-12-14"
+    ],
+    "malware_families": 235
+  },
+  "splits": {
+    "A_random_stratified": {
+      "description": "Random stratified 80/20. Deployed model. Same eras and families appear in train and test, so this is an upper bound.",
+      "test_size": 15342,
+      "test_class_counts": {
+        "benign": 7156,
+        "malware": 8186
+      },
+      "threshold": 0.5,
+      "confusion_matrix": {
+        "tn": 7013,
+        "fp": 143,
+        "fn": 282,
+        "tp": 7904
+      },
+      "precision": 0.9822,
+      "recall": 0.9656,
+      "f1": 0.9738,
+      "false_positive_rate": 0.02,
+      "batch_inference_ms_per_sample": 0.0157,
+      "pr_auc": 0.9969,
+      "roc_auc": 0.9957
+    },
+    "B_per_class_temporal": {
+      "description": "Within each class, train on the oldest 80% by HighestModDate and test on the newest 20%. Shows degradation on newer apps (concept drift).",
+      "train_date_range": {
+        "benign": [
+          "2008-01-02",
+          "2011-08-04"
+        ],
+        "malware": [
+          "2008-02-28",
+          "2017-06-23"
+        ]
+      },
+      "test_date_range": {
+        "benign": [
+          "2011-08-04",
+          "2020-12-14"
+        ],
+        "malware": [
+          "2017-06-23",
+          "2020-11-19"
+        ]
+      },
+      "test_size": 15342,
+      "test_class_counts": {
+        "benign": 7156,
+        "malware": 8186
+      },
+      "threshold": 0.5,
+      "confusion_matrix": {
+        "tn": 3639,
+        "fp": 3517,
+        "fn": 306,
+        "tp": 7880
+      },
+      "precision": 0.6914,
+      "recall": 0.9626,
+      "f1": 0.8048,
+      "false_positive_rate": 0.4915,
+      "batch_inference_ms_per_sample": 0.0142,
+      "pr_auc": 0.9763,
+      "roc_auc": 0.9637
+    },
+    "C_unseen_malware_families": {
+      "description": "Malware families in test never appear in training (48 held-out families); benign split randomly.",
+      "test_size": 20950,
+      "test_class_counts": {
+        "benign": 7156,
+        "malware": 13794
+      },
+      "threshold": 0.5,
+      "confusion_matrix": {
+        "tn": 7016,
+        "fp": 140,
+        "fn": 967,
+        "tp": 12827
+      },
+      "precision": 0.9892,
+      "recall": 0.9299,
+      "f1": 0.9586,
+      "false_positive_rate": 0.0196,
+      "batch_inference_ms_per_sample": 0.0169,
+      "pr_auc": 0.9956,
+      "roc_auc": 0.9909
+    }
+  }
+}
