@@ -2,6 +2,14 @@
 
 A hands-on **SOC-style security monitoring lab** that simulates insider threats and authentication abuse in a banking environment. This project uses a vulnerable banking-style application integrated with the **ELK Stack (Elasticsearch, Logstash, Kibana)** and **Wazuh** to ingest, analyze, and visualize security-relevant logs.
 
+
+> **YES AI Hackathon 2026 — BlueWatch Mobile (Challenge 3: Android Banking Malware Detection).**
+> Built on top of this lab during the event: Android app risk triage for bank SOC and fraud teams
+> — behavioural ML detection, grounded GenAI case briefs, analyst decisions, a keyed bank API and
+> SIEM events. Start here: [`bluewatch-mobile/README.md`](bluewatch-mobile/README.md) ·
+> AI/data/third-party disclosure: [`bluewatch-mobile/DISCLOSURE.md`](bluewatch-mobile/DISCLOSURE.md).
+> Everything below describes the pre-existing SOC Lab (January 2026).
+
 ---
 
 ## 🎯 Project Goals
@@ -17,7 +25,7 @@ A hands-on **SOC-style security monitoring lab** that simulates insider threats 
 
 ### Application
 
-- Node.js / Express (Banking App)
+- Python / Flask (Banking App)
 - MySQL 8.0 (Transactional Database)
 
 ### Security & Monitoring
