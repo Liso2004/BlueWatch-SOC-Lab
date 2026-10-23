@@ -1,7 +1,7 @@
 {% extends "console_base.html" %}
 {% block title %}Android App Risk{% endblock %}
 {% block main %}
-<div class="topbar">
+<div class="pagehead">
     <div><h1>Android App Risk</h1><p class="muted">Check whether an Android app behaves like banking malware.</p></div>
 </div>
 
@@ -163,7 +163,7 @@
             </tbody></table>
 
             <h3 style="margin-top:1rem">AI case brief</h3>
-            <button class="btn ghost" onclick="loadBrief()">✍ Write AI case brief</button>
+            <button class="btn ghost" onclick="loadBrief()">Write AI case brief</button>
             <div id="brief" style="margin-top:.5rem"></div>
 
             <h3 style="margin-top:1rem">Your decision</h3>

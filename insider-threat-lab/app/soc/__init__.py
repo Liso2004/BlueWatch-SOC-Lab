@@ -15,6 +15,8 @@ from . import detections, events, incidents
 
 bp = Blueprint("soc", __name__)
 
+WARN_RECORDS = 50  # one request returning this many customer records counts as a warning sign
+
 
 def team():
     return [t.strip() for t in os.getenv("SOC_TEAM", "analyst,jdoe,admin,Liso,Stacey-Lee").split(",") if t.strip()]
@@ -74,7 +76,36 @@ def overview():
     types = Counter(e["name"] for e in evs)
     apps = [e for e in evs if e["code"] == "MOBILE_RISK_ASSESSMENT"]
     splits = mobile_risk.get_model().metrics["splits"]
+    all_inc = incidents.list_incidents()
+    warning = [e for e in evs if e["code"] in ("LOGIN_FAILED", "API_AUTH_FAILED")
+               or (e["code"] in ("DATABASE_QUERY", "SEARCH_QUERY") and e.get("records", 0) >= WARN_RECORDS)
+               or (e["code"] == "MOBILE_RISK_ASSESSMENT" and e.get("verdict") == "flag_for_review")]
+    funnel = [
+        {"stage": "Security events", "value": len(evs), "explain": "Everything the bank's systems recorded"},
+        {"stage": "Warning signs", "value": len(warning),
+         "explain": f"Failed sign-ins, rejected API keys, {WARN_RECORDS}+ records viewed at once, risky apps"},
+        {"stage": "Incidents opened", "value": len(all_inc), "explain": "Warning signs grouped into cases"},
+        {"stage": "Being handled", "value": sum(1 for i in all_inc if i["assignee"] or i["status"] != "new"),
+         "explain": "Assigned to someone or already worked on"},
+        {"stage": "Closed", "value": sum(1 for i in all_inc if i["status"] in ("resolved", "false_positive")),
+         "explain": "Resolved or marked as a false alarm"},
+    ]
+    insight = None
+    total_records = sum(records.values())
+    if records and total_records:
+        who, n = records.most_common(1)[0]
+        insight = {"headline": f"{round(100 * n / total_records)}%",
+                   "title": f"of all customer records were viewed by one account: {who}",
+                   "detail": f"{who} viewed {n:,} of {total_records:,} customer records. Check whether that "
+                             f"matches their job — this is the pattern of an insider copying data.",
+                   "account": who}
+    failed_days = Counter(e["time"][:10] for e in evs if e["code"] == "LOGIN_FAILED")
     return jsonify({
+        "funnel": funnel,
+        "insight": insight,
+        "failed_by_day": sorted(failed_days.items())[-14:],
+        "app_checks": [{"time": e["time"], "app": e.get("sample_id"), "flagged": e.get("verdict") == "flag_for_review",
+                        "score": e.get("score")} for e in apps][-40:],
         "range": [evs[0]["time"], evs[-1]["time"]] if evs else None,
         "totals": {
             "events": len(evs),
@@ -101,6 +132,22 @@ def overview():
         },
         "decisions": risk_store.summary(),
     })
+
+
+@bp.route("/api/soc/events")
+def search_events():
+    """Search the security log: every word must appear in the event (name, details, user or IP)."""
+    words = [w.lower() for w in request.args.get("q", "").split() if w][:8]
+    if not words:
+        return jsonify({"error": "type something to search for"}), 422
+    hits = []
+    for e in reversed(events.read_events()):
+        hay = f"{e['name']} {e['code']} {e['details']} {e['user']} {e['ip']} {e['time']}".lower()
+        if all(w in hay for w in words):
+            hits.append({k: e.get(k) for k in ("time", "name", "category", "user", "ip", "details")})
+            if len(hits) == 50:
+                break
+    return jsonify({"query": " ".join(words), "results": hits})
 
 
 @bp.route("/api/soc/team")

@@ -118,3 +118,14 @@ def test_pages_render_and_require_login(ui):
     with banking_app.app.test_client() as anon:
         assert anon.get("/security").status_code == 302
         assert anon.get("/api/soc/overview").status_code == 401
+
+
+def test_search_and_funnel(ui):
+    ui.post("/api/soc/sync", json={})
+    r = ui.get("/api/soc/events?q=failed jdoe").get_json()
+    assert len(r["results"]) == 6 and all("jdoe" in e["details"] for e in r["results"])
+    assert ui.get("/api/soc/events?q=").status_code == 422
+    o = ui.get("/api/soc/overview").get_json()
+    stages = [f["value"] for f in o["funnel"]]
+    assert stages[0] == 18 and stages[2] == 6 and stages[0] >= stages[1] >= stages[2] >= stages[3] >= stages[4]
+    assert o["insight"]["account"] == "jdoe" and o["insight"]["headline"] == "54%"

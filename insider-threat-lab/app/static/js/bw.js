@@ -34,6 +34,30 @@ function timeAgo(iso) {
     return Math.round(s / 86400) + ' days ago';
 }
 
+// Hover/focus tooltip for any element with data-tip (chart marks, dots, bars).
+(function () {
+    const show = (el, x, y) => {
+        const tip = document.getElementById('tip'); if (!tip) return;
+        tip.textContent = el.dataset.tip; tip.classList.add('show');
+        tip.style.left = Math.min(x + 12, innerWidth - tip.offsetWidth - 8) + 'px';
+        tip.style.top = (y - tip.offsetHeight - 10) + 'px';
+    };
+    const hide = () => { const t = document.getElementById('tip'); if (t) t.classList.remove('show'); };
+    document.addEventListener('mousemove', e => { const el = e.target.closest('[data-tip]'); el ? show(el, e.clientX, e.clientY) : hide(); });
+    document.addEventListener('focusin', e => { const el = e.target.closest('[data-tip]'); if (el) { const r = el.getBoundingClientRect(); show(el, r.left, r.top); } });
+    document.addEventListener('focusout', hide);
+})();
+
+// "⋯" buttons open the help text of their card.
+document.addEventListener('click', e => {
+    const b = e.target.closest('[data-help]'); if (!b) return;
+    const panel = document.getElementById(b.dataset.help); if (!panel) return;
+    const open = panel.classList.toggle('open'); b.setAttribute('aria-expanded', open);
+});
+function helpButton(id) {
+    return `<button class="icon-btn" data-help="${id}" aria-expanded="false" aria-controls="${id}" title="How to use this">⋯</button>`;
+}
+
 // Horizontal bar list: rows = [{label, value, cls}]
 function barList(rows, unit = '') {
     if (!rows.length) return '<p class="empty">Nothing recorded yet.</p>';
