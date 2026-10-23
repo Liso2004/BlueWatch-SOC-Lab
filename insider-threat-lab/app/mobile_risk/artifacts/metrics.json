@@ -59,9 +59,10 @@
       "recall": 0.9656,
       "f1": 0.9738,
       "false_positive_rate": 0.019983,
-      "batch_inference_ms_per_sample": 0.0151,
+      "batch_inference_ms_per_sample": 0.0163,
       "pr_auc": 0.9969,
-      "roc_auc": 0.9957
+      "roc_auc": 0.9957,
+      "train_test_sha256_overlap": 0
     },
     "B_per_class_temporal": {
       "description": "Within each class, train on the oldest 80% by HighestModDate and test on the newest 20%. Shows degradation on newer apps (concept drift).",
@@ -101,9 +102,10 @@
       "recall": 0.9626,
       "f1": 0.8048,
       "false_positive_rate": 0.491476,
-      "batch_inference_ms_per_sample": 0.0115,
+      "batch_inference_ms_per_sample": 0.0163,
       "pr_auc": 0.9763,
-      "roc_auc": 0.9637
+      "roc_auc": 0.9637,
+      "train_test_sha256_overlap": 0
     },
     "C_unseen_malware_families": {
       "description": "Malware families in test never appear in training (48 held-out families); benign split randomly.",
@@ -123,9 +125,11 @@
       "recall": 0.9299,
       "f1": 0.9586,
       "false_positive_rate": 0.019564,
-      "batch_inference_ms_per_sample": 0.0196,
+      "batch_inference_ms_per_sample": 0.0119,
       "pr_auc": 0.9956,
-      "roc_auc": 0.9909
+      "roc_auc": 0.9909,
+      "train_test_sha256_overlap": 0,
+      "train_test_family_overlap": 0
     },
     "D_runtime_behaviour_only": {
       "description": "Same split as A, trained only on 220 runtime features (system-call counts and contacted IPs; no permissions or manifest data). Comparison only; not deployed.",
@@ -145,9 +149,10 @@
       "recall": 0.8912,
       "f1": 0.9285,
       "false_positive_rate": 0.03256,
-      "batch_inference_ms_per_sample": 0.0094,
+      "batch_inference_ms_per_sample": 0.008,
       "pr_auc": 0.9836,
-      "roc_auc": 0.9769
+      "roc_auc": 0.9769,
+      "train_test_sha256_overlap": 0
     }
   }
 }

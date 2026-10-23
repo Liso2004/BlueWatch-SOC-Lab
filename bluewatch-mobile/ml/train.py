@@ -184,6 +184,15 @@ def main():
     }
     (ART / "model_meta.json").write_text(json.dumps(meta))
 
+    # Leakage check: no app (by SHA-256) may appear in both train and test of any split.
+    split_indices = {"A_random_stratified": (tr, te), "B_per_class_temporal": (btr, bte),
+                     "C_unseen_malware_families": (ctr, cte), "D_runtime_behaviour_only": (tr, te)}
+    for name, (a, b) in split_indices.items():
+        splits[name]["train_test_sha256_overlap"] = len(set(sha[a]) & set(sha[b]))
+    if mte.size:
+        splits["C_unseen_malware_families"]["train_test_family_overlap"] = len(
+            set(groups[mtr]) & set(groups[mte]))
+
     metrics = {"model_version": MODEL_VERSION, "prepare_report": prep, "splits": splits}
     (ART / "metrics.json").write_text(json.dumps(metrics, indent=2))
 
