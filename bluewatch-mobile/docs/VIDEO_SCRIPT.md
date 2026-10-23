@@ -8,7 +8,8 @@ Recording owner: Stacey-Lee (board #9). Narrator: **[TEAM TO DECIDE]**.
 
 ## Before recording (10 minutes)
 
-1. `docker compose up -d` and wait until http://localhost:5601 (Kibana) loads.
+1. `docker compose up -d` and wait until http://localhost:5601 (Kibana) loads. Open http://localhost:5000/security once
+   so the console has loaded the model and found the incidents (first load takes a few seconds).
 2. NVD cache warm for Android 13 (already cached; check `insider-threat-lab/nvd_cache/android-13.0.json` exists).
 3. AI case brief uses **Claude** (`AI_PROVIDER=anthropic`). Add the key to `.env` as
    `AI_API_KEY=...`, run `docker compose up -d banking-app`, and click the brief once on
@@ -32,15 +33,15 @@ Recording owner: Stacey-Lee (board #9). Narrator: **[TEAM TO DECIDE]**.
 ### 0:30–1:45 · What we built — live demo (screen recording)
 | Time | Do on screen | Say |
 |---|---|---|
-| 0:30 | Dashboard → **BlueWatch Mobile — Android App Risk** | “This is the analyst screen a bank’s security team uses.” |
-| 0:38 | Click malware sample **kd-73c16aa41738** (SLocker ransomware, score 0.9975) | “These are real apps from the KronoDroid research dataset that the model never saw in training.” |
-| 0:45 | Point at **FLAG FOR REVIEW**, score bar, “model agrees” | “Flagged for review — a risk score with the threshold, and the dataset label so you can check us.” |
-| 0:55 | Scroll to **Behaviour profile** | “Evidence grouped by banking-malware technique: overlay, accessibility, SMS interception, dynamic code, network. Declared permissions are kept separate from what the app actually did at runtime.” |
-| 1:08 | Click **Write AI case brief** | “Generative AI writes a plain-English brief for the analyst. Our grounding check rejects any number that isn’t in the evidence, so it can’t invent facts.” |
-| 1:20 | Click **Confirmed malicious**; scroll to activity panel | “The analyst decides. Every decision is audited and becomes a label for the next model.” |
-| 1:28 | Click a benign sample (e.g. **kd-6ddc7afd3baf**) → NOT FLAGGED | “A clean app is not flagged.” |
-| 1:33 | NVD panel → Android 13.0 → **Look up in NVD** | “Separately, known vulnerabilities for the phone’s Android version from NIST — context, never part of the score.” |
-| 1:40 | Kibana Discover, search `MOBILE_RISK_ASSESSMENT` | “And every result lands in the SIEM the bank already runs.” |
+| 0:30 | SecureBank phone app (narrow window) → tap **Security** tab | “SecureBank’s staff app. The Security tab opens BlueWatch, the bank’s security centre.” |
+| 0:36 | **Overview**: point at the problem banner and **Key numbers** | “Everything here comes from real attack runs on this bank: 61 failed sign-ins, and one staff account that viewed over 17,000 customer records.” |
+| 0:46 | **Incidents** → open “Repeated failed sign-ins on account jdoe” | “BlueWatch turns those events into incidents in plain English, with the evidence underneath.” |
+| 0:54 | **Assign to me**, add tag **escalate**, type a note | “Assign it, tag it, note what you checked — every step is saved to the timeline.” |
+| 1:02 | Sidebar → **Android App Risk** → test app **kd-73c16aa41738** | “Now the mobile threat. A real Android app from the KronoDroid research dataset that the checker never saw.” |
+| 1:08 | Point at **Needs a look**, the score bar, and the trick table | “Needs a look — score 0.9975. It asks to draw over other apps and to start when the phone starts: classic banking-trojan tricks.” |
+| 1:20 | **Write AI case brief** | “Generative AI writes the brief; any number not in the evidence is rejected, so it can’t invent facts.” |
+| 1:30 | **Open an incident** → lands on the new incident | “One click turns it into an incident for the team.” |
+| 1:38 | Back to **Overview** (or Kibana) | “And every action lands in the SIEM the bank already runs.” |
 
 ### 1:45–2:30 · Value proposition and AI (deck slide 2, then slide 3)
 > “Bank SOC and fraud teams get Android app risk inside the tools they already use — an API with
