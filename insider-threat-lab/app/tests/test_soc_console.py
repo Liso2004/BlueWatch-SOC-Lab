@@ -151,6 +151,16 @@ def test_reviewer_suggestion_and_review_flow(ui):
         assert admin.post(f"/api/soc/incidents/{iid}/review", json={"action": "approve"}).get_json()["incident"]["review_status"] == "approved"
 
 
+def test_nobody_handles_or_reviews_an_incident_about_themselves(ui):
+    ui.post("/api/soc/sync", json={})
+    inc = next(i for i in ui.get("/api/soc/incidents").get_json() if i["entity"] == "jdoe")
+    iid = inc["id"]
+    assert ui.patch(f"/api/soc/incidents/{iid}", json={"assignee": "jdoe"}).status_code == 422
+    assert ui.post(f"/api/soc/incidents/{iid}/review", json={"reviewer": "jdoe"}).status_code == 422
+    s = ui.get(f"/api/soc/incidents/{iid}/suggest-reviewer").get_json()
+    assert s["suggested"] != "jdoe" and "jdoe" not in [c["name"] for c in s["candidates"]]
+
+
 def test_tasks_tag_people_and_my_work(ui):
     ui.post("/api/soc/sync", json={})
     iid = ui.get("/api/soc/incidents").get_json()[1]["id"]

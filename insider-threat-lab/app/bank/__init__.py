@@ -234,6 +234,11 @@ def scenario_compromised_device():
     note = f"sideloaded app scored {result['risk_score']} ({'flagged' if result['verdict'] == 'flag_for_review' else 'not flagged'})"
     assessment_id = store.record_assessment({**result, "sample_id": "sideloaded-demo-app"},
                                             SIDELOADED_FEATURES, f"scenario:{session['username']}", "scenario")
+    # Same log line as a normal app check, so the Overview, Kibana and Wazuh count it too.
+    _log("MOBILE_RISK_ASSESSMENT",
+         f"Assessment: {assessment_id} | Sample: sideloaded-demo-app | Channel: scenario | "
+         f"Verdict: {result['verdict']} | Score: {result['risk_score']} | Threshold: {result['threshold']} | "
+         f"Model: {result['model_version']}")
     victim = mark_device_risk(victim_name, result["risk_score"], note,
                               assessment_id=assessment_id)
     if victim is None:

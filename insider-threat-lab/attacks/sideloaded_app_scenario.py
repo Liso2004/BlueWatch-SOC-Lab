@@ -23,7 +23,7 @@ import sys
 
 import requests
 
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://127.0.0.1:5000"  # not "localhost": on Windows that can resolve to the WSL IPv6 relay
 
 
 def login(session, username="analyst", password="password123"):

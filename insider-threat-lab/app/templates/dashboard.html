@@ -17,11 +17,9 @@
     <div class="grid k2 section">
         <section class="card" id="activity">
             <div class="card-head"><h2><span class="ic-tile">{{ ic('signal') }}</span>Live activity</h2>
-                <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-                    <button class="btn ghost sm" onclick="runTick()">{{ ic('refresh', 'sm') }}Simulate activity</button>
-                    <button class="btn bad sm" onclick="runScenario()">{{ ic('bug', 'sm') }}Sideloaded-app attack</button></div></div>
-            <p class="muted small">Money moving between SecureBank accounts. Flagged payments are checked by BlueWatch.</p>
-            <div id="scenario-out"></div>
+                <span class="chip" id="live-chip" title="Updates every 5 seconds">● Live</span></div>
+            <p class="muted small">Money moving between SecureBank accounts (simulated lab data, driven by the scripts in
+                <code>attacks/</code>). Flagged payments are checked by BlueWatch.</p>
             <div id="txns"><p class="empty">Loading…</p></div>
         </section>
 
@@ -56,25 +54,9 @@
                 <div class="list-item"><div><b>${esc(t.from_name)}</b> <span class="muted">→</span> <b>${esc(t.to_name)}</b>
                     ${t.flagged ? `<span class="chip sev-high">${icon('alert', 'sm')}Flagged</span>` : ''}<br>
                     <span class="muted small">${esc(t.kind)} · ${esc(t.at.slice(0, 16).replace('T', ' '))}${t.reason ? ' · ' + esc(t.reason) : ''}</span></div>
-                <div style="font-weight:700;white-space:nowrap;color:${t.flagged ? 'var(--critical-ink)' : 'var(--ink)'}">R ${fmt(t.amount.toFixed(2))}</div></div>`).join('')
+                <div style="font-weight:700;white-space:nowrap;color:${t.flagged ? 'var(--critical-ink)' : 'var(--ink)'}">R ${t.amount.toLocaleString('en-ZA', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div></div>`).join('')
                 : '<p class="empty">No payments yet. Press “Simulate activity”.</p>';
         } catch (e) { toast('Could not load the bank: ' + e.message, true); }
-    }
-    async function runTick() {
-        try { const r = await api('/api/bank/simulate', {json: {}}); toast(`${r.created} payment(s) processed${r.flagged ? ', ' + r.flagged + ' flagged' : ''}`); loadBank(); }
-        catch (e) { toast('Could not simulate: ' + e.message, true); }
-    }
-    async function runScenario() {
-        const out = document.getElementById('scenario-out');
-        out.innerHTML = '<p class="muted small">Running the sideloaded-app scenario…</p>';
-        try {
-            const r = await api('/api/bank/scenario/compromised-device', {json: {}});
-            out.innerHTML = `<div class="notice" style="margin:.6rem 0">${icon('alert', 'sm')} <b>BlueWatch flagged a possible account takeover.</b>
-                <p style="margin:.4rem 0">${esc(r.summary)}</p>
-                <a class="btn sm" href="/security/incidents#incident-${r.incident_id}">${icon('shield', 'sm')}Open incident #${r.incident_id}</a></div>`;
-            toast('Scenario run — incident #' + r.incident_id + ' opened');
-            loadBank();
-        } catch (e) { out.innerHTML = ''; toast('Scenario failed: ' + e.message, true); }
     }
     function renderCustomers(data) {
         const box = document.getElementById('customer-list');
@@ -92,5 +74,6 @@
         catch (e) { toast('Search failed: ' + e.message, true); }
     }
     loadBank();
+    setInterval(loadBank, 5000);  // the feed follows the simulation scripts live
 </script>
 {% endblock %}

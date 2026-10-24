@@ -192,6 +192,8 @@ def _ollama_text(facts, session=requests):
             "model": model, "stream": False, "options": {"temperature": 0.2},
             "messages": [{"role": "system", "content": SYSTEM_PROMPT},
                          {"role": "user", "content": json.dumps(facts, indent=1)}]})
+    except requests.Timeout:
+        return None, model, "The local Ollama model took longer than 180 s to answer"
     except requests.RequestException:
         return None, model, f"Could not reach the local Ollama model at {url}"
     if r.status_code != 200:

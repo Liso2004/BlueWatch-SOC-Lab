@@ -185,6 +185,8 @@ def update(incident_id, author, status=None, assignee=None, add_tag=None, remove
            severity=None):
     changes = []
     current = get(incident_id)
+    if assignee and current["entity"] and assignee.strip() == current["entity"]:
+        raise IncidentError("nobody can handle an incident about themselves")
     with connect() as conn:
         if status is not None:
             if status not in STATUSES:
@@ -261,9 +263,10 @@ def workload(team):
 
 
 def suggest_reviewer(incident_id, team, requested_by):
-    """Someone not already on the incident, with the fewest pending reviews, then the least open work."""
+    """Someone not already on the incident (and not the person it is about), with the fewest pending
+    reviews, then the least open work."""
     inc = get(incident_id)
-    busy = {inc["assignee"], requested_by} | {t["assignee"] for t in inc["tasks"] if not t["done"]}
+    busy = {inc["assignee"], requested_by, inc["entity"]} | {t["assignee"] for t in inc["tasks"] if not t["done"]}
     load = {w["name"]: w for w in workload(team)}
     candidates = [load.get(p, {"name": p, "assigned": 0, "reviews": 0, "tasks": 0}) for p in team if p not in busy]
     if not candidates:
@@ -286,6 +289,8 @@ def set_review(incident_id, author, reviewer=None, action=None):
             reviewer = reviewer.strip()[:60] or None
             if reviewer and reviewer == inc["assignee"]:
                 raise IncidentError("the reviewer must be someone other than the person handling it")
+            if reviewer and reviewer == inc["entity"]:
+                raise IncidentError("nobody can review an incident about themselves")
             if reviewer != inc["reviewer"]:
                 conn.execute("UPDATE incidents SET reviewer=?, review_status=NULL WHERE id=?", (reviewer, incident_id))
                 changes.append(("review", f"Reviewer set to {reviewer}." if reviewer else "Reviewer removed."))

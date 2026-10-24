@@ -26,11 +26,17 @@
         </div>
         <div class="card">
             <h3 style="display:flex;align-items:center"><span class="ic-tile ">{{ ic('search') }}</span>Check another app</h3>
-            <p class="muted small">Paste the app’s measured details as JSON (name → count). Anything left out counts as 0.</p>
+            <p class="muted small">Tick what the app asks permission to do, as shown on the phone’s app-info screen.</p>
+            <p class="small" style="background:var(--soft);border-radius:8px;padding:.5rem .65rem;margin:.4rem 0 0">
+                <b>Ticks alone can under-score an app.</b> The risk score also weighs what the app <i>does</i> when it runs
+                (measured in a lab), which ticks cannot capture. Read the “What the app can do” table, not just the score.</p>
             <label for="adhoc-id">App name or reference (optional)</label>
             <input id="adhoc-id" maxlength="100">
-            <label for="adhoc-features" style="margin-top:.5rem">App details (JSON)</label>
-            <textarea id="adhoc-features" rows="5" style="font-family:monospace;font-size:.8rem" placeholder='{"SEND_SMS": 1, "RECEIVE_SMS": 1, "SYSTEM_ALERT_WINDOW": 1}'></textarea>
+            <div id="adhoc-perms" class="perm-checks"></div>
+            <details class="help" style="margin-top:.5rem"><summary>Advanced: full measurements (JSON)</summary>
+                <p class="muted small">For lab analysts with a full feature export (name → count). Ticked boxes are added on top. Anything left out counts as 0.</p>
+                <textarea id="adhoc-features" rows="5" style="font-family:monospace;font-size:.8rem;width:100%" placeholder='{"NrServices": 4, "TotalIntentFilters": 9}'></textarea>
+            </details>
             <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem">
                 <button class="btn sm" onclick="assessAdhoc()">Check this app</button>
                 <button class="btn ghost sm" onclick="copyActiveSample()">Copy selected test app</button>
@@ -109,10 +115,25 @@
         } catch (e) { toast('Could not load test apps: ' + e.message, true); }
     }
 
+    // Permissions a customer or analyst can read off the phone's app-info screen.
+    const CHECKABLE = ['SYSTEM_ALERT_WINDOW', 'BIND_ACCESSIBILITY_SERVICE', 'RECEIVE_SMS', 'READ_SMS', 'SEND_SMS',
+        'BIND_DEVICE_ADMIN', 'REQUEST_INSTALL_PACKAGES', 'RECEIVE_BOOT_COMPLETED', 'READ_CONTACTS', 'READ_CALL_LOG',
+        'READ_PHONE_STATE', 'QUERY_ALL_PACKAGES', 'CAMERA', 'RECORD_AUDIO', 'ACCESS_FINE_LOCATION', 'INTERNET'];
+    Object.assign(PLAIN_FEATURE, {REQUEST_INSTALL_PACKAGES: 'Installs other apps', READ_CONTACTS: 'Reads contacts',
+        READ_CALL_LOG: 'Reads call history', QUERY_ALL_PACKAGES: 'Sees every installed app', CAMERA: 'Uses the camera',
+        RECORD_AUDIO: 'Records audio', ACCESS_FINE_LOCATION: 'Exact location'});
+    document.getElementById('adhoc-perms').innerHTML = CHECKABLE.map(p =>
+        `<label><input type="checkbox" value="${p}"> ${esc(PLAIN_FEATURE[p])}</label>`).join('');
+
     function assessAdhoc() {
-        let features;
-        try { features = JSON.parse(document.getElementById('adhoc-features').value); }
-        catch (e) { toast('The app details must be valid JSON', true); return; }
+        let features = {};
+        const raw = document.getElementById('adhoc-features').value.trim();
+        if (raw) {
+            try { features = JSON.parse(raw); }
+            catch (e) { toast('The advanced measurements must be valid JSON', true); return; }
+        }
+        document.querySelectorAll('#adhoc-perms input:checked').forEach(c => features[c.value] = 1);
+        if (!Object.keys(features).length) { toast('Tick at least one permission', true); return; }
         const ref = document.getElementById('adhoc-id').value.trim();
         document.querySelectorAll('.sample-btn').forEach(x => x.classList.remove('active'));
         run(ref ? {sample_id: ref, features} : {features});
@@ -121,9 +142,11 @@
     async function copyActiveSample() {
         if (!activeSample) { toast('Pick a test app first', true); return; }
         try {
-            document.getElementById('adhoc-features').value = JSON.stringify(await api(`/api/mobile/samples/${encodeURIComponent(activeSample)}/features`), null, 1);
+            const f = await api(`/api/mobile/samples/${encodeURIComponent(activeSample)}/features`);
+            document.querySelectorAll('#adhoc-perms input').forEach(c => c.checked = !!f[c.value]);
+            document.getElementById('adhoc-features').value = JSON.stringify(f, null, 1);
             document.getElementById('adhoc-id').value = activeSample + '-edited';
-            toast('Copied — edit the numbers and press “Check this app”');
+            toast('Copied — change the ticks and press “Check this app”');
         } catch (e) { toast(e.message, true); }
     }
 
