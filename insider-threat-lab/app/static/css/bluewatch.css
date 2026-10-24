@@ -265,9 +265,8 @@ tr.clickable { cursor: pointer; } tr.clickable:hover td { background: var(--soft
   body.bank .tile { padding: 1.2rem; }
   body.bank .phone-body > .card, body.bank .phone-body > form.card { max-width: 520px; margin-left: auto; margin-right: auto; }
   body.bank #customers { max-width: none; }
-  body.bank #customer-list { columns: 2; column-gap: 2rem; }
-  body.bank #customer-list .list-item { break-inside: avoid; }
-  body.bank #customer-list > p { column-span: all; margin-bottom: .4rem; }
+  body.bank #customer-list { display: grid; grid-template-columns: 1fr 1fr; column-gap: 2rem; align-items: start; }
+  body.bank #customer-list > p { grid-column: 1 / -1; margin-bottom: .4rem; }
 }
 
 @media (max-width: 1100px) {

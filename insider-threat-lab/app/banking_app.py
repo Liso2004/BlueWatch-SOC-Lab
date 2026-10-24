@@ -9,6 +9,7 @@ import os
 from mobile_risk import api_v1 as mobile_risk_api_v1
 from mobile_risk import bp as mobile_risk_bp
 from soc import bp as soc_bp
+from bank import bp as bank_bp
 
 
 app = Flask(__name__)
@@ -21,6 +22,8 @@ app.register_blueprint(mobile_risk_bp)
 app.register_blueprint(mobile_risk_api_v1)
 # BlueWatch Security Center: SIEM-style overview and incidents
 app.register_blueprint(soc_bp)
+# Simulated SecureBank ledger (live demo money movement + fraud correlation)
+app.register_blueprint(bank_bp)
 
 
 # Configure logging - CRITICAL for SOC detection
