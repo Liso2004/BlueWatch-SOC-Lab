@@ -1,4 +1,5 @@
 {% extends "console_base.html" %}
+{% from "_macros.html" import ic, head %}
 {% block title %}Overview</div>
 {% endblock %}
 {% block main %}
@@ -15,13 +16,13 @@
     </div>
     <div class="meta">
         <span class="pill" id="range">Loading…</span>
-        <button class="btn" onclick="refresh(true)">Check for new threats</button>
+        <button class="btn" onclick="refresh(true)">{{ ic('refresh') }}Check for new threats</button>
     </div>
 </div>
 
 <div class="ov">
     <section class="card ov-funnel">
-        <div class="card-head"><h2>From warning signs to closed cases</h2><span id="h-funnel"></span></div>
+        {{ head('funnel', 'From warning signs to closed cases', 'funnel') }}
         <div class="card-help" id="help-funnel"><p>Read left to right. Every event the bank records → the ones that look like an
             attack → grouped into incidents → picked up by a person → closed. A big drop between <b>Incidents opened</b> and
             <b>Being handled</b> means cases are waiting for someone. Hover a bar for the number.</p></div>
@@ -36,7 +37,7 @@
     </section>
 
     <section class="card ov-records">
-        <div class="card-head"><h2>Customer records viewed</h2><span id="h-records"></span></div>
+        {{ head('db', 'Customer records viewed', 'records') }}
         <div class="card-help" id="help-records"><p>How many customer records staff looked at, and by whom. Staff normally view a
             few at a time. One person with a very large share can mean data is being copied — check it against their job.</p></div>
         <div class="hero" id="records-total">—</div>
@@ -45,7 +46,7 @@
     </section>
 
     <section class="card ov-failed">
-        <div class="card-head"><h2>Failed sign-ins</h2><span id="h-failed"></span></div>
+        {{ head('lock', 'Failed sign-ins', 'failed') }}
         <div class="card-help" id="help-failed"><p>Wrong-password attempts per day. A tall day usually means someone was guessing
             a password — the Incidents page shows which account.</p></div>
         <div class="hero sm" id="failed-total">—</div>
@@ -54,7 +55,7 @@
     </section>
 
     <section class="card ov-inc">
-        <div class="card-head"><h2>Open incidents</h2><span id="h-inc"></span></div>
+        {{ head('alert', 'Open incidents', 'inc') }}
         <div class="card-help" id="help-inc"><p>Cases that still need a person. Start with <b>High</b>. Open the Incidents page to
             assign, tag and close them.</p></div>
         <div class="hero sm" id="inc-open">—</div>
@@ -64,7 +65,7 @@
     </section>
 
     <section class="card ov-apps">
-        <div class="card-head"><h2>Android apps checked</h2><span id="h-apps"></span></div>
+        {{ head('phone', 'Android apps checked', 'apps') }}
         <div class="card-help" id="help-apps"><p>Each dot is one app check, oldest first. <b>Orange</b> dots needed a look;
             <b>blue</b> dots raised no alert. Hover a dot to see the app and its score.</p></div>
         <div class="hero sm" id="apps-total">—</div>
@@ -74,7 +75,7 @@
     </section>
 
     <section class="card insight ov-insight" id="insight" hidden>
-        <span class="tag">Insight from the log</span>
+        <span class="tag">{{ ic('spark', 'sm') }}Insight from the log</span>
         <div class="hero" id="ins-hero"></div>
         <h2 id="ins-title"></h2>
         <p id="ins-detail" style="color:#b9bcc4;font-size:.86rem"></p>
@@ -83,16 +84,32 @@
         </div>
     </section>
 
+<section class="card ov-hours">
+    {{ head('clock', 'When attacks happen', 'hours') }}
+    <div class="card-help" id="help-hours"><p>Warning signs by hour of the day (log time). Red is attacks (failed sign-ins, rejected API keys);
+        orange is large customer-data views. Activity outside working hours deserves a closer look.</p></div>
+    <div id="hours"></div>
+    <div class="legend"><span><i style="background:var(--critical)"></i>Attacks</span><span><i style="background:var(--s2)"></i>Large data views</span></div>
+</section>
+
+<section class="card ov-team">
+    {{ head('users', 'Who is working on what', 'team') }}
+    <div class="card-help" id="help-team"><p>Open work per person: incidents they handle, reviews waiting on them, and tasks they were tagged on.
+        Assign people and reviewers on the <a href="/security/incidents">Incidents</a> page.</p></div>
+    <div id="team"></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>Handling</span><span><i style="background:var(--s2)"></i>Reviewing</span><span><i style="background:var(--s3)"></i>Tasks</span></div>
+</section>
+
 <section class="card ov-model">
-    <div class="card-head"><h2>How good is the Android malware checker?</h2><span id="h-model"></span></div>
+    {{ head('shield', 'How good is the Android malware checker?', 'model') }}
     <div class="card-help" id="help-model"><p>Tested on apps it had never seen. The first three are strengths; the last is a known
         weakness — that is why a person always makes the final call.</p></div>
     <div class="grid k4" id="model"></div>
 </section>
 
 <section class="card ov-activity">
-    <div class="card-head"><h2>Latest activity</h2>
-        <div style="display:flex;gap:.5rem;align-items:center"><a class="btn ghost sm" href="http://localhost:5601" target="_blank" rel="noopener">Full logs in Kibana ↗</a><span id="h-recent"></span></div></div>
+    <div class="card-head"><h2><span class="ic-tile">{{ ic('signal') }}</span>Latest activity</h2>
+        <div style="display:flex;gap:.5rem;align-items:center"><a class="btn ghost sm" href="http://localhost:5601" target="_blank" rel="noopener">{{ ic('external', 'sm') }}Full logs in Kibana</a><span id="h-recent"></span></div></div>
     <div class="card-help" id="help-recent"><p>The 25 most recent events in plain words. Use the search above to find older ones,
         or Kibana (Discover → banking-logs-*) for everything.</p></div>
     <div style="overflow-x:auto"><table><thead><tr><th>When</th><th>What happened</th><th class="hide-sm">Who</th><th class="hide-sm">From</th></tr></thead><tbody id="recent"></tbody></table></div>
@@ -102,7 +119,7 @@
 <script>
     const CAT = {attack: ['Attack', 'sev-high'], data: ['Customer data', 'sev-medium'], access: ['Sign-in', ''],
                  mobile: ['Android app', ''], soc: ['Incident work', ''], other: ['Other', '']};
-    for (const id of ['funnel', 'records', 'failed', 'inc', 'apps', 'model', 'recent'])
+    for (const id of ['funnel', 'records', 'failed', 'inc', 'apps', 'model', 'recent', 'hours', 'team'])
         document.getElementById('h-' + id).outerHTML = helpButton('help-' + id);
 
     function eventRow(e) {
@@ -198,6 +215,20 @@
                 tile(pct(m.malware_caught), 'Malware caught', 'Share of malware apps it flags.', true) +
                 tile(pct(m.new_families_caught), 'New malware types caught', 'Malware families it had never seen.', true) +
                 tile(pct(m.newer_app_false_alarms), 'False alarms on newer apps', 'Newer safe apps are often flagged. A person must always check.', false);
+
+            // when attacks happen: 24 hourly columns, two stacked series, 2px gap between segments
+            const hmax = Math.max(1, ...o.by_hour.map(h => h.attack + h.data));
+            document.getElementById('hours').innerHTML = `<div class="cols" style="height:130px;gap:4px">${o.by_hour.map(h => `
+                <div class="col"><div class="stack">${h.data ? `<div class="seg" data-tip="${String(h.hour).padStart(2, '0')}:00 · ${h.data} large data views" style="height:${(h.data / hmax * 110).toFixed(0)}px;background:var(--s2)"></div>` : ''}${h.attack ? `<div class="seg" data-tip="${String(h.hour).padStart(2, '0')}:00 · ${h.attack} attacks" style="height:${(h.attack / hmax * 110).toFixed(0)}px;background:var(--critical)"></div>` : ''}</div></div>`).join('')}</div>
+                <div class="cols-x" style="gap:4px">${o.by_hour.map(h => `<span>${h.hour % 6 === 0 ? String(h.hour).padStart(2, '0') : ''}</span>`).join('')}</div>`;
+
+            // team workload: stacked horizontal bars
+            const wmax = Math.max(1, ...o.workload.map(w => w.assigned + w.reviews + w.tasks));
+            const anyWork = o.workload.some(w => w.assigned + w.reviews + w.tasks);
+            document.getElementById('team').innerHTML = !anyWork ? '<p class="empty">Nobody has open work yet. Assign an incident, a reviewer or a task and it shows up here.</p>' : o.workload.map(w => {
+                const seg = (n, c, l) => n ? `<i data-tip="${esc(w.name)}: ${n} ${l}" style="width:${(n / wmax * 100).toFixed(1)}%;background:${c}"></i>` : '';
+                return `<div class="wl-row"><span>${esc(w.name)}</span><div class="wl-bar">${seg(w.assigned, 'var(--accent)', 'handling')}${seg(w.reviews, 'var(--s2)', 'to review')}${seg(w.tasks, 'var(--s3)', 'tasks')}</div><b>${w.assigned + w.reviews + w.tasks}</b></div>`;
+            }).join('');
 
             document.getElementById('recent').innerHTML = o.recent.map(eventRow).join('') || '<tr><td colspan="4" class="empty">No events.</td></tr>';
         } catch (e) { toast('Could not load the overview: ' + e.message, true); }

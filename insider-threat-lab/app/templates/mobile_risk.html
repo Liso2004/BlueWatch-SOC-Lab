@@ -1,11 +1,12 @@
 {% extends "console_base.html" %}
+{% from "_macros.html" import ic %}
 {% block title %}Android App Risk{% endblock %}
 {% block main %}
 <div class="pagehead">
     <div><h1>Android App Risk</h1><p class="muted">Check whether an Android app behaves like banking malware.</p></div>
 </div>
 
-<p class="notice"><b>Prototype — decision support only.</b> A result means “a person should look at this app”, not
+<p class="notice">{{ ic('alert', 'sm') }} <b>Prototype — decision support only.</b> A result means “a person should look at this app”, not
     “this is definitely malware”. Never block a customer or their phone on this result alone.</p>
 
 <details class="help section" id="tool-help" open><summary>How to use this tool</summary>
@@ -19,12 +20,12 @@
 <div class="grid section g-side">
     <div>
         <div class="card">
-            <h2>Test apps</h2>
+            <h2 style="display:flex;align-items:center"><span class="ic-tile ">{{ ic('phone') }}</span>Test apps</h2>
             <p class="muted small">3 known malware and 3 safe apps. The label shows the right answer, so you can check BlueWatch.</p>
             <div id="samples">Loading…</div>
         </div>
         <div class="card">
-            <h3>Check another app</h3>
+            <h3 style="display:flex;align-items:center"><span class="ic-tile ">{{ ic('search') }}</span>Check another app</h3>
             <p class="muted small">Paste the app’s measured details as JSON (name → count). Anything left out counts as 0.</p>
             <label for="adhoc-id">App name or reference (optional)</label>
             <input id="adhoc-id" maxlength="100">
@@ -40,7 +41,7 @@
 </div>
 
 <section class="section card" id="vulns">
-    <h2>Phone vulnerabilities (Android version check)</h2>
+    <h2 style="display:flex;align-items:center"><span class="ic-tile warn">{{ ic('lock') }}</span>Phone vulnerabilities (Android version check)</h2>
     <details class="help"><summary>How to use this</summary>
         <p>Pick the Android version on a customer’s phone to see known security flaws for it, from the US government’s
             National Vulnerability Database. This tells you how <b>exposed the phone</b> is. It does <b>not</b> change an app’s
@@ -54,7 +55,7 @@
 </section>
 
 <section class="section card">
-    <h2>Decisions so far</h2>
+    <h2 style="display:flex;align-items:center"><span class="ic-tile ">{{ ic('chart') }}</span>Checks and decisions so far</h2>
     <details class="help"><summary>How to use this</summary>
         <p>Every check is saved with who ran it. When analysts record decisions, BlueWatch learns how often its alarms
             are real here. <b>Download labelled cases</b> gives the data for the next improvement of the checker.</p>
@@ -63,7 +64,7 @@
 </section>
 
 <section class="section card">
-    <h2>How the checker was tested</h2>
+    <h2 style="display:flex;align-items:center"><span class="ic-tile ok">{{ ic('shield') }}</span>How the checker was tested</h2>
     <div id="model">Loading…</div>
 </section>
 {% endblock %}
@@ -143,8 +144,8 @@
         const present = r.behaviour_profile.filter(c => c.status === 'present');
         document.getElementById('result').innerHTML = `
             <div class="section-head"><div><p class="muted small">Check ${esc(r.assessment_id.slice(0, 8))} · ${esc(r.sample_id || 'pasted app')}</p>
-                <span class="verdict ${flagged ? 'bad' : 'ok'}">${flagged ? '⚠ Needs a look' : '✓ No alert'}</span></div>
-                ${flagged ? `<button class="btn bad" onclick="openIncident()">Open an incident</button>` : ''}</div>
+                <span class="verdict ${flagged ? 'bad' : 'ok'}">${icon(flagged ? 'alert' : 'check')}${flagged ? 'Needs a look' : 'No alert'}</span></div>
+                ${flagged ? `<button class="btn bad" onclick="openIncident()">${icon('plus', 'sm')}Open an incident</button>` : ''}</div>
             <p><b>Risk score ${esc(r.risk_score)}</b> out of 1. The alert level is ${esc(r.threshold)} — above it, a person should check the app.</p>
             <div class="meter" role="img" aria-label="Risk score ${esc(r.risk_score)} against alert level ${esc(r.threshold)}"><span style="width:${pct(r.risk_score, 1)}"></span><i style="left:${pct(r.threshold, 1)}"></i></div>
             ${r.expected_label ? `<p class="small">${predicted === r.expected_label ? '✓ Matches the known answer for this test app' : '✗ Does NOT match the known answer — a real mistake, keep it as evidence'} (${r.expected_label === 'malware' ? 'malware' : 'safe'}).</p>` : ''}
@@ -164,7 +165,7 @@
             </tbody></table>
 
             <h3 style="margin-top:1rem">AI case brief</h3>
-            <button class="btn ghost" onclick="loadBrief()">Write AI case brief</button>
+            <button class="btn ghost" onclick="loadBrief()">${icon('pen', 'sm')}Write AI case brief</button>
             <div id="brief" style="margin-top:.5rem"></div>
 
             <h3 style="margin-top:1rem">Your decision</h3>
@@ -239,6 +240,17 @@
         } catch (e) { out.innerHTML = ''; toast('Lookup failed: ' + e.message, true); }
     }
 
+    function scoreHistogram(scores, threshold = 0.5) {
+        if (!scores.length) return '<p class="empty">No checks yet.</p>';
+        const bins = Array(10).fill(0);
+        scores.forEach(s => bins[Math.min(9, Math.floor(s * 10))]++);
+        const max = Math.max(...bins, 1);
+        return `<div class="hist" role="img" aria-label="Risk scores of ${scores.length} recent checks">
+            ${bins.map((n, i) => `<i tabindex="0" data-tip="Score ${(i / 10).toFixed(1)}–${((i + 1) / 10).toFixed(1)}: ${n} check(s)" style="height:${(n / max * 100).toFixed(1)}%;background:${i / 10 >= threshold ? 'var(--s2)' : 'var(--accent)'}"></i>`).join('')}
+            <div class="thr" style="left:${threshold * 100}%"><span>Alert level ${threshold}</span></div></div>
+            <div class="hist-x"><span>0 · safer</span><span>0.5</span><span>1 · riskier</span></div>`;
+    }
+
     async function loadActivity() {
         try {
             const a = await api('/api/mobile/activity'), s = a.summary;
@@ -249,6 +261,9 @@
                     <div class="card kpi"><div class="value">${fmt(Object.values(s.feedback).reduce((x, y) => x + y, 0))}</div><div class="label">Decisions recorded</div></div>
                     <div class="card kpi ok"><div class="value">${s.analyst_precision === null ? '—' : pct(s.analyst_precision)}</div><div class="label">Alarms confirmed real</div><div class="explain">Of the alarms analysts reviewed here</div></div>
                 </div>
+                <h3 style="margin-top:1.1rem">Risk scores of recent checks</h3>
+                <p class="muted small">Each bar counts checks in a score band (0 to 1). Bars right of the line needed a look.</p>
+                ${scoreHistogram(a.recent.map(x => x.risk_score))}
                 <table class="stack-sm" style="margin-top:.8rem"><thead><tr><th>When</th><th>App</th><th>Result</th><th>Decision</th><th>Who</th></tr></thead><tbody>
                 ${a.recent.slice(0, 8).map(x => `<tr><td class="small">${esc(x.created_at.slice(0, 16).replace('T', ' '))}</td><td>${esc(x.sample_id || 'pasted app')}</td>
                     <td>${x.verdict === 'flag_for_review' ? '<span class="chip sev-high">Needs a look</span>' : '<span class="chip st-resolved">No alert</span>'}</td>

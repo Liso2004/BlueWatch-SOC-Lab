@@ -1,4 +1,5 @@
 {% extends "bank_base.html" %}
+{% from "_macros.html" import ic %}
 {% block title %}Welcome{% endblock %}
 {% block body %}
 <header class="phone-top" style="padding-top:3rem;padding-bottom:2.5rem">
@@ -7,13 +8,13 @@
 </header>
 <main class="phone-body">
     <div class="card">
-        <h2>Welcome</h2>
+        <h2 style="display:flex;align-items:center"><span class="ic-tile">{{ ic('bank') }}</span>Welcome</h2>
         <p>Sign in to look up customers, or open the <b>Security Center</b> to see attacks, incidents and risky
             Android apps — powered by <b>BlueWatch</b>.</p>
         <a href="/login" class="btn" style="width:100%;justify-content:center">Sign in</a>
     </div>
     <div class="card">
-        <h3>What is this?</h3>
+        <h3 style="display:flex;align-items:center"><span class="ic-tile">{{ ic('shield') }}</span>What is this?</h3>
         <p class="muted">A training lab. SecureBank is a pretend bank. Its security team uses BlueWatch to spot
             password guessing, staff copying customer data, and Android banking malware on customers’ phones.</p>
     </div>

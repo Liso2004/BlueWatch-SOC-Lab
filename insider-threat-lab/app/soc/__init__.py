@@ -100,8 +100,19 @@ def overview():
                              f"matches their job — this is the pattern of an insider copying data.",
                    "account": who}
     failed_days = Counter(e["time"][:10] for e in evs if e["code"] == "LOGIN_FAILED")
+    by_hour = [{"hour": h, "attack": 0, "data": 0} for h in range(24)]
+    for e in warning:
+        bucket = "attack" if e["code"] in ("LOGIN_FAILED", "API_AUTH_FAILED") else "data" if e["category"] == "data" else None
+        if bucket:
+            by_hour[int(e["time"][11:13])][bucket] += 1
+    summ = incidents.summary()
+    by_type = sorted(((detections.RULES.get(r, {"name": "Opened by hand"})["name"], n)
+                      for r, n in summ["open_by_rule"].items()), key=lambda x: -x[1])
     return jsonify({
         "funnel": funnel,
+        "by_hour": by_hour,
+        "open_by_type": by_type,
+        "workload": incidents.workload(team()),
         "insight": insight,
         "failed_by_day": sorted(failed_days.items())[-14:],
         "app_checks": [{"time": e["time"], "app": e.get("sample_id"), "flagged": e.get("verdict") == "flag_for_review",
@@ -121,7 +132,7 @@ def overview():
         "event_types": types.most_common(12),
         "recent": [{k: e.get(k) for k in ("time", "name", "category", "user", "ip", "details")}
                    for e in evs[-25:][::-1]],
-        "incidents": incidents.summary(),
+        "incidents": summ,
         "model": {
             "alarm_accuracy": splits["A_random_stratified"]["precision"],
             "malware_caught": splits["A_random_stratified"]["recall"],
@@ -152,14 +163,22 @@ def search_events():
 
 @bp.route("/api/soc/team")
 def team_list():
-    return jsonify({"team": team(), "tags": incidents.SUGGESTED_TAGS, "statuses": incidents.STATUSES})
+    return jsonify({"team": team(), "tags": incidents.SUGGESTED_TAGS, "statuses": incidents.STATUSES,
+                    "workload": incidents.workload(team())})
 
 
 @bp.route("/api/soc/incidents", methods=["GET"])
 def list_incidents():
     a = request.args
-    return jsonify(incidents.list_incidents(a.get("status") or None, a.get("severity") or None,
-                                            a.get("tag") or None, a.get("assignee") or None))
+    rows = incidents.list_incidents(a.get("status") or None, a.get("severity") or None,
+                                    a.get("tag") or None, a.get("assignee") or None)
+    if a.get("involving"):
+        person = session["username"] if a["involving"] == "me" else a["involving"]
+        ids = incidents.involving(person)
+        rows = [r for r in rows if r["id"] in ids]
+    if a.get("review") == "waiting":
+        rows = [r for r in rows if r.get("review_status") == "requested"]
+    return jsonify(rows)
 
 
 @bp.route("/api/soc/incidents", methods=["POST"])
@@ -213,3 +232,51 @@ def add_note(iid):
         return jsonify({"error": str(e)}), 422
     _log("INCIDENT_UPDATED", f"Incident: {iid} | Note added")
     return jsonify(incidents.get(iid)), 201
+
+
+@bp.route("/api/soc/incidents/<int:iid>/suggest-reviewer", methods=["GET"])
+def suggest_reviewer(iid):
+    try:
+        return jsonify(incidents.suggest_reviewer(iid, team(), session["username"]))
+    except LookupError as e:
+        return jsonify({"error": str(e)}), 404
+
+
+@bp.route("/api/soc/incidents/<int:iid>/review", methods=["POST"])
+def review(iid):
+    body = request.get_json(silent=True) or {}
+    try:
+        changes = incidents.set_review(iid, session["username"], body.get("reviewer"), body.get("action"))
+    except LookupError as e:
+        return jsonify({"error": str(e)}), 404
+    except PermissionError as e:
+        return jsonify({"error": str(e)}), 403
+    except incidents.IncidentError as e:
+        return jsonify({"error": str(e)}), 422
+    if changes:
+        _log("INCIDENT_UPDATED", f"Incident: {iid} | " + " ".join(changes))
+    return jsonify({"changes": changes, "incident": incidents.get(iid)})
+
+
+@bp.route("/api/soc/incidents/<int:iid>/tasks", methods=["POST"])
+def add_task(iid):
+    body = request.get_json(silent=True) or {}
+    try:
+        incidents.add_task(iid, session["username"], body.get("assignee"), body.get("text"))
+    except LookupError as e:
+        return jsonify({"error": str(e)}), 404
+    except incidents.IncidentError as e:
+        return jsonify({"error": str(e)}), 422
+    _log("INCIDENT_UPDATED", f"Incident: {iid} | Task for {body.get('assignee')}")
+    return jsonify(incidents.get(iid)), 201
+
+
+@bp.route("/api/soc/incidents/<int:iid>/tasks/<int:tid>", methods=["PATCH"])
+def update_task(iid, tid):
+    body = request.get_json(silent=True) or {}
+    try:
+        incidents.set_task_done(iid, tid, session["username"], bool(body.get("done")))
+    except LookupError as e:
+        return jsonify({"error": str(e)}), 404
+    _log("INCIDENT_UPDATED", f"Incident: {iid} | Task {tid} {'done' if body.get('done') else 'reopened'}")
+    return jsonify(incidents.get(iid))

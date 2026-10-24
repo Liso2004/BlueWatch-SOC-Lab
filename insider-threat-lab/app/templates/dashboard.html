@@ -1,4 +1,5 @@
 {% extends "bank_base.html" %}
+{% from "_macros.html" import ic %}
 {% block title %}Home{% endblock %}
 {% set tabs = True %}{% set tab = 'home' %}
 {% block body %}
@@ -9,14 +10,14 @@
 </header>
 <main class="phone-body">
     <div class="tile-grid">
-        <a class="tile" href="#customers" onclick="loadCustomers()"><b>Customers</b><span>View the customer list</span></a>
-        <a class="tile" href="#customers" onclick="document.getElementById('search').focus()"><b>Search</b><span>Find a customer</span></a>
-        <a class="tile security" href="/security"><b>Security Center</b><span>Attacks, incidents, risky apps</span></a>
-        <a class="tile security" href="/mobile-risk"><b>Android App Risk</b><span>Check an app for banking malware</span></a>
+        <a class="tile" href="#customers" onclick="loadCustomers()">{{ ic('users') }}<b>Customers</b><span>View the customer list</span></a>
+        <a class="tile" href="#customers" onclick="document.getElementById('search').focus()">{{ ic('search') }}<b>Search</b><span>Find a customer</span></a>
+        <a class="tile security" href="/security">{{ ic('shield') }}<b>Security Center</b><span>Attacks, incidents, risky apps</span></a>
+        <a class="tile security" href="/mobile-risk">{{ ic('phone') }}<b>Android App Risk</b><span>Check an app for banking malware</span></a>
     </div>
 
     <section class="card section" id="customers">
-        <h2>Customers</h2>
+        <h2 style="display:flex;align-items:center"><span class="ic-tile">{{ ic('users') }}</span>Customers</h2>
         <details class="help"><summary>How to use this</summary>
             <ol><li>Tap <b>Show customers</b> to see the first 50 customers.</li>
                 <li>Or type a name or email and tap <b>Search</b>.</li>
@@ -25,7 +26,7 @@
         <div style="display:flex;gap:.5rem;margin-bottom:.6rem">
             <label for="search" class="sr-only" style="position:absolute;left:-9999px">Search customers</label>
             <input type="search" id="search" placeholder="Name or email" onkeydown="if(event.key==='Enter')searchCustomers()">
-            <button class="btn" onclick="searchCustomers()">Search</button>
+            <button class="btn" onclick="searchCustomers()">{{ ic('search', 'sm') }}Search</button>
         </div>
         <button class="btn ghost" style="width:100%;justify-content:center" onclick="loadCustomers()">Show customers</button>
         <div id="customer-list" style="margin-top:.6rem"></div>

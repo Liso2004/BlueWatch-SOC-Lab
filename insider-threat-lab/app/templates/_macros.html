@@ -1,0 +1,2 @@
+{% macro ic(name, cls='') %}<svg class="ic {{ cls }}" aria-hidden="true"><use href="#i-{{ name }}"/></svg>{% endmacro %}
+{% macro head(name, title, help_id=None) %}<div class="card-head"><h2><span class="ic-tile">{{ ic(name) }}</span>{{ title }}</h2>{% if help_id %}<span id="h-{{ help_id }}"></span>{% endif %}</div>{% endmacro %}

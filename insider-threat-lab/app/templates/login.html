@@ -1,4 +1,5 @@
 {% extends "bank_base.html" %}
+{% from "_macros.html" import ic %}
 {% block title %}Sign in{% endblock %}
 {% block body %}
 <header class="phone-top">
@@ -8,12 +9,13 @@
 </header>
 <main class="phone-body">
     <form method="POST" class="card" autocomplete="off">
+        <h2 style="display:flex;align-items:center"><span class="ic-tile">{{ ic('lock') }}</span>Sign in</h2>
         {% if error %}<p class="notice" role="alert">{{ error }}</p>{% endif %}
         <label for="username">Username</label>
         <input id="username" type="text" name="username" required autofocus>
         <label for="password" style="margin-top:.8rem">Password</label>
         <input id="password" type="password" name="password" required>
-        <button class="btn" type="submit" style="width:100%;justify-content:center;margin-top:1rem">Sign in</button>
+        <button class="btn" type="submit" style="width:100%;justify-content:center;margin-top:1rem">{{ ic('lock', 'sm') }}Sign in</button>
     </form>
     <p class="muted small" style="text-align:center;margin-top:1rem">Lab accounts: <code>analyst</code>,
         <code>jdoe</code> or <code>admin</code> · password <code>password123</code></p>

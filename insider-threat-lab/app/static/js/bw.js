@@ -1,4 +1,5 @@
 // Shared helpers for SecureBank and the BlueWatch console.
+const icon = (name, cls = '') => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 const esc = v => String(v ?? '—').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const pct = (v, d = 0) => (v * 100).toFixed(d) + '%';
 const fmt = n => Number(n).toLocaleString('en-ZA');

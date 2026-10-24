@@ -129,3 +129,40 @@ def test_search_and_funnel(ui):
     stages = [f["value"] for f in o["funnel"]]
     assert stages[0] == 18 and stages[2] == 6 and stages[0] >= stages[1] >= stages[2] >= stages[3] >= stages[4]
     assert o["insight"]["account"] == "jdoe" and o["insight"]["headline"] == "54%"
+
+
+def test_reviewer_suggestion_and_review_flow(ui):
+    ui.post("/api/soc/sync", json={})
+    iid = ui.get("/api/soc/incidents").get_json()[0]["id"]
+    ui.patch(f"/api/soc/incidents/{iid}", json={"assignee": "jdoe"})
+    s = ui.get(f"/api/soc/incidents/{iid}/suggest-reviewer").get_json()
+    assert s["suggested"] not in ("jdoe", "analyst") and s["reason"]  # not the handler, not the requester
+    # reviewer cannot be the person handling it
+    assert ui.post(f"/api/soc/incidents/{iid}/review", json={"reviewer": "jdoe"}).status_code == 422
+    assert ui.post(f"/api/soc/incidents/{iid}/review", json={"action": "request"}).status_code == 422  # no reviewer yet
+    ui.post(f"/api/soc/incidents/{iid}/review", json={"reviewer": "admin"})
+    r = ui.post(f"/api/soc/incidents/{iid}/review", json={"action": "request"}).get_json()
+    assert r["incident"]["review_status"] == "requested"
+    assert ui.post(f"/api/soc/incidents/{iid}/review", json={"action": "approve"}).status_code == 403  # analyst is not the reviewer
+    assert ui.get("/api/soc/incidents?review=waiting").get_json()[0]["id"] == iid
+    with banking_app.app.test_client() as admin:
+        with admin.session_transaction() as sess:
+            sess["username"] = "admin"
+        assert admin.post(f"/api/soc/incidents/{iid}/review", json={"action": "approve"}).get_json()["incident"]["review_status"] == "approved"
+
+
+def test_tasks_tag_people_and_my_work(ui):
+    ui.post("/api/soc/sync", json={})
+    iid = ui.get("/api/soc/incidents").get_json()[1]["id"]
+    d = ui.post(f"/api/soc/incidents/{iid}/tasks", json={"assignee": "analyst", "text": "Check device logs"}).get_json()
+    tid = d["tasks"][0]["id"]
+    assert ui.post(f"/api/soc/incidents/{iid}/tasks", json={"assignee": "", "text": "x"}).status_code == 422
+    mine = [i["id"] for i in ui.get("/api/soc/incidents?involving=me").get_json()]
+    assert iid in mine
+    w = {x["name"]: x for x in ui.get("/api/soc/overview").get_json()["workload"]}
+    assert w["analyst"]["tasks"] == 1
+    d = ui.patch(f"/api/soc/incidents/{iid}/tasks/{tid}", json={"done": True}).get_json()
+    assert d["tasks"][0]["done"] == 1 and any("Completed task" in n["text"] for n in d["notes"])
+    assert iid not in [i["id"] for i in ui.get("/api/soc/incidents?involving=me").get_json()]
+    o = ui.get("/api/soc/overview").get_json()
+    assert len(o["by_hour"]) == 24 and o["open_by_type"]

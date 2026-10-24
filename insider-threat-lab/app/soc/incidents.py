@@ -37,6 +37,16 @@ CREATE TABLE IF NOT EXISTS incidents (
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS incident_tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    incident_id INTEGER NOT NULL REFERENCES incidents(id),
+    assignee TEXT NOT NULL,
+    text TEXT NOT NULL,
+    done INTEGER NOT NULL DEFAULT 0,
+    created_by TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    done_at TEXT
+);
 CREATE TABLE IF NOT EXISTS incident_notes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     incident_id INTEGER NOT NULL REFERENCES incidents(id),
@@ -56,9 +66,17 @@ def _now():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
+REVIEW_STATES = {"requested": "Waiting for review", "approved": "Review approved",
+                 "changes_requested": "Sent back by reviewer"}
+
+
 def connect():
     conn = store.connect()
     conn.executescript(SCHEMA)
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(incidents)")}
+    for col in ("reviewer", "review_status"):  # added after the first release
+        if col not in cols:
+            conn.execute(f"ALTER TABLE incidents ADD COLUMN {col} TEXT")
     return conn
 
 
@@ -67,6 +85,7 @@ def _row(r):
     d["tags"] = json.loads(d["tags"])
     d["evidence"] = json.loads(d["evidence"])
     d["status_label"] = STATUSES.get(d["status"], d["status"])
+    d["review_label"] = REVIEW_STATES.get(d.get("review_status")) if d.get("review_status") else None
     return d
 
 
@@ -156,6 +175,9 @@ def get(incident_id):
         d = _row(r)
         d["notes"] = [dict(n) for n in conn.execute(
             "SELECT at, author, kind, text FROM incident_notes WHERE incident_id = ? ORDER BY id", (incident_id,))]
+        d["tasks"] = [dict(t) for t in conn.execute(
+            "SELECT id, assignee, text, done, created_by, created_at, done_at FROM incident_tasks "
+            "WHERE incident_id = ? ORDER BY done, id", (incident_id,))]
     return d
 
 
@@ -213,7 +235,108 @@ def summary():
             "SELECT severity, COUNT(*) n FROM incidents WHERE status IN ('new','investigating') GROUP BY severity")}
         unassigned = conn.execute("SELECT COUNT(*) FROM incidents WHERE status IN ('new','investigating') "
                                   "AND assignee IS NULL").fetchone()[0]
+        waiting_review = conn.execute("SELECT COUNT(*) FROM incidents WHERE review_status = 'requested'").fetchone()[0]
+        by_rule = {r["rule"]: r["n"] for r in conn.execute(
+            "SELECT rule, COUNT(*) n FROM incidents WHERE status IN ('new','investigating') GROUP BY rule")}
     return {"by_status": {k: by_status.get(k, 0) for k in STATUSES},
             "open_by_severity": {k: open_by_sev.get(k, 0) for k in SEVERITIES},
             "open": by_status.get("new", 0) + by_status.get("investigating", 0),
-            "unassigned_open": unassigned}
+            "unassigned_open": unassigned, "waiting_review": waiting_review, "open_by_rule": by_rule}
+
+
+# --- reviewers and tasks -------------------------------------------------------------------
+
+def workload(team):
+    """Open work per person: incidents assigned, reviews waiting on them, open tasks."""
+    with connect() as conn:
+        assigned = dict(conn.execute("SELECT assignee, COUNT(*) FROM incidents WHERE status IN "
+                                     "('new','investigating') AND assignee IS NOT NULL GROUP BY assignee").fetchall())
+        reviews = dict(conn.execute("SELECT reviewer, COUNT(*) FROM incidents WHERE review_status = 'requested' "
+                                    "AND reviewer IS NOT NULL GROUP BY reviewer").fetchall())
+        tasks = dict(conn.execute("SELECT assignee, COUNT(*) FROM incident_tasks WHERE done = 0 "
+                                  "GROUP BY assignee").fetchall())
+    people = list(dict.fromkeys(list(team) + list(assigned) + list(reviews) + list(tasks)))
+    return [{"name": p, "assigned": assigned.get(p, 0), "reviews": reviews.get(p, 0), "tasks": tasks.get(p, 0)}
+            for p in people]
+
+
+def suggest_reviewer(incident_id, team, requested_by):
+    """Someone not already on the incident, with the fewest pending reviews, then the least open work."""
+    inc = get(incident_id)
+    busy = {inc["assignee"], requested_by} | {t["assignee"] for t in inc["tasks"] if not t["done"]}
+    load = {w["name"]: w for w in workload(team)}
+    candidates = [load.get(p, {"name": p, "assigned": 0, "reviews": 0, "tasks": 0}) for p in team if p not in busy]
+    if not candidates:
+        return {"suggested": None, "reason": "Everyone on the team is already working on this incident.",
+                "candidates": []}
+    candidates.sort(key=lambda w: (w["reviews"], w["assigned"] + w["tasks"]))
+    best = candidates[0]
+    return {"suggested": best["name"], "candidates": candidates,
+            "reason": f"{best['name']} is not working on this incident and has the lightest load: "
+                      f"{best['reviews']} review(s) waiting, {best['assigned']} open incident(s), "
+                      f"{best['tasks']} open task(s)."}
+
+
+def set_review(incident_id, author, reviewer=None, action=None):
+    """action: request | approve | send_back. Only the named reviewer may approve or send back."""
+    inc = get(incident_id)
+    changes = []
+    with connect() as conn:
+        if reviewer is not None:
+            reviewer = reviewer.strip()[:60] or None
+            if reviewer and reviewer == inc["assignee"]:
+                raise IncidentError("the reviewer must be someone other than the person handling it")
+            if reviewer != inc["reviewer"]:
+                conn.execute("UPDATE incidents SET reviewer=?, review_status=NULL WHERE id=?", (reviewer, incident_id))
+                changes.append(("review", f"Reviewer set to {reviewer}." if reviewer else "Reviewer removed."))
+                inc["reviewer"] = reviewer
+        if action:
+            if action not in ("request", "approve", "send_back"):
+                raise IncidentError("action must be request, approve or send_back")
+            if not inc["reviewer"]:
+                raise IncidentError("choose a reviewer first")
+            if action in ("approve", "send_back") and author != inc["reviewer"]:
+                raise PermissionError(f"only the reviewer ({inc['reviewer']}) can do that")
+            state = {"request": "requested", "approve": "approved", "send_back": "changes_requested"}[action]
+            conn.execute("UPDATE incidents SET review_status=? WHERE id=?", (state, incident_id))
+            changes.append(("review", {"request": f"Asked {inc['reviewer']} to review.",
+                                       "approve": "Review approved.",
+                                       "send_back": "Reviewer sent it back for more work."}[action]))
+        for kind, text in changes:
+            _note(conn, incident_id, author, kind, text)
+        if changes:
+            conn.execute("UPDATE incidents SET updated_at=? WHERE id=?", (_now(), incident_id))
+    return [t for _, t in changes]
+
+
+def add_task(incident_id, author, assignee, text):
+    if not isinstance(assignee, str) or not assignee.strip() or len(assignee) > 60:
+        raise IncidentError("choose who should do this")
+    if not isinstance(text, str) or not text.strip() or len(text) > 300:
+        raise IncidentError("describe the task (1-300 characters)")
+    get(incident_id)
+    with connect() as conn:
+        conn.execute("INSERT INTO incident_tasks (incident_id, assignee, text, created_by, created_at) "
+                     "VALUES (?,?,?,?,?)", (incident_id, assignee.strip(), text.strip(), author, _now()))
+        _note(conn, incident_id, author, "task", f"Asked {assignee.strip()} to: {text.strip()}")
+
+
+def set_task_done(incident_id, task_id, author, done):
+    with connect() as conn:
+        t = conn.execute("SELECT assignee, text FROM incident_tasks WHERE id=? AND incident_id=?",
+                         (task_id, incident_id)).fetchone()
+        if t is None:
+            raise LookupError(f"task {task_id} not found")
+        conn.execute("UPDATE incident_tasks SET done=?, done_at=? WHERE id=?",
+                     (1 if done else 0, _now() if done else None, task_id))
+        _note(conn, incident_id, author, "task",
+              f"{'Completed' if done else 'Reopened'} task for {t['assignee']}: {t['text']}")
+
+
+def involving(person):
+    """Incident ids where the person is assignee, reviewer, or has an open task."""
+    with connect() as conn:
+        ids = {r[0] for r in conn.execute("SELECT id FROM incidents WHERE assignee=? OR reviewer=?", (person, person))}
+        ids |= {r[0] for r in conn.execute(
+            "SELECT incident_id FROM incident_tasks WHERE assignee=? AND done=0", (person,))}
+    return ids

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% from "_macros.html" import ic %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -7,19 +8,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bluewatch.css') }}">
 </head>
 <body>
+{% include "_icons.html" %}
 <div class="shell">
     <header class="topnav">
-        <a class="logo" href="/security"><span class="mark" aria-hidden="true"></span>BlueWatch</a>
+        <a class="logo" href="/security"><span class="mark" aria-hidden="true">{{ ic('shield') }}</span>BlueWatch</a>
         <nav aria-label="Security Center">
-            <a href="/security" class="{{ 'active' if active == 'overview' }}">Overview</a>
-            <a href="/security/incidents" class="{{ 'active' if active == 'incidents' }}">Incidents<span class="count" id="nav-open" hidden></span></a>
-            <a href="/mobile-risk" class="{{ 'active' if active == 'apprisk' }}">Android app risk</a>
-            <a href="/mobile-risk#vulns">Phone vulnerabilities</a>
-            <a href="http://localhost:5601" target="_blank" rel="noopener">Raw logs ↗</a>
+            <a href="/security" class="{{ 'active' if active == 'overview' }}">{{ ic('grid') }}Overview</a>
+            <a href="/security/incidents" class="{{ 'active' if active == 'incidents' }}">{{ ic('alert') }}Incidents<span class="count" id="nav-open" hidden></span></a>
+            <a href="/mobile-risk" class="{{ 'active' if active == 'apprisk' }}">{{ ic('phone') }}Android app risk</a>
+            <a href="/mobile-risk#vulns">{{ ic('lock') }}Phone vulnerabilities</a>
+            <a href="http://localhost:5601" target="_blank" rel="noopener">{{ ic('external') }}Raw logs</a>
         </nav>
         <div class="right">
-            <a class="btn ghost sm" href="/dashboard">SecureBank app</a>
-            <a class="btn ghost sm" href="/logout">Sign out</a>
+            <a class="btn ghost sm" href="/dashboard">{{ ic('bank') }}SecureBank app</a>
+            <a class="btn ghost sm" href="/logout" aria-label="Sign out">{{ ic('logout') }}</a>
             <span class="avatar" title="Signed in as {{ username }}">{{ username[:2] }}</span>
         </div>
     </header>
@@ -28,10 +30,10 @@
     </main>
 </div>
 <nav class="mobile-tabs" aria-label="Security Center">
-    <a href="/security" class="{{ 'active' if active == 'overview' }}">Overview</a>
-    <a href="/security/incidents" class="{{ 'active' if active == 'incidents' }}">Incidents<span class="count" id="nav-open-m" hidden></span></a>
-    <a href="/mobile-risk" class="{{ 'active' if active == 'apprisk' }}">App risk</a>
-    <a href="/dashboard">Bank app</a>
+    <a href="/security" class="{{ 'active' if active == 'overview' }}">{{ ic('grid') }}<span>Overview</span></a>
+    <a href="/security/incidents" class="{{ 'active' if active == 'incidents' }}">{{ ic('alert') }}<span>Incidents<span class="count" id="nav-open-m" hidden></span></span></a>
+    <a href="/mobile-risk" class="{{ 'active' if active == 'apprisk' }}">{{ ic('phone') }}<span>App risk</span></a>
+    <a href="/dashboard">{{ ic('bank') }}<span>Bank app</span></a>
 </nav>
 <div id="tip" role="tooltip"></div>
 <script src="{{ url_for('static', filename='js/bw.js') }}"></script>
