@@ -1,5 +1,6 @@
 {% extends "console_base.html" %}
-{% block title %}Overview{% endblock %}
+{% block title %}Overview</div>
+{% endblock %}
 {% block main %}
 <div class="pagehead">
     <div>
@@ -18,13 +19,14 @@
     </div>
 </div>
 
-<div class="grid" style="grid-template-columns:minmax(0,2fr) minmax(280px,1fr)">
-    <section class="card">
+<div class="ov">
+    <section class="card ov-funnel">
         <div class="card-head"><h2>From warning signs to closed cases</h2><span id="h-funnel"></span></div>
         <div class="card-help" id="help-funnel"><p>Read left to right. Every event the bank records → the ones that look like an
             attack → grouped into incidents → picked up by a person → closed. A big drop between <b>Incidents opened</b> and
             <b>Being handled</b> means cases are waiting for someone. Hover a bar for the number.</p></div>
         <div class="funnel" id="funnel"></div>
+        <div class="rows funnel-rows" id="funnel-rows"></div>
         <form class="search section" onsubmit="search(event)" role="search">
             <label for="q" class="sr-only">Search the security log</label>
             <input id="q" placeholder="Search the security log — try “jdoe”, “failed”, or an IP address" autocomplete="off">
@@ -33,7 +35,7 @@
         <div id="results"></div>
     </section>
 
-    <section class="card">
+    <section class="card ov-records">
         <div class="card-head"><h2>Customer records viewed</h2><span id="h-records"></span></div>
         <div class="card-help" id="help-records"><p>How many customer records staff looked at, and by whom. Staff normally view a
             few at a time. One person with a very large share can mean data is being copied — check it against their job.</p></div>
@@ -41,10 +43,8 @@
         <p class="muted" id="records-sub" style="margin:.4rem 0 1.1rem"></p>
         <div class="rows" id="records"></div>
     </section>
-</div>
 
-<div class="grid section" style="grid-template-columns:repeat(auto-fit,minmax(250px,1fr))">
-    <section class="card">
+    <section class="card ov-failed">
         <div class="card-head"><h2>Failed sign-ins</h2><span id="h-failed"></span></div>
         <div class="card-help" id="help-failed"><p>Wrong-password attempts per day. A tall day usually means someone was guessing
             a password — the Incidents page shows which account.</p></div>
@@ -53,7 +53,7 @@
         <div id="failed-chart"></div>
     </section>
 
-    <section class="card">
+    <section class="card ov-inc">
         <div class="card-head"><h2>Open incidents</h2><span id="h-inc"></span></div>
         <div class="card-help" id="help-inc"><p>Cases that still need a person. Start with <b>High</b>. Open the Incidents page to
             assign, tag and close them.</p></div>
@@ -63,7 +63,7 @@
         <a class="btn ghost sm" href="/security/incidents" style="margin-top:1rem">Go to incidents →</a>
     </section>
 
-    <section class="card">
+    <section class="card ov-apps">
         <div class="card-head"><h2>Android apps checked</h2><span id="h-apps"></span></div>
         <div class="card-help" id="help-apps"><p>Each dot is one app check, oldest first. <b>Orange</b> dots needed a look;
             <b>blue</b> dots raised no alert. Hover a dot to see the app and its score.</p></div>
@@ -73,7 +73,7 @@
         <div class="legend"><span><i style="background:var(--s2)"></i>Needed a look</span><span><i style="background:var(--accent)"></i>No alert</span></div>
     </section>
 
-    <section class="card insight" id="insight" hidden>
+    <section class="card insight ov-insight" id="insight" hidden>
         <span class="tag">Insight from the log</span>
         <div class="hero" id="ins-hero"></div>
         <h2 id="ins-title"></h2>
@@ -82,21 +82,20 @@
             <a class="btn ghost sm" id="ins-link" href="/security/incidents">See the incident</a>
         </div>
     </section>
-</div>
 
-<section class="card section">
+<section class="card ov-model">
     <div class="card-head"><h2>How good is the Android malware checker?</h2><span id="h-model"></span></div>
     <div class="card-help" id="help-model"><p>Tested on apps it had never seen. The first three are strengths; the last is a known
         weakness — that is why a person always makes the final call.</p></div>
     <div class="grid k4" id="model"></div>
 </section>
 
-<section class="card section">
+<section class="card ov-activity">
     <div class="card-head"><h2>Latest activity</h2>
         <div style="display:flex;gap:.5rem;align-items:center"><a class="btn ghost sm" href="http://localhost:5601" target="_blank" rel="noopener">Full logs in Kibana ↗</a><span id="h-recent"></span></div></div>
     <div class="card-help" id="help-recent"><p>The 25 most recent events in plain words. Use the search above to find older ones,
         or Kibana (Discover → banking-logs-*) for everything.</p></div>
-    <div style="overflow-x:auto"><table><thead><tr><th>When</th><th>What happened</th><th>Who</th><th>From</th></tr></thead><tbody id="recent"></tbody></table></div>
+    <div style="overflow-x:auto"><table><thead><tr><th>When</th><th>What happened</th><th class="hide-sm">Who</th><th class="hide-sm">From</th></tr></thead><tbody id="recent"></tbody></table></div>
 </section>
 {% endblock %}
 {% block scripts %}
@@ -110,7 +109,8 @@
         const [label, cls] = CAT[e.category] || CAT.other;
         return `<tr><td class="small" title="${esc(e.time)}">${esc(e.time.slice(0, 16))}</td>
             <td><b>${esc(e.name)}</b> <span class="chip ${cls}">${esc(label)}</span><br><span class="muted small">${esc(e.details.length > 110 ? e.details.slice(0, 110) + '…' : e.details)}</span></td>
-            <td>${esc(e.user)}</td><td class="small">${esc(e.ip)}</td></tr>`;
+            <span class="show-sm muted small"> · ${esc(e.user)} from ${esc(e.ip)}</span></td>
+            <td class="hide-sm">${esc(e.user)}</td><td class="small hide-sm">${esc(e.ip)}</td></tr>`;
     }
 
     async function search(ev) {
@@ -147,6 +147,9 @@
                     <div class="f-plot"><div class="f-bar" tabindex="0" data-tip="${esc(f.stage)}: ${fmt(f.value)}" style="height:${(f.value / fmax * 100).toFixed(1)}%;background:${ramp[i]}"></div></div>
                     <span class="f-explain">${esc(f.explain)}</span></div>`;
             }).join('');
+            document.getElementById('funnel-rows').innerHTML = o.funnel.map((f, i) => `
+                <div><div class="row-top"><span>${esc(f.stage)}</span><b>${fmt(f.value)}</b></div>
+                <div class="meter-track"><div class="meter-fill" style="width:${(f.value / fmax * 100).toFixed(1)}%;background:${ramp[i]}"></div></div></div>`).join('');
 
             // records viewed
             const people = o.records_by_person, rmax = Math.max(1, ...people.map(p => p[1]));

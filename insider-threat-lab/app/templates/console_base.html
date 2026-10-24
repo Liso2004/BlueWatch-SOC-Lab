@@ -27,12 +27,19 @@
         {% block main %}{% endblock %}
     </main>
 </div>
+<nav class="mobile-tabs" aria-label="Security Center">
+    <a href="/security" class="{{ 'active' if active == 'overview' }}">Overview</a>
+    <a href="/security/incidents" class="{{ 'active' if active == 'incidents' }}">Incidents<span class="count" id="nav-open-m" hidden></span></a>
+    <a href="/mobile-risk" class="{{ 'active' if active == 'apprisk' }}">App risk</a>
+    <a href="/dashboard">Bank app</a>
+</nav>
 <div id="tip" role="tooltip"></div>
 <script src="{{ url_for('static', filename='js/bw.js') }}"></script>
 <script>
     api('/api/soc/overview').then(o => {
-        const n = o.incidents.open, el = document.getElementById('nav-open');
-        if (n) { el.textContent = n; el.hidden = false; el.title = n + ' open incidents'; }
+        const n = o.incidents.open;
+        for (const el of [document.getElementById('nav-open'), document.getElementById('nav-open-m')])
+            if (n) { el.textContent = n; el.hidden = false; el.title = n + ' open incidents'; }
     }).catch(() => {});
 </script>
 {% block scripts %}{% endblock %}

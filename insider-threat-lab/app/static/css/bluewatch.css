@@ -71,6 +71,7 @@ label { font-weight: 600; color: var(--ink); font-size: .82rem; display: block; 
 .grid > .card, .grid > .card + .card { margin-top: 0; }
 .section { margin-top: 1rem; }
 .section-head, .card-head { display: flex; justify-content: space-between; align-items: center; gap: .8rem; flex-wrap: wrap; margin-bottom: .6rem; }
+.card-head { flex-wrap: nowrap; } .card-head h2 { flex: 1; min-width: 0; }
 .card-head h2 { margin: 0; }
 .help { background: var(--accent-soft); border-radius: 12px; padding: .7rem .9rem; margin-bottom: .9rem; color: #23395b; font-size: .88rem; }
 .help summary { cursor: pointer; font-weight: 600; color: var(--r550); list-style: none; }
@@ -233,14 +234,82 @@ tr.clickable { cursor: pointer; } tr.clickable:hover td { background: var(--soft
 .list-item { display: flex; justify-content: space-between; gap: .5rem; padding: .75rem 0; border-bottom: 1px solid var(--line); }
 .list-item:last-child { border-bottom: 0; }
 
+/* ---------- overview layout: one grid, arranged per screen size ---------- */
+.ov { display: grid; gap: 1rem; grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas: "funnel funnel funnel records" "failed inc apps insight" "model model model model" "activity activity activity activity"; }
+.ov-funnel { grid-area: funnel; } .ov-records { grid-area: records; } .ov-failed { grid-area: failed; }
+.ov-inc { grid-area: inc; } .ov-apps { grid-area: apps; } .ov-insight { grid-area: insight; }
+.ov-model { grid-area: model; } .ov-activity { grid-area: activity; }
+.ov > .card { margin-top: 0; }
+.funnel-rows { display: none; }
+.g-side { grid-template-columns: minmax(260px, 1fr) 2fr; align-items: start; }
+.show-sm { display: none; }
+.mobile-tabs { display: none; }
+
+/* ---------- SecureBank: full web version on wide screens ---------- */
+.bank-web-nav { display: none; }
+.logo .mark.bank { background: var(--ink); }
+@media (min-width: 900px) {
+  body.bank .bank-web-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1180px;
+    margin: 1rem auto 0; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: .45rem .5rem .45rem 1rem; }
+  .bank-web-nav nav { display: flex; gap: .2rem; }
+  .bank-web-nav nav a { color: var(--text); text-decoration: none; font-weight: 600; font-size: .86rem; padding: .45rem .85rem; border-radius: 999px; }
+  .bank-web-nav nav a:hover { background: var(--soft); } .bank-web-nav nav a.active { background: var(--ink); color: #fff; }
+  body.bank .phone { max-width: 1180px; padding: 1rem 0 2rem; min-height: auto; }
+  body.bank .phone-top { border-radius: var(--radius); padding: 2.2rem 2.4rem; margin: 0 1rem; }
+  body.bank .phone-top h1 { font-size: 2.2rem; }
+  body.bank .phone-body { padding: 1rem; }
+  body.bank .tabbar { display: none; }
+  body.bank .tile-grid { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  body.bank .tile { padding: 1.2rem; }
+  body.bank .phone-body > .card, body.bank .phone-body > form.card { max-width: 520px; margin-left: auto; margin-right: auto; }
+  body.bank #customers { max-width: none; }
+  body.bank #customer-list { columns: 2; column-gap: 2rem; }
+  body.bank #customer-list .list-item { break-inside: avoid; }
+  body.bank #customer-list > p { column-span: all; margin-bottom: .4rem; }
+}
+
+@media (max-width: 1100px) {
+  .ov { grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "funnel funnel" "records insight" "inc apps" "failed failed" "model model" "activity activity"; }
+}
 @media (max-width: 1000px) {
   .funnel { grid-template-columns: repeat(3, 1fr); row-gap: 1rem; }
   .f-col:nth-child(4) { border-left: 0; padding-left: 0; }
 }
-@media (max-width: 700px) {
-  .shell { padding: .7rem; }
-  .topnav { border-radius: 20px; }
-  .funnel { grid-template-columns: 1fr 1fr; }
-  .f-col { border-left: 0; padding-left: 0; }
-  h1 { font-size: 1.7rem; }
+/* ---------- phones: focused layout ---------- */
+@media (max-width: 760px) {
+  body { font-size: 15px; }
+  .shell { padding: .6rem .7rem 5.5rem; }
+  .topnav { border-radius: 18px; padding: .4rem .5rem .4rem .8rem; margin-bottom: 1rem; }
+  .topnav nav, .topnav .right .btn { display: none; }
+  .mobile-tabs { display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+    background: var(--card); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
+  .mobile-tabs a { text-align: center; padding: .85rem .2rem; color: var(--muted); text-decoration: none; font-weight: 600; font-size: .8rem; }
+  .mobile-tabs a.active { color: var(--ink); box-shadow: inset 0 2px 0 var(--ink); }
+  .mobile-tabs .count { background: var(--critical); color: #fff; border-radius: 999px; font-size: .65rem; padding: 0 .35rem; margin-left: .2rem; }
+  h1 { font-size: 1.75rem; }
+  .pagehead { align-items: stretch; }
+  .pagehead .meta { width: 100%; justify-content: space-between; }
+  .card { padding: 1rem; border-radius: 16px; }
+  .hero { font-size: 2.3rem; } .insight .hero { font-size: 2.8rem; }
+  /* most actionable first */
+  .ov { grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "inc" "insight" "failed" "apps" "records" "funnel" "model" "activity"; }
+  .funnel { display: none; } .funnel-rows { display: grid; }
+  .grid.k4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g-side { grid-template-columns: minmax(0, 1fr); }
+  .hide-sm { display: none; } .show-sm { display: block; }
+  td, th { padding: .55rem .4rem; }
+  .drawer { width: 100%; border-radius: 0; }
+  /* wide tables become stacked blocks: one row = one block */
+  table.stack-sm thead { display: none; }
+  table.stack-sm, table.stack-sm tbody, table.stack-sm tr, table.stack-sm td { display: block; width: 100%; }
+  table.stack-sm tr { padding: .55rem 0; border-bottom: 1px solid var(--line); }
+  table.stack-sm tr:last-child { border-bottom: 0; }
+  table.stack-sm td { border: 0; padding: .1rem 0; }
+  #result { overflow-wrap: anywhere; }
+  .search { flex-wrap: nowrap; }
+  .kpi .value { font-size: 1.5rem; }
+  #toast { bottom: 4.5rem; }
 }

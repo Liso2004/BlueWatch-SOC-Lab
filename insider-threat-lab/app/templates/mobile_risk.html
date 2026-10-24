@@ -8,15 +8,15 @@
 <p class="notice"><b>Prototype — decision support only.</b> A result means “a person should look at this app”, not
     “this is definitely malware”. Never block a customer or their phone on this result alone.</p>
 
-<details class="help section" open><summary>How to use this tool</summary>
-    <ol><li><b>Pick an app</b> on the left (real apps from a research dataset that the checker never saw while learning),
-            or paste an app’s details in the box below it.</li>
+<details class="help section" id="tool-help" open><summary>How to use this tool</summary>
+    <ol><li><b>Pick a test app</b> from the list (real apps from a research dataset that the checker never saw while learning),
+            or paste an app’s details under <b>Check another app</b>.</li>
         <li>Read the <b>result</b>: “Needs a look” or “No alert”, the risk score, and <b>why</b>.</li>
         <li>Press <b>Write AI case brief</b> for a plain-English summary you can paste into a ticket.</li>
         <li>After checking, record <b>your decision</b>. If it needs follow-up, press <b>Open an incident</b>.</li></ol>
 </details>
 
-<div class="grid section" style="grid-template-columns:minmax(260px,1fr) 2fr;align-items:start">
+<div class="grid section g-side">
     <div>
         <div class="card">
             <h2>Test apps</h2>
@@ -36,7 +36,7 @@
             </div>
         </div>
     </div>
-    <div class="card" id="result" aria-live="polite"><p class="empty">Pick an app on the left to see the result here.</p></div>
+    <div class="card" id="result" aria-live="polite"><p class="empty">Pick a test app to see the result here.</p></div>
 </div>
 
 <section class="section card" id="vulns">
@@ -132,6 +132,7 @@
         try {
             const r = await api('/api/mobile/assess', {json: payload});
             lastResult = r; render(r); loadActivity();
+            if (matchMedia('(max-width: 760px)').matches) out.scrollIntoView({behavior: 'smooth', block: 'start'});
         } catch (e) { out.innerHTML = ''; toast('Check failed: ' + e.message, true); }
     }
 
@@ -150,7 +151,7 @@
 
             <h3 style="margin-top:1rem">What the app can do, and what it did</h3>
             <p class="muted small">Banking malware tricks, grouped. “Asks for” = a permission the app requests. “Did” = activity measured while it ran, shown in bold when higher than 9 in 10 safe apps.</p>
-            <table><thead><tr><th>Trick</th><th>Found?</th><th>Signals</th></tr></thead><tbody>
+            <table class="stack-sm"><thead><tr><th>Trick</th><th>Found?</th><th>Signals</th></tr></thead><tbody>
             ${r.behaviour_profile.map(c => `<tr><td><b>${esc(c.category)}</b><br><span class="muted small">${esc(c.why)}</span></td>
                 <td>${c.status === 'present' ? '<span class="chip sev-high">Yes</span>' : c.status === 'not available' ? '<span class="chip">Can’t tell</span>' : '<span class="chip st-resolved">No</span>'}</td>
                 <td class="small">${c.note ? esc(c.note) : c.signals.map(s => `${s.flag ? '<b>' : ''}${plainFeature(s.feature)}${s.flag ? '</b>' : ''} — ${s.kind === 'declared permission' ? (s.value ? 'asks for it' : 'does not ask') : 'did it ' + esc(s.value) + ' times'}`).join('<br>')}</td></tr>`).join('')}
@@ -158,7 +159,7 @@
 
             <h3 style="margin-top:1rem">Why it scored this way</h3>
             <p class="muted small">The measurements where this app differs most from a typical safe app. This helps explain the score; it is not proof.</p>
-            <table><thead><tr><th>Measurement</th><th>This app</th><th>Typical safe app</th><th>Typical malware</th></tr></thead><tbody>
+            <table class="stack-sm"><thead><tr><th>Measurement</th><th>This app</th><th>Typical safe app</th><th>Typical malware</th></tr></thead><tbody>
             ${r.evidence.map(e => `<tr><td>${plainFeature(e.feature)}</td><td><b>${esc(e.value)}</b></td><td>${esc(e.benign_median)}</td><td>${esc(e.malware_median)}</td></tr>`).join('')}
             </tbody></table>
 
@@ -229,7 +230,7 @@
                     <div class="card kpi"><div class="value">${fmt((sev.MEDIUM || 0) + (sev.LOW || 0))}</div><div class="label">Medium or low</div></div>
                 </div>
                 <h3 style="margin-top:1rem">Most serious ones</h3>
-                <table><thead><tr><th>Flaw</th><th>Severity</th><th>What it is</th></tr></thead><tbody>
+                <table class="stack-sm"><thead><tr><th>Flaw</th><th>Severity</th><th>What it is</th></tr></thead><tbody>
                 ${r.top_cves.map(c => `<tr><td><a href="${esc(c.nvd_url)}" target="_blank" rel="noopener">${esc(c.cve_id)}</a></td>
                     <td>${c.cvss ? `<span class="chip sev-high">${esc(c.cvss.base_score)} ${esc(c.cvss.severity)}</span>` : '—'}</td>
                     <td class="small">${esc(c.description.length > 180 ? c.description.slice(0, 180) + '…' : c.description)}</td></tr>`).join('')}
@@ -248,7 +249,7 @@
                     <div class="card kpi"><div class="value">${fmt(Object.values(s.feedback).reduce((x, y) => x + y, 0))}</div><div class="label">Decisions recorded</div></div>
                     <div class="card kpi ok"><div class="value">${s.analyst_precision === null ? '—' : pct(s.analyst_precision)}</div><div class="label">Alarms confirmed real</div><div class="explain">Of the alarms analysts reviewed here</div></div>
                 </div>
-                <table style="margin-top:.8rem"><thead><tr><th>When</th><th>App</th><th>Result</th><th>Decision</th><th>Who</th></tr></thead><tbody>
+                <table class="stack-sm" style="margin-top:.8rem"><thead><tr><th>When</th><th>App</th><th>Result</th><th>Decision</th><th>Who</th></tr></thead><tbody>
                 ${a.recent.slice(0, 8).map(x => `<tr><td class="small">${esc(x.created_at.slice(0, 16).replace('T', ' '))}</td><td>${esc(x.sample_id || 'pasted app')}</td>
                     <td>${x.verdict === 'flag_for_review' ? '<span class="chip sev-high">Needs a look</span>' : '<span class="chip st-resolved">No alert</span>'}</td>
                     <td>${x.feedback ? esc(PLAIN_FEEDBACK[x.feedback]) : '<span class="muted">Not yet</span>'}</td><td class="small">${esc(x.actor)} <span class="muted">(${esc(x.channel)})</span></td></tr>`).join('')}
@@ -267,7 +268,7 @@
                 D_runtime_behaviour_only: 'Using only what apps did (no permissions)'};
             document.getElementById('model').innerHTML = `
                 <p>Tested on apps it had never seen, from ${esc(m.dataset.name)} (research data, cited: ${esc(m.dataset.citation)}).</p>
-                <table><thead><tr><th>Test</th><th>Alarms that were real</th><th>Malware caught</th><th>Safe apps wrongly flagged</th></tr></thead><tbody>
+                <table class="stack-sm"><thead><tr><th>Test</th><th>Alarms that were real</th><th>Malware caught</th><th>Safe apps wrongly flagged</th></tr></thead><tbody>
                 ${Object.entries(E).map(([k, s]) => `<tr><td><b>${esc(names[k] || k)}</b><br><span class="muted small">${fmt(s.test_size)} apps</span></td>
                     <td>${pct(s.precision)}</td><td>${pct(s.recall)}</td>
                     <td>${k === 'B_per_class_temporal' ? `<b style="color:var(--bad)">${pct(s.false_positive_rate, 1)}</b> — known weakness` : pct(s.false_positive_rate, 1)}</td></tr>`).join('')}
@@ -276,6 +277,7 @@
         } catch (e) { toast('Could not load test results: ' + e.message, true); }
     }
 
+    if (matchMedia('(max-width: 760px)').matches) document.getElementById('tool-help').open = false;
     loadSamples(); loadVersions(); loadActivity(); loadModel();
 </script>
 {% endblock %}

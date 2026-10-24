@@ -39,7 +39,7 @@
         if (!data.length) { box.innerHTML = '<p class="empty">No customers found.</p>'; return; }
         box.innerHTML = `<p class="muted small">${fmt(data.length)} customer(s)</p>` + data.map(c => `
             <div class="list-item"><div><b>${esc(c.name)}</b><br><span class="muted small">${esc(c.email)} · ${esc(c.account_number)}</span></div>
-            <div style="font-weight:700;white-space:nowrap">R ${fmt(Number(c.balance || 0).toFixed(2))}</div></div>`).join('');
+            <div style="font-weight:700;white-space:nowrap">R ${Number(c.balance || 0).toLocaleString('en-ZA', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div></div>`).join('');
     }
     async function loadCustomers() {
         try { renderCustomers(await api('/api/customers')); } catch (e) { toast('Could not load customers: ' + e.message, true); }

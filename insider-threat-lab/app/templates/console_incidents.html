@@ -27,7 +27,7 @@
 </div>
 
 <div class="card section" style="overflow-x:auto;padding:0">
-    <table><thead><tr><th>Severity</th><th>Incident</th><th>Status</th><th>Assigned to</th><th>Tags</th><th>Last seen</th></tr></thead>
+    <table><thead><tr><th>Severity</th><th>Incident</th><th>Status</th><th class="hide-sm">Assigned to</th><th class="hide-sm">Tags</th><th class="hide-sm">Last seen</th></tr></thead>
         <tbody id="rows"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody></table>
 </div>
 
@@ -64,11 +64,12 @@
             document.getElementById('rows').innerHTML = list.map(i => `
                 <tr class="clickable" tabindex="0" onclick="openIncident(${i.id})" onkeydown="if(event.key==='Enter')openIncident(${i.id})">
                 <td>${sevChip(i.severity)}</td>
-                <td><b>${esc(i.title)}</b><br><span class="muted small">#${i.id} · ${i.event_count ? esc(i.event_count) + ' events' : 'opened by hand'}</span></td>
+                <td><b>${esc(i.title)}</b><br><span class="muted small">#${i.id} · ${i.event_count ? esc(i.event_count) + ' events' : 'opened by hand'}</span>
+                <span class="show-sm muted small">${i.assignee ? 'Assigned to ' + esc(i.assignee) : 'Not assigned'}${i.tags.length ? ' · ' + i.tags.map(esc).join(', ') : ''}</span></td>
                 <td>${stChip(i.status, i.status_label)}</td>
-                <td>${i.assignee ? esc(i.assignee) : '<span class="muted">Nobody yet</span>'}</td>
-                <td>${i.tags.map(t => `<span class="chip">${esc(t)}</span>`).join(' ')}</td>
-                <td class="small">${esc((i.last_seen || '').slice(0, 16))}</td></tr>`).join('')
+                <td class="hide-sm">${i.assignee ? esc(i.assignee) : '<span class="muted">Nobody yet</span>'}</td>
+                <td class="hide-sm">${i.tags.map(t => `<span class="chip">${esc(t)}</span>`).join(' ')}</td>
+                <td class="small hide-sm">${esc((i.last_seen || '').slice(0, 16))}</td></tr>`).join('')
                 || '<tr><td colspan="6" class="empty">Nothing here. Try “Everything” in the Status filter.</td></tr>';
         } catch (e) { toast('Could not load incidents: ' + e.message, true); }
     }
